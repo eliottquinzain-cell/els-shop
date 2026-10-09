@@ -1,7 +1,7 @@
 {
   "name": "els-shop",
   "version": "1.0.0",
-  "description": "ELS.SHOP - Boutique e-commerce streetwear & revente de vêtements de marque par Eliott & Ilies",
+  "description": "ELS.SHOP - Boutique e-commerce streetwear & revente de vêtements et sneakers de marque",
   "main": "api/checkout.js",
   "scripts": {
     "start": "serve .",
