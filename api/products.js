@@ -18,6 +18,7 @@ const DEMO_PRODUCTS = [
     condition: "Neuf (1:1)",
     conditionGrade: "1:1 Miroir",
     color: "Triple Black",
+    colors: ["Triple Black", "Gris Chiné", "Baby Blue"],
     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
     stock: { "XS": 2, "S": 4, "M": 8, "L": 6, "XL": 3, "XXL": 2 },
     badge: "TOP 1:1",
@@ -27,20 +28,21 @@ const DEMO_PRODUCTS = [
   },
   {
     id: "els-002",
-    name: "8-Ball Mohair Knit Sweater",
-    brand: "Stüssy",
-    category: "sweats",
-    price: 125,
-    costPrice: 42,
-    condition: "Neuf (1:1)",
+    name: "Wyndham Parka Black Label",
+    brand: "Canada Goose",
+    category: "vestes",
+    price: 320,
+    costPrice: 110,
+    condition: "Neuf avec étiquettes (1:1)",
     conditionGrade: "1:1 Miroir",
-    color: "Black / Natural",
-    sizes: ["S", "M", "L", "XL"],
-    stock: { "S": 3, "M": 5, "L": 5, "XL": 2 },
-    badge: "BEST-SELLER",
+    color: "Noir Mat",
+    colors: ["Noir Mat", "Gris Graphite", "Bleu Marine"],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    stock: { "XS": 2, "S": 3, "M": 6, "L": 5, "XL": 3, "XXL": 2 },
+    badge: "1:1 BEST-SELLER",
     featured: true,
-    image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=800&q=80",
-    description: "Tricot en mohair brossé haute fidélité 1:1. Motif 8-Ball centré au dos, toucher ultra doux sans bouloche. Étiquettes de col et de lavage conformes."
+    image: "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
+    description: "Version 1:1 Miroir de la parka Wyndham. Tissu Arctic Tech® déperlant et coupe-vent, garnissage duvet d'oie thermique haute isolation. Écusson Black Label brodé au millimètre sur le bras gauche, zips métalliques YKK® étanches double sens, fourrure de capuche amovible et hologramme d'authenticité intérieur 1:1."
   },
   {
     id: "els-003",
@@ -52,6 +54,7 @@ const DEMO_PRODUCTS = [
     condition: "Neuf avec étiquettes (1:1)",
     conditionGrade: "1:1 Miroir",
     color: "Black Sapphire",
+    colors: ["Black Sapphire", "Gris Forêt", "Bleu Cobalt"],
     sizes: ["S", "M", "L", "XL"],
     stock: { "S": 3, "M": 6, "L": 4, "XL": 2 },
     badge: "TECHWEAR 1:1",
@@ -69,12 +72,31 @@ const DEMO_PRODUCTS = [
     condition: "Neuf boîte complète (1:1)",
     conditionGrade: "1:1 Miroir",
     color: "Sail / Ridgerock",
+    colors: ["Sail / Ridgerock", "Black Phantom"],
     sizes: ["40", "41", "42", "42.5", "43", "44", "45"],
     stock: { "40": 2, "41": 3, "42": 6, "42.5": 4, "43": 5, "44": 3, "45": 2 },
     badge: "1:1 SNEAKER",
     featured: true,
     image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80",
     description: "Batch 1:1 premium. Cuir suédé véritable, nubuck réactif, swoosh inversé aux finitions nettes. Livrée avec boîte spéciale et 4 paires de lacets Cactus Jack."
+  },
+  {
+    id: "els-005",
+    name: "8-Ball Mohair Knit Sweater",
+    brand: "Stüssy",
+    category: "sweats",
+    price: 125,
+    costPrice: 42,
+    condition: "Neuf (1:1)",
+    conditionGrade: "1:1 Miroir",
+    color: "Black / Natural",
+    colors: ["Black / Natural", "White / Navy"],
+    sizes: ["S", "M", "L", "XL"],
+    stock: { "S": 3, "M": 5, "L": 5, "XL": 2 },
+    badge: "BEST-SELLER",
+    featured: true,
+    image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=800&q=80",
+    description: "Tricot en mohair brossé haute fidélité 1:1. Motif 8-Ball centré au dos, toucher ultra doux sans bouloche. Étiquettes de col et de lavage conformes."
   }
 ];
 
@@ -124,9 +146,12 @@ module.exports = async (req, res) => {
       filtered = filtered.filter(p => (p.brand || '').toLowerCase() === brand.toLowerCase());
     }
 
+    const uniqueBrands = [...new Set(allProducts.map(p => p.brand).filter(Boolean))].sort();
+
     return res.status(200).json({
       success: true,
       count: filtered.length,
+      brands: uniqueBrands,
       products: filtered
     });
   }
@@ -162,7 +187,7 @@ module.exports = async (req, res) => {
       let body = req.body;
       if (typeof body === 'string') body = JSON.parse(body || '{}');
 
-      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color } = body;
+      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors } = body;
 
       if (!name || !price) {
         return res.status(400).json({ success: false, error: 'Nom et prix de vente obligatoires' });
@@ -177,16 +202,22 @@ module.exports = async (req, res) => {
         if (stockObj[s] === undefined) stockObj[s] = 3;
       });
 
+      const colorsArr = Array.isArray(colors) && colors.length > 0 
+        ? colors 
+        : (color ? [color] : ['Noir']);
+      const defaultColor = color || colorsArr[0] || 'Noir';
+
       const newProduct = {
         id: newId,
         name,
-        brand: brand || 'Marque Streetwear',
+        brand: (brand || 'Marque Streetwear').trim(),
         category: category || 'sweats',
         price: Number(price),
         costPrice: Number(costPrice || Math.round(Number(price) * 0.35)),
         condition: 'Neuf (1:1)',
         conditionGrade: conditionGrade || '1:1 Miroir',
-        color: color || 'Noir',
+        color: defaultColor,
+        colors: colorsArr,
         sizes: sizeArr,
         stock: stockObj,
         badge: badge || 'NOUVEAU 1:1',
