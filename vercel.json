@@ -10,10 +10,6 @@
     {
       "source": "/api/products",
       "destination": "/api/products.js"
-    },
-    {
-      "source": "/api/rachat",
-      "destination": "/api/rachat.js"
     }
   ],
   "headers": [
