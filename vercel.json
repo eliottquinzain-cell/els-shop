@@ -4,6 +4,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/api/admin/auth",
+      "destination": "/api/admin/auth.js"
+    },
+    {
+      "source": "/api/ai-description",
+      "destination": "/api/ai-description.js"
+    },
+    {
       "source": "/api/checkout",
       "destination": "/api/checkout.js"
     },
