@@ -1,1 +1,49 @@
-[]
+[
+  {
+    "id": "els-001",
+    "name": "LV Skates",
+    "brand": "Louis Vuitton",
+    "category": "chaussures",
+    "price": 150,
+    "costPrice": 40,
+    "condition": "Neuf (1:1)",
+    "conditionGrade": "1:1 Miroir",
+    "color": "Noir",
+    "colors": [
+      "Noir",
+      "Noir Mat",
+      "Gris Graphite",
+      "Bleu Marine"
+    ],
+    "sizes": [
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "42.5",
+      "43",
+      "44",
+      "45",
+      "46"
+    ],
+    "stock": {
+      "38": 4,
+      "39": 4,
+      "40": 4,
+      "41": 4,
+      "42": 4,
+      "43": 4,
+      "44": 4,
+      "45": 4,
+      "46": 4,
+      "42.5": 4
+    },
+    "badge": "NOUVEAU 1:1",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+    "description": "### **Louis Vuitton — LV Skates**\n*(Version Certifiée Qualité 1:1 Miroir)*\n\nPièce incontournable du vestiaire streetwear contemporain.\n\n---\n\n#### 🔍 **1. Conception & Matières d'Exception**\n- **Textile & Tissage :** Matière première premium rigoureusement sélectionnée (coton lourd haute densité ou tissu technique déperlant).\n- **Poids & Tenue :** Grammage lourd garantissant un tombé impeccable sans déformation au fil des lavages.\n\n#### ✂️ **2. Analyse des Finitions Qualité 1:1 Miroir**\n- **Détails & Précision :** Coutures doublées renforcées, broderies haute densité et finitions identiques au modèle original dans les moindres détails.\n- **Labels & Sécurité :** Étiquettes intérieures (wash tags, étiquettes de col, QR codes et puces) rigoureusement fidèles au millimètre.\n- **Packaging Complet :** Fournie sous emballage protecteur scellé avec toutes les étiquettes officielles conformes 1:1.\n\n#### 📏 **3. Conseils de Coupe & Guide des Tailles**\n- Coupe streetwear moderne. Prenez votre taille habituelle pour un tombé parfait.\n- Disponible du **XS au 3XL** (ou pointures 38 à 46 pour les sneakers).\n🎨 **Coloris au choix :** Noir, Noir Mat, Gris Graphite, Bleu Marine\n\n#### 🧼 **4. Recommandations d'Entretien**\n- Lavage en machine délicat sur l'envers à 30°C pour garantir la longévité des fibres et des finitions.\n\n---\n⚠️ **Engagement Transparence ELS.SHOP :**\n*Cet article est proposé en **Qualité 1:1 Miroir** (reproduction haut de gamme identique à l'original en termes de matière, de coupe, de poids et d'accessoires fournis).*",
+    "createdAt": "2026-10-09T22:35:02.428Z",
+    "createdBy": "Eliott"
+  }
+]
