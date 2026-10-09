@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELS.SHOP — Streetwear & Pièces de Marque Authentifiées par Eliott & Ilies</title>
+    <meta name="description" content="Boutique de revente streetwear premium par Eliott & Ilies. Corteiz, Stüssy, Arc'teryx, Supreme, Jordan. Pièces certifiées 100% authentiques, expédition sous 24/48h.">
+
+    <!-- Fonts & Tailwind -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        els: {
+                            bg: '#0a0a0c',
+                            card: '#121217',
+                            cardHover: '#181820',
+                            border: '#262633',
+                            borderLight: '#323242',
+                            accent: '#22c55e',
+                            accentHover: '#16a34a',
+                            volt: '#eab308',
+                            cyan: '#38bdf8',
+                            muted: '#94a3b8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Syne"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0c;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Streetwear Glow & Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262633;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+
+        .glow-subtle {
+            box-shadow: 0 0 35px -10px rgba(34, 197, 94, 0.25);
+        }
+
+        .glow-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        /* Marquee Ticker */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 25s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        /* Custom Gradients */
+        .badge-verified {
+            background: linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(34,197,94,0.05) 100%);
+            border: 1px solid rgba(34,197,94,0.4);
+            color: #4ade80;
+        }
+
+        .badge-rare {
+            background: linear-gradient(135deg, rgba(234,179,8,0.15) 0%, rgba(234,179,8,0.05) 100%);
+            border: 1px solid rgba(234,179,8,0.4);
+            color: #facc15;
+        }
+
+        .badge-drop {
+            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0.05) 100%);
+            border: 1px solid rgba(56,189,248,0.4);
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body class="selection:bg-els-accent selection:text-black">
+
+    <!-- 1. TOP TICKER BANNER -->
+    <aside aria-label="Annonces" class="bg-gradient-to-r from-els-card via-black to-els-card border-b border-els-border text-xs py-2 overflow-hidden sticky top-0 z-50 backdrop-blur-md">
+        <div class="animate-marquee whitespace-nowrap flex items-center gap-8 font-semibold tracking-wider text-slate-300">
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-els-accent animate-ping"></span> ⚡ NOUVEAU DROP DISPONIBLE SUR ELS.SHOP</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-els-accent"></i> 100% AUTHENTIFIÉ PAR ELIOTT & ILIES</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-els-cyan"></i> ENVOI EXPRESS 24/48H AVEC NUMÉRO DE SUIVI</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i> PAIEMENT STRIPE SÉCURISÉ (CB, APPLE PAY)</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-els-volt"></i> PIÈCES RARES & SÉLECTIONNÉES MAIN</span>
+            <span class="text-els-border">•</span>
+            <!-- Repetition for seamless scroll -->
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-els-accent animate-ping"></span> ⚡ NOUVEAU DROP DISPONIBLE SUR ELS.SHOP</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-els-accent"></i> 100% AUTHENTIFIÉ PAR ELIOTT & ILIES</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-els-cyan"></i> ENVOI EXPRESS 24/48H AVEC NUMÉRO DE SUIVI</span>
+            <span class="text-els-border">•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i> PAIEMENT STRIPE SÉCURISÉ (CB, APPLE PAY)</span>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN NAVIGATION -->
+    <header class="bg-els-bg/90 backdrop-blur-xl border-b border-els-border/80 sticky top-[33px] z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 bg-gradient-to-tr from-zinc-900 to-zinc-800 rounded-xl border border-els-border flex items-center justify-center font-display font-black text-xl text-white group-hover:border-els-accent group-hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all">
+                    E<span class="text-els-accent">.</span>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-2xl tracking-tighter text-white group-hover:text-slate-200">ELS<span class="text-els-accent">.</span>SHOP</span>
+                    <span class="block text-[10px] uppercase font-bold tracking-widest text-zinc-500">Par Eliott & Ilies</span>
+                </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
+                <a href="#catalogue" class="hover:text-white transition">Nouveautés</a>
+                <a href="#catalogue" onclick="setCategory('sweats')" class="hover:text-white transition">Hoodies & Sweats</a>
+                <a href="#catalogue" onclick="setCategory('sneakers')" class="hover:text-white transition">Sneakers</a>
+                <a href="#catalogue" onclick="setCategory('vestes')" class="hover:text-white transition">Vestes</a>
+                <a href="#rachat" class="text-els-volt hover:text-yellow-300 flex items-center gap-1.5 font-bold transition">
+                    <i data-lucide="coins" class="w-4 h-4"></i> Rachat Cash
+                </a>
+                <a href="#legit-check" class="hover:text-white transition">Authenticité</a>
+                <a href="#a-propos" class="hover:text-white transition">Eliott & Ilies</a>
+            </nav>
+
+            <!-- Search & Actions -->
+            <div class="flex items-center gap-3">
+                <!-- Search bar -->
+                <div class="relative hidden md:block w-48 xl:w-64">
+                    <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Corteiz, Jordan, Stüssy..." 
+                        oninput="handleSearch(this.value)"
+                        class="w-full bg-els-card border border-els-border focus:border-els-accent rounded-full py-2 pl-9 pr-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-els-accent transition"
+                    >
+                </div>
+
+                <!-- Wishlist quick count -->
+                <button onclick="toggleWishlistModal()" class="relative p-2.5 rounded-xl bg-els-card border border-els-border text-slate-300 hover:text-white hover:border-slate-600 transition" title="Coups de cœur">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                    <span id="wishlistCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button 
+                    onclick="openCart()" 
+                    class="relative flex items-center gap-2.5 bg-white hover:bg-slate-200 text-black px-4 py-2.5 rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
+                >
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span class="hidden sm:inline">Panier</span>
+                    <span id="cartCountBadge" class="bg-black text-white text-[11px] font-black px-1.5 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+                </button>
+
+                <!-- Mobile menu toggle -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl bg-els-card border border-els-border text-white">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile search & nav drawer -->
+        <div id="mobileMenu" class="lg:hidden hidden border-t border-els-border bg-els-card px-4 py-4 space-y-3">
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input 
+                    type="text" 
+                    placeholder="Chercher une marque ou un vêtement..." 
+                    oninput="handleSearch(this.value)"
+                    class="w-full bg-zinc-900 border border-els-border rounded-lg py-2.5 pl-9 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none"
+                >
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-sm font-semibold pt-2">
+                <a href="#catalogue" onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-zinc-900 text-center">🔥 Nouveautés</a>
+                <a href="#rachat" onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-zinc-900 text-els-volt text-center font-bold">💰 Rachat Cash</a>
+                <a href="#legit-check" onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-zinc-900 text-center">🛡️ Authenticité</a>
+                <a href="#a-propos" onclick="toggleMobileMenu()" class="p-2 rounded-lg bg-zinc-900 text-center">👥 Les Fondateurs</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. HERO STREETWEAR SECTION -->
+    <section class="relative pt-12 pb-20 md:py-24 overflow-hidden border-b border-els-border">
+        <!-- Background Lighting Gradients -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute -top-10 -right-10 w-[400px] h-[300px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Column / Value Prop -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/90 border border-els-border text-xs font-bold text-zinc-300">
+                        <span class="w-2 h-2 rounded-full bg-els-accent"></span>
+                        BOUTIQUE OFFICIELLE DE REVENTE STREETWEAR
+                    </div>
+
+                    <h1 class="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight text-white leading-[1.08]">
+                        LE STREETWEAR SÉLECTIONNÉ & <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">AUTHENTIFIÉ.</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-zinc-400 max-w-xl leading-relaxed">
+                        Bienvenue sur <strong class="text-white">ELS.SHOP</strong>, la boutique fondée par <strong class="text-slate-200">Eliott & Ilies</strong>. 
+                        Nous dénichons, vérifions et certifions les pièces les plus recherchées : Corteiz, Stüssy, Arc'teryx, Supreme, Trapstar et Jordans rares.
+                    </p>
+
+                    <!-- Trust Checklist -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-els-accent"></i>
+                            100% Legit Checké
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                            <i data-lucide="package" class="w-4 h-4 text-els-cyan"></i>
+                            Expédition 24/48h
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                            <i data-lucide="shield" class="w-4 h-4 text-els-volt"></i>
+                            Paiement Sécurisé
+                        </div>
+                    </div>
+
+                    <!-- Call To Actions -->
+                    <div class="flex flex-wrap items-center gap-4 pt-4">
+                        <a href="#catalogue" class="inline-flex items-center gap-2 bg-els-accent hover:bg-els-accentHover text-black px-7 py-4 rounded-xl font-extrabold text-sm shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                            <span>Voir les Nouveautés</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#rachat" class="inline-flex items-center gap-2 bg-els-card hover:bg-els-cardHover border border-els-border hover:border-slate-500 text-white px-6 py-4 rounded-xl font-bold text-sm transition-all">
+                            <i data-lucide="tag" class="w-4 h-4 text-els-volt"></i>
+                            <span>Vendre vos Vêtements (Cash)</span>
+                        </a>
+                    </div>
+
+                    <!-- Small founder note -->
+                    <div class="flex items-center gap-3 pt-4 text-xs text-zinc-500">
+                        <div class="flex -space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-zinc-800 border-2 border-black flex items-center justify-center font-black text-[10px] text-white">E</div>
+                            <div class="w-8 h-8 rounded-full bg-zinc-700 border-2 border-black flex items-center justify-center font-black text-[10px] text-white">I</div>
+                        </div>
+                        <span>Curaté et contrôlé personnellement par <strong>Eliott Quinzain & Ilies</strong>.</span>
+                    </div>
+                </div>
+
+                <!-- Right Column / Featured Piece Spotlight Card -->
+                <div class="lg:col-span-5">
+                    <div class="relative rounded-2xl bg-gradient-to-b from-zinc-800/80 to-els-card p-1 border border-els-border shadow-2xl group">
+                        <div class="relative bg-zinc-950 rounded-xl overflow-hidden p-6 space-y-5">
+                            
+                            <!-- Badges -->
+                            <div class="flex items-center justify-between">
+                                <span class="badge-rare px-3 py-1 rounded-full text-xs font-black tracking-wide flex items-center gap-1.5">
+                                    <i data-lucide="flame" class="w-3.5 h-3.5"></i> PIÈCE VEDETTE
+                                </span>
+                                <span class="badge-verified px-3 py-1 rounded-full text-xs font-black tracking-wide">
+                                    ✓ CONTRÔLÉ & SCELLÉ
+                                </span>
+                            </div>
+
+                            <!-- Showcase Image -->
+                            <div class="relative h-64 sm:h-72 rounded-lg overflow-hidden bg-zinc-900 flex items-center justify-center">
+                                <img 
+                                    id="heroSpotlightImg"
+                                    src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80" 
+                                    alt="Air Jordan 1 Low Travis Scott" 
+                                    class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                >
+                                <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-zinc-800 text-xs text-white font-mono">
+                                    Réf: ELS-TRAVIS-MOCHA
+                                </div>
+                            </div>
+
+                            <!-- Item Info -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs uppercase font-extrabold text-zinc-400">Jordan x Travis Scott</span>
+                                    <span class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">État 10/10 DS</span>
+                                </div>
+                                <h3 class="font-display font-bold text-xl text-white">AJ1 Low 'Reverse Mocha'</h3>
+                                <p class="text-xs text-zinc-400 line-clamp-2">
+                                    Boîte complète d'origine, factures et 4 paires de lacets Cactus Jack incluses. Scellé de garantie ELS.SHOP apposé.
+                                </p>
+                            </div>
+
+                            <!-- Price & Quick CTA -->
+                            <div class="pt-2 border-t border-zinc-800 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] text-zinc-500 uppercase block font-bold">Prix Boutique</span>
+                                    <span class="font-black text-2xl text-white">590 €</span>
+                                    <span class="text-xs text-zinc-500 line-through ml-1.5">850 €</span>
+                                </div>
+                                <button 
+                                    onclick="quickAddToCart('els-004')" 
+                                    class="bg-white hover:bg-slate-200 text-black px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 transition"
+                                >
+                                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                                    <span>Acheter la pièce</span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. CATALOGUE SECTION -->
+    <section id="catalogue" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-els-border">
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 text-xs font-black tracking-widest uppercase text-els-accent">
+                    <span class="w-1.5 h-1.5 rounded-full bg-els-accent"></span>
+                    DROPS & PIÈCES EN STOCK
+                </div>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                    Catalogue Exclusif ELS
+                </h2>
+                <p class="text-sm text-zinc-400 max-w-lg">
+                    Toutes nos pièces sont uniques ou en stocks très réduits. Chaque vêtement est minutieusement nettoyé, mesuré et vérifié avant mise en ligne.
+                </p>
+            </div>
+
+            <!-- Sorting Dropdown -->
+            <div class="flex items-center gap-3">
+                <label for="sortSelect" class="text-xs text-zinc-400 font-semibold whitespace-nowrap">Trier par :</label>
+                <select 
+                    id="sortSelect" 
+                    onchange="handleSort(this.value)"
+                    class="bg-els-card border border-els-border text-white text-xs font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:border-els-accent cursor-pointer"
+                >
+                    <option value="featured">✨ Pièces en Vedette</option>
+                    <option value="price-asc">💰 Prix croissant</option>
+                    <option value="price-desc">💎 Prix décroissant</option>
+                    <option value="brand">🏷️ Marque (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filter Chips: Categories -->
+        <div class="py-6 flex flex-wrap items-center gap-2 border-b border-zinc-900">
+            <span class="text-xs font-bold text-zinc-500 uppercase mr-2">Catégorie :</span>
+            <button onclick="setCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-extrabold transition bg-white text-black" data-cat="all">Toutes les pièces (<span id="allCount">12</span>)</button>
+            <button onclick="setCategory('sweats')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="sweats">Hoodies & Sweats</button>
+            <button onclick="setCategory('vestes')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="vestes">Vestes & Manteaux</button>
+            <button onclick="setCategory('sneakers')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="sneakers">Sneakers</button>
+            <button onclick="setCategory('t-shirts')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="t-shirts">T-Shirts</button>
+            <button onclick="setCategory('pantalons')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="pantalons">Cargos & Pantalons</button>
+            <button onclick="setCategory('accessoires')" class="cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="accessoires">Accessoires & Bonnets</button>
+        </div>
+
+        <!-- Filter Chips: Brands -->
+        <div class="py-4 flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-zinc-500 uppercase mr-2">Marques :</span>
+            <button onclick="setBrand('all')" class="brand-btn active px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-white" data-brand="all">Toutes</button>
+            <button onclick="setBrand('Corteiz')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Corteiz">Corteiz</button>
+            <button onclick="setBrand('Stüssy')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Stüssy">Stüssy</button>
+            <button onclick="setBrand('Arc\'teryx')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Arc'teryx">Arc'teryx</button>
+            <button onclick="setBrand('Jordan')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Jordan">Jordan</button>
+            <button onclick="setBrand('Supreme')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Supreme">Supreme</button>
+            <button onclick="setBrand('Trapstar')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Trapstar">Trapstar</button>
+            <button onclick="setBrand('Sp5der')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Sp5der">Sp5der</button>
+            <button onclick="setBrand('Essentials')" class="brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800" data-brand="Essentials">Essentials</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-8">
+            <!-- Rendered dynamically by script -->
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="noProductsFound" class="hidden py-16 text-center space-y-4">
+            <div class="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+                <i data-lucide="package-search" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl text-white">Aucune pièce ne correspond à votre recherche</h3>
+            <p class="text-sm text-zinc-400">Essayez d'autres mots-clés ou réinitialisez les filtres.</p>
+            <button onclick="resetFilters()" class="px-5 py-2.5 bg-els-card border border-els-border rounded-xl text-xs font-bold text-white hover:bg-zinc-800">
+                Réinitialiser les filtres
+            </button>
+        </div>
+
+    </section>
+
+    <!-- 5. LEGIT CHECK & AUTHENTICITY SECTION -->
+    <section id="legit-check" class="py-20 bg-els-card/60 border-y border-els-border relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <span class="badge-verified px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase">
+                    PROTOCOLE DE VÉRIFICATION
+                </span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white">
+                    Zéro Contrefaçon. Que du Vrai.
+                </h2>
+                <p class="text-base text-zinc-400">
+                    Sur Vinted ou les plateformes classiques, les faux sont partout. Sur <strong>ELS.SHOP</strong>, 
+                    Eliott et Ilies inspectent manuellement chaque pièce avant toute validation.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                
+                <div class="bg-zinc-950 p-6 rounded-2xl border border-els-border space-y-4 relative group hover:border-emerald-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i data-lucide="microscope" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-500">ÉTAPE 01</span>
+                    <h3 class="font-display font-bold text-lg text-white">Coutures & Matières</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Analyse du grammage du coton (GSM), de la densité des broderies et de la régularité des coutures intérieures sous loupe.
+                    </p>
+                </div>
+
+                <div class="bg-zinc-950 p-6 rounded-2xl border border-els-border space-y-4 relative group hover:border-sky-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                        <i data-lucide="scan" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-500">ÉTAPE 02</span>
+                    <h3 class="font-display font-bold text-lg text-white">Étiquettes & QR Codes</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Contrôle des wash tags, polices typographiques, codes SKU, puces NFC internes (Arc'teryx, Hellstar) et étiquettes de col.
+                    </p>
+                </div>
+
+                <div class="bg-zinc-950 p-6 rounded-2xl border border-els-border space-y-4 relative group hover:border-yellow-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400">
+                        <i data-lucide="file-check" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-500">ÉTAPE 03</span>
+                    <h3 class="font-display font-bold text-lg text-white">Preuves & Provenance</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Examen des factures d'achat originaires (SNKRS, Corteiz, End, Supreme Store), de l'état des boîtes et accessoires d'origine.
+                    </p>
+                </div>
+
+                <div class="bg-zinc-950 p-6 rounded-2xl border border-els-border space-y-4 relative group hover:border-emerald-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i data-lucide="badge-check" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-500">ÉTAPE 04</span>
+                    <h3 class="font-display font-bold text-lg text-white">Scellé ELS.SHOP</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Chaque vêtement validé reçoit notre scellé numéroté inviolable avant l'envoi, gage absolu de notre garantie à vie.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Founders Guarantee Quote -->
+            <div class="mt-12 bg-zinc-950 border border-zinc-800 rounded-2xl p-8 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6">
+                <div class="flex -space-x-3 shrink-0">
+                    <div class="w-14 h-14 rounded-2xl bg-zinc-800 border-2 border-els-accent flex items-center justify-center font-display font-black text-lg text-white shadow-lg">E</div>
+                    <div class="w-14 h-14 rounded-2xl bg-zinc-700 border-2 border-els-cyan flex items-center justify-center font-display font-black text-lg text-white shadow-lg">I</div>
+                </div>
+                <div class="space-y-2 text-center md:text-left">
+                    <p class="text-sm italic text-zinc-300 leading-relaxed">
+                        « On s'est fait avoir comme tout le monde sur internet au début. C'est pour ça qu'on a lancé ELS.SHOP : pour que vous puissiez acheter les pièces les plus hypes sans jamais douter de leur authenticité. Si un vêtement a le moindre doute, il ne mettra jamais un pied sur la boutique. »
+                    </p>
+                    <div class="text-xs font-bold text-els-accent uppercase tracking-wider">
+                        — Eliott & Ilies, Fondateurs de ELS.SHOP
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 6. RACHAT CASH SECTION -->
+    <section id="rachat" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="inline-flex items-center gap-2 badge-rare px-3.5 py-1 rounded-full text-xs font-black">
+                    <i data-lucide="wallet" class="w-3.5 h-3.5"></i> RACHAT CASH IMMÉDIAT
+                </div>
+
+                <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white leading-tight">
+                    Vendez vos pièces à Eliott & Ilies.
+                </h2>
+
+                <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                    Vous avez des hoodies Corteiz, vestes Arc'teryx, pièces Stüssy ou sneakers Jordan qui dorment dans votre placard ? 
+                    Déposez votre demande : nous vous faisons une offre ferme sous 24h et vous payons par virement direct ou PayPal.
+                </p>
+
+                <div class="space-y-4 pt-2">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-xs text-els-volt shrink-0">1</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Remplissez le formulaire</h4>
+                            <p class="text-xs text-zinc-400">Photos de l'article, marque, état et le prix que vous en souhaitez.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-xs text-els-volt shrink-0">2</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Offre sous 24 heures</h4>
+                            <p class="text-xs text-zinc-400">Eliott ou Ilies vous contacte directement sur Instagram ou WhatsApp.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-xs text-els-volt shrink-0">3</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Paiement Cash Sécurisé</h4>
+                            <p class="text-xs text-zinc-400">Dès réception et vérification de la pièce, paiement le jour même.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Form -->
+            <div class="lg:col-span-7">
+                <div class="bg-els-card border border-els-border p-8 rounded-2xl shadow-2xl relative">
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Proposer un article à la vente</h3>
+                    <p class="text-xs text-zinc-400 mb-6">Réponse garantie sous 24h par notre équipe.</p>
+
+                    <form id="rachatForm" onsubmit="handleRachatSubmit(event)" class="space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Votre Nom / Prénom *</label>
+                                <input type="text" id="rachatNom" required placeholder="Ex: Lucas M." class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Moyen de contact (Insta / Tel / Email) *</label>
+                                <input type="text" id="rachatContact" required placeholder="@instagram ou 06..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Marque *</label>
+                                <input type="text" id="rachatMarque" required placeholder="Ex: Corteiz, Arc'teryx..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Modèle de l'article *</label>
+                                <input type="text" id="rachatArticle" required placeholder="Ex: Alcatraz Hoodie Noir" class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Taille</label>
+                                <select id="rachatTaille" class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                                    <option value="S">S</option>
+                                    <option value="M" selected>M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="Pointure Sneaker">Pointure (Sneakers)</option>
+                                    <option value="Unique">Taille Unique (Accessoire)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">État de la pièce</label>
+                                <select id="rachatCondition" class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                                    <option value="Neuf avec étiquette (DS)">Neuf avec étiquette (DS)</option>
+                                    <option value="Neuf sans étiquette">Neuf sans étiquette</option>
+                                    <option value="Très bon état (9.5/10)">Très bon état (9.5/10)</option>
+                                    <option value="Bon état (8.5/10)">Bon état (8.5/10)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Prix souhaité (€)</label>
+                                <input type="number" id="rachatPrix" placeholder="Ex: 140" class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-zinc-300 uppercase mb-1.5">Lien photos ou détails complémentaires</label>
+                            <textarea id="rachatNotes" rows="2" placeholder="Lien Google Photos / iCloud / Vinted ou précisions sur l'article..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-els-accent transition"></textarea>
+                        </div>
+
+                        <button type="submit" id="rachatSubmitBtn" class="w-full bg-els-volt hover:bg-yellow-400 text-black font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Envoyer ma proposition à Eliott & Ilies</span>
+                        </button>
+                    </form>
+
+                    <!-- Success Message Box -->
+                    <div id="rachatSuccessBox" class="hidden mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong class="font-bold block text-sm text-white">Proposition reçue avec succès !</strong>
+                            <span id="rachatSuccessMsg">Eliott et Ilies étudient votre pièce et vous répondront sous 24h.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 7. ABOUT THE FOUNDERS (ELIOTT & ILIES) -->
+    <section id="a-propos" class="py-20 border-t border-els-border bg-gradient-to-b from-els-bg to-els-card/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs font-black uppercase tracking-widest text-zinc-400">À PROPOS D'ELS.SHOP</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                        Deux passionnés de streetwear à votre service.
+                    </h2>
+                    <p class="text-sm sm:text-base text-zinc-400 leading-relaxed">
+                        Derrière <strong class="text-white">ELS.SHOP</strong>, c'est deux cousins : <strong class="text-slate-200">Eliott & Ilies</strong>. 
+                        Collectionneurs de longue date, nous avons commencé par acheter et échanger des pièces rares pour notre propre dressing.
+                    </p>
+                    <p class="text-sm sm:text-base text-zinc-400 leading-relaxed">
+                        Aujourd'hui, nous mettons notre réseau, notre œil aiguisé et notre exigence d'authenticité au service de ceux qui veulent porter de la sape de qualité sans se ruiner ni risquer d'acheter une réplique chinoise.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="bg-zinc-950 p-4 rounded-xl border border-els-border">
+                            <span class="font-display font-extrabold text-3xl text-white block">+500</span>
+                            <span class="text-xs text-zinc-500 font-semibold">Pièces vérifiées & vendues</span>
+                        </div>
+                        <div class="bg-zinc-950 p-4 rounded-xl border border-els-border">
+                            <span class="font-display font-extrabold text-3xl text-els-accent block">100%</span>
+                            <span class="text-xs text-zinc-500 font-semibold">Taux de satisfaction client</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="relative rounded-2xl overflow-hidden border border-els-border bg-zinc-900 aspect-video sm:aspect-square lg:aspect-auto lg:h-[450px]">
+                        <img 
+                            src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&w=1000&q=80" 
+                            alt="Streetwear Culture" 
+                            class="w-full h-full object-cover grayscale contrast-125 opacity-80 hover:opacity-100 hover:grayscale-0 transition duration-700"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
+                            <span class="text-xs font-mono text-els-accent uppercase tracking-widest font-bold">L'ESPRIT ELS</span>
+                            <h3 class="font-display font-black text-2xl text-white">« Moins de pièces, mais que des pépites. »</h3>
+                            <p class="text-xs text-zinc-400 mt-1">Chaque drop est curaté avec amour et exigence.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. REVIEWS SECTION -->
+    <section class="py-20 border-t border-els-border max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center space-y-3 mb-12">
+            <span class="text-xs font-bold text-els-accent uppercase tracking-widest">RETEX CLIENTS</span>
+            <h2 class="font-display font-black text-3xl text-white">Ce qu'en disent nos acheteurs</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            
+            <div class="bg-els-card p-6 rounded-2xl border border-els-border space-y-3">
+                <div class="flex items-center gap-1 text-yellow-400">
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs text-zinc-300 leading-relaxed italic">
+                    « Hoodie Corteiz reçu en 48h chrono. Étiquette impeccable, sachet d'origine, scellé ELS bien en place. Eliott et Ilies sont ultra réactifs sur Insta quand on a une question sur la taille. »
+                </p>
+                <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
+                    <span class="font-bold text-white">Karim B.</span>
+                    <span class="text-zinc-500">Corteiz Alcatraz (L)</span>
+                </div>
+            </div>
+
+            <div class="bg-els-card p-6 rounded-2xl border border-els-border space-y-3">
+                <div class="flex items-center gap-1 text-yellow-400">
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs text-zinc-300 leading-relaxed italic">
+                    « J'avais trop peur d'acheter une fausse Travis Scott sur Vinted. Avec ELS.SHOP j'ai pu payer sereinement avec Stripe et la paire est 100% legit avec la facture. Vraiment les boss. »
+                </p>
+                <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
+                    <span class="font-bold text-white">Matthieu D.</span>
+                    <span class="text-zinc-500">AJ1 Low Reverse Mocha</span>
+                </div>
+            </div>
+
+            <div class="bg-els-card p-6 rounded-2xl border border-els-border space-y-3">
+                <div class="flex items-center gap-1 text-yellow-400">
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs text-zinc-300 leading-relaxed italic">
+                    « Je leur ai vendu 2 vestes Arc'teryx que je ne mettais plus via leur module de rachat cash. Virement reçu le lendemain du contrôle colis. Simple, efficace et carré. »
+                </p>
+                <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
+                    <span class="font-bold text-white">Sofiane T.</span>
+                    <span class="text-zinc-500">Rachat Cash 2x Arc'teryx</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 9. FOOTER -->
+    <footer class="bg-black border-t border-els-border pt-16 pb-12 text-xs text-zinc-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+                <!-- Col 1 -->
+                <div class="col-span-2 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="font-display font-extrabold text-xl text-white">ELS<span class="text-els-accent">.</span>SHOP</span>
+                        <span class="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded">Streetwear Resale</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 max-w-sm leading-relaxed">
+                        Boutique spécialisée dans la revente de vêtements streetwear certifiés et authentifiés. 
+                        Gérée avec passion par Eliott Quinzain et Ilies.
+                    </p>
+                    <div class="flex items-center gap-3 text-zinc-400">
+                        <span class="flex items-center gap-1"><i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> @els.shop</span>
+                        <span>•</span>
+                        <span class="flex items-center gap-1"><i data-lucide="mail" class="w-4 h-4 text-els-cyan"></i> contact@els.shop</span>
+                    </div>
+                </div>
+
+                <!-- Col 2: Navigation -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-white uppercase text-[11px] tracking-wider">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#catalogue" class="hover:text-white transition">Nouveautés</a></li>
+                        <li><a href="#catalogue" onclick="setCategory('sweats')" class="hover:text-white transition">Sweats & Hoodies</a></li>
+                        <li><a href="#catalogue" onclick="setCategory('sneakers')" class="hover:text-white transition">Sneakers</a></li>
+                        <li><a href="#catalogue" onclick="setCategory('vestes')" class="hover:text-white transition">Vestes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Services -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-white uppercase text-[11px] tracking-wider">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#rachat" class="text-els-volt hover:underline transition">Rachat Cash Vêtements</a></li>
+                        <li><a href="#legit-check" class="hover:text-white transition">Protocole d'Authenticité</a></li>
+                        <li><a href="#a-propos" class="hover:text-white transition">L'Histoire d'Eliott & Ilies</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Paiements & Garanties -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-white uppercase text-[11px] tracking-wider">Paiements Sécurisés</h4>
+                    <p class="text-[11px] text-zinc-400">Transactions chiffrées SSL 256 bits traitées via Stripe.</p>
+                    <div class="flex flex-wrap gap-2 pt-1 text-slate-300 text-[10px] font-bold">
+                        <span class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded">Stripe</span>
+                        <span class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded">Visa</span>
+                        <span class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded">Mastercard</span>
+                        <span class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded">Apple Pay</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+                <div>© 2026 ELS.SHOP — Tous droits réservés. Fondé par Eliott & Ilies.</div>
+                <div class="flex items-center gap-4">
+                    <span>Mentions Légales</span>
+                    <span>CGV & Retours</span>
+                    <span>Politique de Confidentialité</span>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- SLIDE-OVER INTERACTIVE CART DRAWER -->
+    <!-- ========================================== -->
+    <div id="cartDrawerBackdrop" onclick="closeCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-els-card border-l border-els-border z-50 translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-els-border flex items-center justify-between bg-zinc-950">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-els-accent"></i>
+                <h3 class="font-display font-bold text-lg text-white">Mon Panier (<span id="cartDrawerCount">0</span>)</h3>
+            </div>
+            <button onclick="closeCart()" class="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Free Shipping Threshold -->
+        <div class="p-4 bg-zinc-900/60 border-b border-zinc-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+                <span id="shippingGoalText" class="font-semibold text-zinc-300">Plus que 150 € pour la livraison Colissimo offerte !</span>
+                <span id="shippingPercentText" class="font-mono text-els-accent font-bold">0%</span>
+            </div>
+            <div class="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="shippingProgressBar" class="h-full bg-gradient-to-r from-els-accent to-els-cyan w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- Cart Empty State -->
+        <div id="cartEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4">
+            <div class="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500">
+                <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+            </div>
+            <h4 class="font-display font-bold text-lg text-white">Votre panier est vide</h4>
+            <p class="text-xs text-zinc-400 max-w-xs">Découvrez nos pièces en stock et ajoutez votre coup de cœur avant qu'il ne soit sold out !</p>
+            <button onclick="closeCart()" class="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-xl hover:bg-slate-200 transition">
+                Explorer le catalogue
+            </button>
+        </div>
+
+        <!-- Cart Footer -->
+        <div id="cartFooter" class="p-6 border-t border-els-border bg-zinc-950 space-y-4">
+            
+            <!-- Promo code input -->
+            <div class="flex items-center gap-2">
+                <input 
+                    type="text" 
+                    id="cartPromoInput" 
+                    placeholder="Code promo (ex: ELS10)" 
+                    class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white uppercase focus:outline-none focus:border-els-accent font-mono"
+                >
+                <button onclick="applyPromoCode()" class="bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition">
+                    Appliquer
+                </button>
+            </div>
+            <div id="promoSuccessNotice" class="hidden text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i> Code ELS10 appliqué (-10% sur votre commande)
+            </div>
+
+            <!-- Subtotal & Delivery -->
+            <div class="space-y-1.5 text-xs text-zinc-400">
+                <div class="flex justify-between">
+                    <span>Sous-total</span>
+                    <span id="cartSubtotal" class="font-semibold text-white">0,00 €</span>
+                </div>
+                <div id="cartDiscountRow" class="hidden flex justify-between text-emerald-400">
+                    <span>Réduction promo</span>
+                    <span id="cartDiscountAmount">-0,00 €</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Livraison suivie (France & Europe)</span>
+                    <span id="cartShippingCost" class="font-semibold text-white">4,90 €</span>
+                </div>
+                <div class="flex justify-between text-base font-extrabold text-white pt-2 border-t border-zinc-800">
+                    <span>Total</span>
+                    <span id="cartTotal" class="font-black text-xl text-els-accent">0,00 €</span>
+                </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button 
+                onclick="proceedToStripeCheckout()" 
+                id="checkoutBtn"
+                class="w-full bg-white hover:bg-slate-200 text-black py-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.15)] transition active:scale-95"
+            >
+                <i data-lucide="lock" class="w-4 h-4"></i>
+                <span>Passer la commande (Stripe)</span>
+            </button>
+
+            <div class="flex items-center justify-center gap-2 text-[10px] text-zinc-500">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Paiement chiffré et garanti par Stripe Checkout</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+    <!-- ========================================== -->
+    <!-- QUICK VIEW PRODUCT MODAL -->
+    <!-- ========================================== -->
+    <div id="quickViewBackdrop" onclick="closeQuickView()" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden transition-opacity"></div>
+    <div id="quickViewModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[85%] max-w-3xl bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8">
+        <button onclick="closeQuickView()" class="absolute top-4 right-4 p-2 bg-zinc-900 rounded-xl text-zinc-400 hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div id="quickViewContent">
+            <!-- Populated dynamically -->
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-zinc-900 border border-els-border shadow-2xl text-white px-5 py-3.5 rounded-xl z-50 flex items-center gap-3 translate-y-24 opacity-0 transition-all duration-300">
+        <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5 text-els-accent shrink-0"></i>
+        <span id="toastMsg" class="text-xs font-bold">Article ajouté au panier !</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC & STATE MANAGEMENT -->
+    <!-- ========================================== -->
+    <script>
+        // State
+        let PRODUCTS = [];
+        let cart = JSON.parse(localStorage.getItem('els_cart') || '[]');
+        let wishlist = JSON.parse(localStorage.getItem('els_wishlist') || '[]');
+        let activeCategory = 'all';
+        let activeBrand = 'all';
+        let searchQuery = '';
+        let currentSort = 'featured';
+        let appliedPromo = null;
+
+        // Initialize icons
+        function initIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // Fetch products catalog
+        async function fetchProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (data.success && data.products) {
+                    PRODUCTS = data.products;
+                }
+            } catch (err) {
+                console.warn('API error, using local fallback:', err);
+            }
+            renderProducts();
+            updateCounts();
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noProducts = document.getElementById('noProductsFound');
+            
+            let filtered = PRODUCTS.filter(p => {
+                const matchCat = activeCategory === 'all' || p.category.toLowerCase() === activeCategory.toLowerCase();
+                const matchBrand = activeBrand === 'all' || p.brand.toLowerCase() === activeBrand.toLowerCase();
+                const matchSearch = !searchQuery || 
+                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    p.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCat && matchBrand && matchSearch;
+            });
+
+            // Sorting
+            if (currentSort === 'price-asc') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'price-desc') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (currentSort === 'brand') {
+                filtered.sort((a, b) => a.brand.localeCompare(b.brand));
+            } else {
+                filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noProducts.classList.remove('hidden');
+                return;
+            }
+
+            noProducts.classList.add('hidden');
+            grid.innerHTML = filtered.map(p => {
+                const inWishlist = wishlist.includes(p.id);
+                return `
+                <div class="group bg-els-card border border-els-border hover:border-zinc-600 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl">
+                    
+                    <!-- Image Container with Badges -->
+                    <div class="relative bg-zinc-950 aspect-square overflow-hidden cursor-pointer" onclick="openQuickView('${p.id}')">
+                        <img 
+                            src="${p.image}" 
+                            alt="${p.name}" 
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                        >
+                        
+                        <!-- Badges top left -->
+                        <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                            <span class="badge-verified px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                ✓ AUTHENTIFIÉ
+                            </span>
+                            ${p.badge ? `
+                                <span class="badge-rare px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                    ${p.badge}
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <!-- Wishlist button top right -->
+                        <button 
+                            onclick="event.stopPropagation(); toggleWishlist('${p.id}')" 
+                            class="absolute top-3 right-3 p-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white hover:text-red-400 transition"
+                            title="Ajouter aux favoris"
+                        >
+                            <i data-lucide="heart" class="w-4 h-4 ${inWishlist ? 'fill-red-500 text-red-500' : ''}"></i>
+                        </button>
+
+                        <!-- Condition bottom tag -->
+                        <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-mono text-zinc-300 border border-zinc-800">
+                            État : <span class="text-emerald-400 font-bold">${p.conditionGrade || '10/10'}</span>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-zinc-500 font-extrabold uppercase tracking-wider">${p.brand}</span>
+                                <span class="text-zinc-500 text-[11px]">${p.color}</span>
+                            </div>
+                            <h3 class="font-display font-bold text-base text-white hover:text-els-cyan cursor-pointer transition" onclick="openQuickView('${p.id}')">
+                                ${p.name}
+                            </h3>
+                            <p class="text-xs text-zinc-400 line-clamp-2">${p.description}</p>
+                        </div>
+
+                        <!-- Sizes available -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase">Tailles en stock :</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${p.sizes.map(s => `
+                                    <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-300">
+                                        ${s}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Price & Action -->
+                        <div class="pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+                            <div>
+                                <span class="font-black text-xl text-white">${p.price} €</span>
+                                ${p.retailPrice ? `<span class="text-xs text-zinc-500 line-through ml-1.5">${p.retailPrice} €</span>` : ''}
+                            </div>
+                            <button 
+                                onclick="quickAddToCart('${p.id}')" 
+                                class="bg-white hover:bg-slate-200 text-black px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition active:scale-95 shadow-md"
+                            >
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>Ajouter</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+                `;
+            }).join('');
+
+            initIcons();
+        }
+
+        // Quick add to cart (first available size)
+        function quickAddToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            const selectedSize = product.sizes[0] || 'Unique';
+            addToCart(product, selectedSize);
+        }
+
+        // Add to cart logic
+        function addToCart(product, size) {
+            const existingIndex = cart.findIndex(it => it.id === product.id && it.size === size);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    brand: product.brand,
+                    price: product.price,
+                    image: product.image,
+                    size: size,
+                    condition: product.conditionGrade,
+                    quantity: 1
+                });
+            }
+
+            saveCart();
+            showToast(`Ajouté au panier : ${product.name} (${size})`);
+            openCart();
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('els_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        // Update Cart Drawer UI
+        function updateCartUI() {
+            const countBadge = document.getElementById('cartCountBadge');
+            const drawerCount = document.getElementById('cartDrawerCount');
+            const list = document.getElementById('cartItemsList');
+            const emptyState = document.getElementById('cartEmptyState');
+            const footer = document.getElementById('cartFooter');
+            
+            const totalItems = cart.reduce((acc, it) => acc + it.quantity, 0);
+            countBadge.innerText = totalItems;
+            drawerCount.innerText = totalItems;
+
+            if (cart.length === 0) {
+                list.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                footer.classList.add('hidden');
+                updateShippingProgress(0);
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            footer.classList.remove('hidden');
+
+            // Render items
+            list.innerHTML = cart.map((item, idx) => `
+                <div class="flex gap-4 p-3 bg-zinc-900/80 border border-zinc-800 rounded-xl relative group">
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover bg-zinc-950 shrink-0">
+                    <div class="flex-1 min-w-0 space-y-1">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-zinc-500">${item.brand}</span>
+                                <h4 class="font-bold text-xs text-white truncate">${item.name}</h4>
+                            </div>
+                            <button onclick="removeFromCart(${idx})" class="text-zinc-500 hover:text-red-400 p-1">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <div class="text-[11px] text-zinc-400 font-mono">Taille : <strong class="text-white">${item.size}</strong></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="font-black text-sm text-white">${item.price * item.quantity} €</span>
+                            <div class="flex items-center border border-zinc-700 rounded-lg overflow-hidden bg-black">
+                                <button onclick="changeQty(${idx}, -1)" class="px-2 py-0.5 text-xs text-zinc-400 hover:text-white">-</button>
+                                <span class="px-2 text-xs font-bold text-white">${item.quantity}</span>
+                                <button onclick="changeQty(${idx}, 1)" class="px-2 py-0.5 text-xs text-zinc-400 hover:text-white">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Calculate totals
+            const subtotal = cart.reduce((acc, it) => acc + (it.price * it.quantity), 0);
+            let discount = 0;
+            if (appliedPromo === 'ELS10') {
+                discount = subtotal * 0.10;
+                document.getElementById('cartDiscountRow').classList.remove('hidden');
+                document.getElementById('cartDiscountAmount').innerText = `- ${(discount).toFixed(2)} €`;
+            } else {
+                document.getElementById('cartDiscountRow').classList.add('hidden');
+            }
+
+            const freeShippingThreshold = 150;
+            const shipping = (subtotal - discount) >= freeShippingThreshold ? 0 : 4.90;
+
+            document.getElementById('cartSubtotal').innerText = `${subtotal.toFixed(2)} €`;
+            document.getElementById('cartShippingCost').innerText = shipping === 0 ? 'OFFERTE (Colissimo)' : `${shipping.toFixed(2)} €`;
+            document.getElementById('cartTotal').innerText = `${(subtotal - discount + shipping).toFixed(2)} €`;
+
+            updateShippingProgress(subtotal - discount);
+            initIcons();
+        }
+
+        // Quantity change
+        function changeQty(index, delta) {
+            if (!cart[index]) return;
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            saveCart();
+        }
+
+        // Remove item
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+        }
+
+        // Free shipping progress bar
+        function updateShippingProgress(amount) {
+            const threshold = 150;
+            const bar = document.getElementById('shippingProgressBar');
+            const text = document.getElementById('shippingGoalText');
+            const percent = document.getElementById('shippingPercentText');
+
+            if (amount >= threshold) {
+                bar.style.width = '100%';
+                percent.innerText = '100%';
+                text.innerHTML = '🎉 Félicitations ! Votre livraison Colissimo est <strong>OFFERTE</strong> !';
+            } else {
+                const pct = Math.min(100, Math.round((amount / threshold) * 100));
+                const remaining = (threshold - amount).toFixed(2);
+                bar.style.width = `${pct}%`;
+                percent.innerText = `${pct}%`;
+                text.innerText = `Plus que ${remaining} € pour la livraison Colissimo offerte !`;
+            }
+        }
+
+        // Apply promo code
+        function applyPromoCode() {
+            const code = (document.getElementById('cartPromoInput').value || '').trim().toUpperCase();
+            if (code === 'ELS10' || code === 'STREET10') {
+                appliedPromo = 'ELS10';
+                document.getElementById('promoSuccessNotice').classList.remove('hidden');
+                showToast('Code promo activé : -10%');
+                updateCartUI();
+            } else {
+                alert('Code promo invalide. Essayez le code ELS10 pour -10% !');
+            }
+        }
+
+        // Proceed to Stripe Checkout
+        async function proceedToStripeCheckout() {
+            const btn = document.getElementById('checkoutBtn');
+            if (cart.length === 0) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Redirection vers Stripe...`;
+            initIcons();
+
+            try {
+                const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: cart,
+                        promoCode: appliedPromo,
+                        customer: {}
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success && data.checkoutUrl) {
+                    window.location.href = data.checkoutUrl;
+                } else {
+                    alert('Erreur lors de la redirection : ' + (data.error || 'Vérifiez votre panier'));
+                    btn.disabled = false;
+                    btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Passer la commande (Stripe)`;
+                    initIcons();
+                }
+            } catch (err) {
+                console.error('Checkout error:', err);
+                // Fallback simulation
+                window.location.href = `/confirmation.html?order=ELS-${Math.floor(100000 + Math.random() * 900000)}`;
+            }
+        }
+
+        // Cart Drawer Open/Close
+        function openCart() {
+            document.getElementById('cartDrawerBackdrop').classList.remove('hidden');
+            document.getElementById('cartDrawer').classList.remove('translate-x-full');
+            updateCartUI();
+        }
+
+        function closeCart() {
+            document.getElementById('cartDrawerBackdrop').classList.add('hidden');
+            document.getElementById('cartDrawer').classList.add('translate-x-full');
+        }
+
+        // Wishlist
+        function toggleWishlist(productId) {
+            const index = wishlist.indexOf(productId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showToast('Retiré des favoris');
+            } else {
+                wishlist.push(productId);
+                showToast('Ajouté à vos favoris ❤️');
+            }
+            localStorage.setItem('els_wishlist', JSON.stringify(wishlist));
+            updateWishlistBadge();
+            renderProducts();
+        }
+
+        function updateWishlistBadge() {
+            const badge = document.getElementById('wishlistCountBadge');
+            if (wishlist.length > 0) {
+                badge.innerText = wishlist.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleWishlistModal() {
+            if (wishlist.length === 0) {
+                showToast('Vous n\'avez aucun article en favori pour le moment.');
+                return;
+            }
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            // Filter to show wishlist items
+            const originalCat = activeCategory;
+            activeCategory = 'all';
+            const grid = document.getElementById('productsGrid');
+            const filtered = PRODUCTS.filter(p => wishlist.includes(p.id));
+            window.location.href = '#catalogue';
+            showToast(`Affichage de vos ${wishlist.length} coup(s) de cœur`);
+        }
+
+        // Quick View Modal
+        function openQuickView(productId) {
+            const p = PRODUCTS.find(it => it.id === productId);
+            if (!p) return;
+
+            const modal = document.getElementById('quickViewModal');
+            const backdrop = document.getElementById('quickViewBackdrop');
+            const content = document.getElementById('quickViewContent');
+
+            content.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <div class="rounded-xl overflow-hidden bg-zinc-950 aspect-square border border-zinc-800">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                        </div>
+                        ${p.secondaryImage ? `
+                            <div class="rounded-lg overflow-hidden bg-zinc-950 h-24 border border-zinc-800">
+                                <img src="${p.secondaryImage}" alt="Détail ${p.name}" class="w-full h-full object-cover">
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="space-y-5 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="badge-verified px-3 py-1 rounded-full text-xs font-black">
+                                    ✓ CONTRÔLÉ PAR ELIOTT & ILIES
+                                </span>
+                                <span class="text-xs text-zinc-500 font-mono">RÉF : ${p.id.toUpperCase()}</span>
+                            </div>
+                            <span class="text-xs uppercase font-extrabold text-zinc-400 block">${p.brand}</span>
+                            <h2 class="font-display font-black text-2xl text-white">${p.name}</h2>
+                            <div class="flex items-center gap-3">
+                                <span class="font-black text-3xl text-white">${p.price} €</span>
+                                ${p.retailPrice ? `<span class="text-sm text-zinc-500 line-through">Prix boutique : ${p.retailPrice} €</span>` : ''}
+                                <span class="badge-rare px-2 py-0.5 rounded text-xs font-bold">${p.conditionGrade || '10/10'}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 bg-zinc-950 rounded-xl border border-zinc-800 space-y-1.5 text-xs">
+                            <div class="text-zinc-300 font-bold flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                Garantie d'authenticité ELS.SHOP
+                            </div>
+                            <p class="text-zinc-400">
+                                Étiquettes, coutures et boîte d'origine inspectées. Livré avec notre scellé de sécurité numéroté.
+                            </p>
+                        </div>
+
+                        <p class="text-xs text-zinc-300 leading-relaxed">${p.description}</p>
+
+                        <!-- Size Selector -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-zinc-400 uppercase">Sélectionner votre taille :</label>
+                            <div class="grid grid-cols-4 gap-2" id="modalSizeGrid">
+                                ${p.sizes.map((s, idx) => `
+                                    <button 
+                                        type="button" 
+                                        onclick="selectModalSize('${s}', this)" 
+                                        class="modal-size-btn p-2.5 rounded-xl border text-xs font-bold transition ${idx === 0 ? 'border-white bg-white text-black' : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700'}"
+                                        data-size="${s}"
+                                    >
+                                        ${s}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-zinc-800 flex gap-3">
+                            <button 
+                                onclick="addFromModal('${p.id}')" 
+                                class="flex-1 bg-white hover:bg-slate-200 text-black py-3.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 transition"
+                            >
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                                <span>Ajouter au panier</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            backdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            initIcons();
+        }
+
+        let selectedModalSizeVal = null;
+        function selectModalSize(size, btn) {
+            selectedModalSizeVal = size;
+            document.querySelectorAll('.modal-size-btn').forEach(b => {
+                b.className = 'modal-size-btn p-2.5 rounded-xl border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700';
+            });
+            btn.className = 'modal-size-btn p-2.5 rounded-xl border text-xs font-bold transition border-white bg-white text-black';
+        }
+
+        function addFromModal(productId) {
+            const p = PRODUCTS.find(it => it.id === productId);
+            if (!p) return;
+            const size = selectedModalSizeVal || p.sizes[0] || 'Unique';
+            addToCart(p, size);
+            closeQuickView();
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewBackdrop').classList.add('hidden');
+            document.getElementById('quickViewModal').classList.add('hidden');
+            selectedModalSizeVal = null;
+        }
+
+        // Filter handlers
+        function setCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                if (b.dataset.cat === cat) {
+                    b.className = 'cat-btn active px-4 py-2 rounded-xl text-xs font-extrabold transition bg-white text-black';
+                } else {
+                    b.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-extrabold transition bg-els-card hover:bg-zinc-800 text-zinc-300 border border-els-border';
+                }
+            });
+            renderProducts();
+        }
+
+        function setBrand(brand) {
+            activeBrand = brand;
+            document.querySelectorAll('.brand-btn').forEach(b => {
+                if (b.dataset.brand === brand) {
+                    b.className = 'brand-btn active px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-white';
+                } else {
+                    b.className = 'brand-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800';
+                }
+            });
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim();
+            renderProducts();
+        }
+
+        function handleSort(val) {
+            currentSort = val;
+            renderProducts();
+        }
+
+        function resetFilters() {
+            activeCategory = 'all';
+            activeBrand = 'all';
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            setCategory('all');
+            setBrand('all');
+        }
+
+        function updateCounts() {
+            document.getElementById('allCount').innerText = PRODUCTS.length;
+        }
+
+        // Rachat cash form submission
+        async function handleRachatSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('rachatSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Transmission du dossier...`;
+            initIcons();
+
+            const payload = {
+                nom: document.getElementById('rachatNom').value,
+                contact: document.getElementById('rachatContact').value,
+                marque: document.getElementById('rachatMarque').value,
+                article: document.getElementById('rachatArticle').value,
+                taille: document.getElementById('rachatTaille').value,
+                condition: document.getElementById('rachatCondition').value,
+                prix: document.getElementById('rachatPrix').value,
+                notes: document.getElementById('rachatNotes').value
+            };
+
+            try {
+                const res = await fetch('/api/rachat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                document.getElementById('rachatSuccessBox').classList.remove('hidden');
+                document.getElementById('rachatSuccessMsg').innerText = `Dossier #${data.ticketId || 'ELS'} créé. Eliott et Ilies vont vous contacter sous 24h sur ${payload.contact}.`;
+                document.getElementById('rachatForm').reset();
+                showToast('Demande de rachat transmise avec succès !');
+            } catch (err) {
+                console.error(err);
+                alert('Erreur lors de l\'envoi, réessayez plus tard.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> <span>Envoyer ma proposition à Eliott & Ilies</span>`;
+                initIcons();
+            }
+        }
+
+        // Toast feedback
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // On Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initIcons();
+            fetchProducts();
+            updateCartUI();
+            updateWishlistBadge();
+        });
+    </script>
+</body>
+</html>
