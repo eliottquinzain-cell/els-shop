@@ -76,9 +76,9 @@
 </head>
 <body class="selection:bg-white selection:text-black min-h-screen flex flex-col justify-between">
 
-    <!-- TOP ANNOUNCEMENT BAR (SIMPLE & CLEAN) -->
-    <div class="bg-zinc-950 border-b border-els-border text-[11px] py-2 px-4 text-center font-medium tracking-wide text-zinc-400">
-        ⚡ LIVRAISON SUIVIE SOUS 24/48H • PIÈCES 100% AUTHENTIQUES CONTRÔLÉES • PAIEMENT SÉCURISÉ STRIPE
+    <!-- TOP ANNOUNCEMENT BAR (SIMPLE & CLEAN - 1:1 MIROIR) -->
+    <div class="bg-zinc-950 border-b border-els-border text-[11px] py-2 px-4 text-center font-bold tracking-wide text-zinc-300">
+        ⚡ QUALITÉ 1:1 MIROIR HAUT DE GAMME • MATIÈRES & FINITIONS IDENTIQUES • EXPÉDITION 24/48H • STRIPE
     </div>
 
     <!-- MAIN NAVBAR (SIMPLE & PURE) -->
@@ -90,7 +90,10 @@
                 <div class="w-9 h-9 bg-zinc-900 border border-els-border rounded-lg flex items-center justify-center font-display font-black text-lg text-white group-hover:border-zinc-500 transition">
                     E<span class="text-els-accent">.</span>
                 </div>
-                <span class="font-display font-extrabold text-2xl tracking-tighter text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
+                <div class="flex items-center gap-2">
+                    <span class="font-display font-extrabold text-2xl tracking-tighter text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded tracking-wider">1:1</span>
+                </div>
             </a>
 
             <!-- Quick Navigation Categories -->
@@ -130,28 +133,28 @@
         </div>
     </header>
 
-    <!-- SIMPLE HERO SECTION (CLEAN & MINIMALIST) -->
+    <!-- SIMPLE HERO SECTION (CLEAN & 1:1 STREETWEAR) -->
     <section class="py-12 sm:py-16 border-b border-els-border bg-gradient-to-b from-zinc-950/80 to-els-bg">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-4">
             
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-els-border text-[11px] font-bold text-zinc-400 uppercase tracking-widest">
-                <span class="w-2 h-2 rounded-full bg-els-accent"></span>
-                Streetwear Resale & Pièces Rares
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-els-border text-[11px] font-bold text-emerald-400 uppercase tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                Streetwear & Sneakers Qualité 1:1 Miroir
             </div>
 
             <h1 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-tight">
-                Le Streetwear Authentifié.
+                Le Streetwear Qualité 1:1.
             </h1>
 
             <p class="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
-                Une sélection rigoureuse de vêtements de marque et sneakers vérifiés : Corteiz, Stüssy, Arc'teryx, Jordan, Supreme.
+                Les pièces les plus recherchées en qualité miroir 1:1 : grammages lourds, coupes authentiques, broderies parfaites, étiquettes et boîtes complètes.
             </p>
 
             <!-- 3 Mini Guarantees -->
             <div class="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-400 font-medium">
                 <span class="flex items-center gap-1.5">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
-                    100% Vérifié & Certifié
+                    <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+                    Finition 1:1 Miroir
                 </span>
                 <span class="flex items-center gap-1.5">
                     <i data-lucide="truck" class="w-4 h-4 text-sky-400"></i>
@@ -249,7 +252,11 @@
                 <div class="flex items-center gap-3">
                     <span>Paiements sécurisés Stripe</span>
                     <span>•</span>
-                    <span>Livraison Colissimo Suivie</span>
+                    <span>Livraison Colissimo</span>
+                    <span>•</span>
+                    <a href="/admin.html" class="hover:text-zinc-300 transition flex items-center gap-1">
+                        <i data-lucide="lock" class="w-3 h-3"></i> Administration
+                    </a>
                 </div>
             </div>
         </div>
@@ -371,6 +378,20 @@
         }
 
         async function fetchProducts() {
+            // Check local custom products (synced from Admin)
+            const localCustom = localStorage.getItem('els_custom_products');
+            if (localCustom) {
+                try {
+                    const parsed = JSON.parse(localCustom);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        PRODUCTS = parsed;
+                        renderProducts();
+                        document.getElementById('allCount').innerText = PRODUCTS.length;
+                        return;
+                    }
+                } catch (e) {}
+            }
+
             try {
                 const res = await fetch('/api/products');
                 const data = await res.json();
@@ -428,12 +449,12 @@
                         
                         <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
                             <span class="badge-verified px-2 py-0.5 rounded text-[10px] font-bold">
-                                Authentifié
+                                ${p.conditionGrade || '1:1 Miroir'}
                             </span>
                         </div>
 
                         <div class="absolute bottom-2.5 left-2.5 bg-black/75 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-zinc-300 font-mono">
-                            ${p.conditionGrade || '10/10'}
+                            ${p.badge || '1:1'}
                         </div>
                     </div>
 
