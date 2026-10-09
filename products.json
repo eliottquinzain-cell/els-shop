@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "id": "els-001",
+    "name": "Doudoune Canada Goose",
+    "brand": "Canada Goose",
+    "category": "vestes",
+    "price": 120,
+    "costPrice": 80,
+    "condition": "Neuf (1:1)",
+    "conditionGrade": "1:1 Miroir",
+    "color": "Noir",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "3XL"
+    ],
+    "stock": {
+      "XS": 0,
+      "S": 0,
+      "M": 0,
+      "L": 0,
+      "XL": 0,
+      "XXL": 0,
+      "3XL": 0
+    },
+    "badge": "NOUVEAU 1:1",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+    "description": "Pièce exceptionnelle **Doudoune Canada Goose** en coloris Noir, confectionnée en **1:1 Miroir** avec un niveau d'exigence et de fidélité absolu.\n\n🔹 **Matières & Conception :** Textile sélectionné haute densité avec matières premières premium.\n🔹 **Détails & Finitions 1:1 :** Coutures doublées, broderies nettes et finitions conformes aux standards les plus stricts.\n🔹 **Packaging & Accessoires :** Livré sous emballage protecteur avec étiquettes complètes.\n🔹 **Conseil Taille :** Prenez votre taille habituelle.\n\n⚠️ *Mention ELS.SHOP : Ce produit est une pièce en Qualité 1:1 Miroir (finitions, coupes, étiquettes et matériaux identiques au modèle original).*",
+    "createdAt": "2026-10-09T22:05:16.928Z",
+    "createdBy": "Eliott"
+  }
+]
