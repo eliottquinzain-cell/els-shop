@@ -1,6 +1,5 @@
 /**
  * ELS.SHOP - Catalogue des pièces streetwear authentifiées
- * Géré par Eliott & Ilies
  */
 
 const PRODUCTS = [
@@ -19,7 +18,7 @@ const PRODUCTS = [
     featured: true,
     image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
     secondaryImage: "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=800&q=80",
-    description: "Le classique absolu de Clint 419. Coton lourd 450 GSM avec logo brodé Alcatraz en relief haute précision sur la poitrine. Vendu avec sachet zippé d'origine. Inspecté & certifié par Eliott & Ilies."
+    description: "Le classique absolu de Clint 419. Coton lourd 450 GSM avec logo brodé Alcatraz en relief haute précision sur la poitrine. Vendu avec sachet zippé d'origine. Inspecté & certifié 100% conforme."
   },
   {
     id: "els-002",
@@ -236,7 +235,14 @@ module.exports = async (req, res) => {
   let filtered = [...PRODUCTS];
 
   if (category && category !== 'all') {
-    filtered = filtered.filter(p => p.category.toLowerCase() === category.toLowerCase());
+    const catLower = category.toLowerCase();
+    filtered = filtered.filter(p => {
+      const pCat = p.category.toLowerCase();
+      if (catLower === 'chaussures' || catLower === 'sneakers') {
+        return pCat === 'chaussures' || pCat === 'sneakers';
+      }
+      return pCat === catLower;
+    });
   }
 
   if (brand && brand !== 'all') {
