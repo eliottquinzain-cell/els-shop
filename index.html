@@ -217,6 +217,16 @@
 
         </div>
 
+        <!-- DYNAMIC BRANDS FILTER BAR -->
+        <div id="brandFilterSection" class="hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar text-xs">
+            <span class="text-[10px] font-extrabold uppercase text-zinc-500 tracking-wider shrink-0 flex items-center gap-1.5 bg-zinc-900/60 px-2 py-1 rounded-md border border-zinc-800">
+                <i data-lucide="tag" class="w-3 h-3 text-emerald-400"></i> Marques :
+            </span>
+            <div id="brandFilterChips" class="flex items-center gap-1.5 shrink-0">
+                <!-- Dynamically populated with unique brands -->
+            </div>
+        </div>
+
         <!-- Products Grid -->
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Rendered dynamically -->
@@ -375,6 +385,7 @@
         let PRODUCTS = [];
         let cart = JSON.parse(localStorage.getItem('els_cart') || '[]');
         let activeCategory = 'all';
+        let activeBrand = 'all';
         let searchQuery = '';
         let currentSort = 'featured';
         let appliedPromo = null;
@@ -383,9 +394,22 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        function getColorDotClass(name) {
+            const n = (name || '').toLowerCase();
+            if (n.includes('noir') || n.includes('black')) return 'bg-zinc-700 border border-zinc-500';
+            if (n.includes('blanc') || n.includes('white') || n.includes('sail')) return 'bg-white border border-zinc-400';
+            if (n.includes('gris') || n.includes('grey') || n.includes('graphite')) return 'bg-zinc-400';
+            if (n.includes('bleu') || n.includes('blue') || n.includes('marine') || n.includes('navy')) return 'bg-sky-500';
+            if (n.includes('kaki') || n.includes('vert') || n.includes('green') || n.includes('olive')) return 'bg-emerald-600';
+            if (n.includes('beige') || n.includes('crème') || n.includes('cream')) return 'bg-amber-200';
+            if (n.includes('rouge') || n.includes('red') || n.includes('bordeaux')) return 'bg-rose-500';
+            if (n.includes('jaune') || n.includes('yellow')) return 'bg-yellow-400';
+            if (n.includes('orange')) return 'bg-orange-500';
+            return 'bg-emerald-400';
+        }
+
         async function fetchProducts() {
             try {
-                // Fetch directly from live backend
                 const res = await fetch('/api/products?t=' + Date.now());
                 const data = await res.json();
                 if (data.success && Array.isArray(data.products)) {
@@ -397,8 +421,56 @@
                 console.warn('API error:', err);
                 PRODUCTS = [];
             }
+            updateBrandFilters();
             renderProducts();
             document.getElementById('allCount').innerText = PRODUCTS.length;
+        }
+
+        function updateBrandFilters() {
+            const section = document.getElementById('brandFilterSection');
+            const container = document.getElementById('brandFilterChips');
+            if (!container || !section) return;
+
+            const brands = [...new Set(PRODUCTS.map(p => (p.brand || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+            if (brands.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            section.classList.remove('hidden');
+
+            let html = `
+                <button 
+                    onclick="setBrand('all')" 
+                    class="brand-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition ${activeBrand === 'all' ? 'bg-white text-black shadow-sm' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'}"
+                >
+                    Toutes les marques
+                </button>
+            `;
+
+            brands.forEach(b => {
+                const count = PRODUCTS.filter(p => (p.brand || '').toLowerCase() === b.toLowerCase()).length;
+                const isActive = activeBrand.toLowerCase() === b.toLowerCase();
+                const safeBrand = b.replace(/'/g, "\\'");
+                html += `
+                    <button 
+                        onclick="setBrand('${safeBrand}')" 
+                        class="brand-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1.5 ${isActive ? 'bg-emerald-500 text-black shadow-sm font-black' : 'bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'}"
+                    >
+                        <span>${b}</span>
+                        <span class="text-[9px] opacity-75 font-mono">(${count})</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+            initIcons();
+        }
+
+        function setBrand(brand) {
+            activeBrand = brand;
+            updateBrandFilters();
+            renderProducts();
         }
 
         function renderProducts() {
@@ -420,11 +492,17 @@
                     }
                 }
 
+                let matchBrand = activeBrand === 'all';
+                if (!matchBrand) {
+                    matchBrand = (p.brand || '').toLowerCase() === activeBrand.toLowerCase();
+                }
+
                 const matchSearch = !searchQuery || 
                     (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-                    (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase());
+                    (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (p.description || '').toLowerCase().includes(searchQuery.toLowerCase());
 
-                return matchCat && matchSearch;
+                return matchCat && matchBrand && matchSearch;
             });
 
             // Sort
@@ -441,7 +519,7 @@
                     resetBtn.classList.add('hidden');
                 } else {
                     emptyTitle.innerText = "Aucun article ne correspond à votre recherche";
-                    emptySub.innerText = "Essayez d'autres mots-clés ou réinitialisez les filtres.";
+                    emptySub.innerText = "Essayez d'autres critères ou réinitialisez les filtres.";
                     resetBtn.classList.remove('hidden');
                 }
                 noProducts.classList.remove('hidden');
@@ -449,7 +527,10 @@
             }
 
             noProducts.classList.add('hidden');
-            grid.innerHTML = filtered.map(p => `
+            grid.innerHTML = filtered.map(p => {
+                const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
+
+                return `
                 <div class="bg-els-card border border-els-border hover:border-zinc-600 rounded-xl overflow-hidden flex flex-col justify-between group transition">
                     
                     <div class="relative bg-zinc-950 aspect-square overflow-hidden cursor-pointer" onclick="openQuickView('${p.id}')">
@@ -467,11 +548,33 @@
                     </div>
 
                     <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                        <div class="space-y-1">
-                            <div class="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">${p.brand}</div>
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
+                                ${pColors.length > 1 ? `
+                                    <span class="text-[9px] text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">
+                                        ${pColors.length} coloris
+                                    </span>
+                                ` : ''}
+                            </div>
+
                             <h3 class="font-bold text-sm text-white hover:text-zinc-300 cursor-pointer transition line-clamp-1" onclick="openQuickView('${p.id}')">
                                 ${p.name}
                             </h3>
+
+                            <!-- Multi-color preview dots -->
+                            ${pColors.length > 0 ? `
+                                <div class="flex flex-wrap items-center gap-1 pt-0.5">
+                                    ${pColors.slice(0, 3).map(c => `
+                                        <span class="inline-flex items-center gap-1 text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded font-medium">
+                                            <span class="w-1.5 h-1.5 rounded-full ${getColorDotClass(c)}"></span>
+                                            <span>${c}</span>
+                                        </span>
+                                    `).join('')}
+                                    ${pColors.length > 3 ? `<span class="text-[10px] text-zinc-500 font-mono">+${pColors.length - 3}</span>` : ''}
+                                </div>
+                            ` : ''}
+
                             <div class="text-[11px] text-zinc-400">
                                 Tailles : ${p.sizes.join(', ')}
                             </div>
@@ -481,15 +584,16 @@
                             <div class="font-black text-base text-white">${p.price} €</div>
                             <button 
                                 onclick="quickAddToCart('${p.id}')" 
-                                class="bg-white hover:bg-zinc-200 text-black px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95"
+                                class="bg-white hover:bg-zinc-200 text-black px-3.5 py-1.5 rounded-lg text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm"
                             >
-                                Ajouter
+                                <span>${pColors.length > 1 ? 'Choisir coloris' : 'Ajouter'}</span>
                             </button>
                         </div>
                     </div>
 
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
             initIcons();
         }
@@ -518,19 +622,29 @@
 
         function resetFilters() {
             activeCategory = 'all';
+            activeBrand = 'all';
             searchQuery = '';
             document.getElementById('searchInput').value = '';
             setCategory('all');
+            setBrand('all');
         }
 
         function quickAddToCart(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
-            addToCart(p, p.sizes[0] || 'Unique');
+            const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Noir']);
+            if (pColors.length > 1 || (p.sizes && p.sizes.length > 1)) {
+                openQuickView(id);
+            } else {
+                addToCart(p, p.sizes[0] || 'Unique', pColors[0] || 'Noir');
+            }
         }
 
-        function addToCart(p, size) {
-            const existing = cart.find(it => it.id === p.id && it.size === size);
+        function addToCart(p, size, color) {
+            const chosenSize = size || (p.sizes && p.sizes[0]) || 'Unique';
+            const chosenColor = color || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
+
+            const existing = cart.find(it => it.id === p.id && it.size === chosenSize && it.color === chosenColor);
             if (existing) {
                 existing.quantity += 1;
             } else {
@@ -540,12 +654,13 @@
                     brand: p.brand,
                     price: p.price,
                     image: p.image,
-                    size: size,
+                    size: chosenSize,
+                    color: chosenColor,
                     quantity: 1
                 });
             }
             saveCart();
-            showToast(`Ajouté au panier : ${p.name} (${size})`);
+            showToast(`Ajouté au panier : ${p.name} - ${chosenColor} (${chosenSize})`);
             openCart();
         }
 
@@ -585,7 +700,10 @@
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
-                        <div class="text-[11px] text-zinc-400">Taille : ${item.size}</div>
+                        <div class="text-[11px] text-zinc-400 flex items-center gap-2 pt-0.5">
+                            <span>Taille : <strong class="text-white">${item.size}</strong></span>
+                            ${item.color ? `<span>• Coloris : <strong class="text-emerald-400">${item.color}</strong></span>` : ''}
+                        </div>
                         <div class="flex items-center justify-between pt-1">
                             <span class="font-black text-xs text-white">${item.price * item.quantity} €</span>
                             <div class="flex items-center border border-zinc-700 rounded bg-black">
@@ -683,32 +801,67 @@
             }
         }
 
+        let selectedColorModal = null;
+        let selectedSizeModal = null;
+
         function openQuickView(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
 
+            const colors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Unique']);
+            selectedColorModal = colors[0];
+            selectedSizeModal = p.sizes[0] || 'Unique';
+
             const content = document.getElementById('quickViewContent');
             content.innerHTML = `
                 <div class="grid sm:grid-cols-2 gap-6">
-                    <div class="rounded-lg overflow-hidden bg-zinc-950 aspect-square">
+                    <div class="rounded-xl overflow-hidden bg-zinc-950 aspect-square border border-zinc-800">
                         <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
                     </div>
                     <div class="space-y-4 flex flex-col justify-between">
                         <div class="space-y-2">
-                            <span class="text-[10px] font-extrabold uppercase text-zinc-500">${p.brand}</span>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-extrabold uppercase text-zinc-400 tracking-wider">${p.brand}</span>
+                                <span class="badge-verified px-2 py-0.5 rounded text-[10px] font-bold">${p.conditionGrade || '1:1 Miroir'}</span>
+                            </div>
                             <h2 class="font-bold text-xl text-white">${p.name}</h2>
                             <div class="text-2xl font-black text-white">${p.price} €</div>
-                            <div class="text-xs text-zinc-400 leading-relaxed">${p.description}</div>
+                            <div class="text-xs text-zinc-400 leading-relaxed max-h-28 overflow-y-auto pr-1 whitespace-pre-line">${p.description}</div>
                         </div>
 
+                        <!-- 1. Color Selection -->
+                        <div class="space-y-2 pt-2 border-t border-zinc-900">
+                            <div class="flex items-center justify-between text-xs">
+                                <label class="font-bold text-zinc-300">1. Coloris disponible(s) :</label>
+                                <span id="modalSelectedColorText" class="font-bold text-emerald-400 font-mono">${selectedColorModal}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                ${colors.map((c, idx) => `
+                                    <button 
+                                        type="button" 
+                                        onclick="selectModalColor('${c.replace(/'/g, "\\'")}', this)" 
+                                        class="modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition flex items-center gap-1.5 ${idx === 0 ? 'border-emerald-400 bg-emerald-500/10 text-emerald-300' : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600'}"
+                                        data-color="${c}"
+                                    >
+                                        <span class="w-2 h-2 rounded-full ${getColorDotClass(c)}"></span>
+                                        <span>${c}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- 2. Size Selection -->
                         <div class="space-y-2">
-                            <label class="text-xs font-bold text-zinc-400">Choisir une taille :</label>
+                            <div class="flex items-center justify-between text-xs">
+                                <label class="font-bold text-zinc-300">2. Choisir une taille :</label>
+                                <span id="modalSelectedSizeText" class="font-bold text-white font-mono">${selectedSizeModal}</span>
+                            </div>
                             <div class="flex flex-wrap gap-2">
                                 ${p.sizes.map((s, idx) => `
                                     <button 
                                         type="button" 
                                         onclick="selectModalSize('${s}', this)" 
-                                        class="modal-sz-btn px-3 py-1.5 rounded border text-xs font-bold transition ${idx === 0 ? 'border-white bg-white text-black' : 'border-zinc-800 bg-zinc-900 text-zinc-300'}"
+                                        class="modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition ${idx === 0 ? 'border-white bg-white text-black' : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600'}"
                                         data-size="${s}"
                                     >
                                         ${s}
@@ -719,9 +872,10 @@
 
                         <button 
                             onclick="addFromModal('${p.id}')" 
-                            class="w-full bg-white hover:bg-zinc-200 text-black py-3 rounded-lg font-bold text-xs transition"
+                            class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 rounded-xl font-black text-xs transition active:scale-95 flex items-center justify-center gap-2 shadow-lg"
                         >
-                            Ajouter au panier
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span>Ajouter au panier</span>
                         </button>
                     </div>
                 </div>
@@ -729,23 +883,33 @@
 
             document.getElementById('quickViewBackdrop').classList.remove('hidden');
             document.getElementById('quickViewModal').classList.remove('hidden');
-            selectedSizeModal = p.sizes[0] || 'Unique';
             initIcons();
         }
 
-        let selectedSizeModal = null;
-        function selectModalSize(s, btn) {
-            selectedSizeModal = s;
-            document.querySelectorAll('.modal-sz-btn').forEach(b => {
-                b.className = 'modal-sz-btn px-3 py-1.5 rounded border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300';
+        function selectModalColor(color, btn) {
+            selectedColorModal = color;
+            document.querySelectorAll('.modal-col-btn').forEach(b => {
+                b.className = 'modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600 flex items-center gap-1.5';
             });
-            btn.className = 'modal-sz-btn px-3 py-1.5 rounded border text-xs font-bold transition border-white bg-white text-black';
+            btn.className = 'modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-emerald-400 bg-emerald-500/10 text-emerald-300 flex items-center gap-1.5';
+            document.getElementById('modalSelectedColorText').innerText = color;
+        }
+
+        function selectModalSize(size, btn) {
+            selectedSizeModal = size;
+            document.querySelectorAll('.modal-sz-btn').forEach(b => {
+                b.className = 'modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600';
+            });
+            btn.className = 'modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-white bg-white text-black';
+            document.getElementById('modalSelectedSizeText').innerText = size;
         }
 
         function addFromModal(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
-            addToCart(p, selectedSizeModal || p.sizes[0] || 'Unique');
+            const size = selectedSizeModal || p.sizes[0] || 'Unique';
+            const color = selectedColorModal || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
+            addToCart(p, size, color);
             closeQuickView();
         }
 
