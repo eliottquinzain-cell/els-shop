@@ -1,0 +1,14 @@
+{
+  "name": "els-shop",
+  "version": "1.0.0",
+  "description": "ELS.SHOP - Boutique e-commerce streetwear & revente de vêtements de marque par Eliott & Ilies",
+  "main": "api/checkout.js",
+  "scripts": {
+    "start": "serve .",
+    "deploy": "./deploy.sh"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
