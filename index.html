@@ -223,9 +223,15 @@
         </div>
 
         <!-- Empty State -->
-        <div id="noProductsFound" class="hidden py-16 text-center space-y-3">
-            <p class="text-zinc-400 text-sm">Aucun article ne correspond à votre recherche.</p>
-            <button onclick="resetFilters()" class="text-xs font-bold text-white underline hover:text-zinc-300">
+        <div id="noProductsFound" class="hidden py-16 text-center space-y-4">
+            <div class="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center mx-auto text-zinc-500">
+                <i data-lucide="package" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 class="font-bold text-base text-white" id="emptyTitle">Aucune pièce disponible pour le moment</h3>
+                <p class="text-xs text-zinc-400" id="emptySubtitle">Le prochain drop Qualité 1:1 arrive très bientôt. Restez connectés !</p>
+            </div>
+            <button id="resetFilterBtn" onclick="resetFilters()" class="hidden text-xs font-bold text-emerald-400 underline hover:text-emerald-300">
                 Réinitialiser les filtres
             </button>
         </div>
@@ -378,28 +384,18 @@
         }
 
         async function fetchProducts() {
-            // Check local custom products (synced from Admin)
-            const localCustom = localStorage.getItem('els_custom_products');
-            if (localCustom) {
-                try {
-                    const parsed = JSON.parse(localCustom);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        PRODUCTS = parsed;
-                        renderProducts();
-                        document.getElementById('allCount').innerText = PRODUCTS.length;
-                        return;
-                    }
-                } catch (e) {}
-            }
-
             try {
-                const res = await fetch('/api/products');
+                // Fetch directly from live backend
+                const res = await fetch('/api/products?t=' + Date.now());
                 const data = await res.json();
-                if (data.success && data.products) {
+                if (data.success && Array.isArray(data.products)) {
                     PRODUCTS = data.products;
+                } else {
+                    PRODUCTS = [];
                 }
             } catch (err) {
-                console.warn('API fallback:', err);
+                console.warn('API error:', err);
+                PRODUCTS = [];
             }
             renderProducts();
             document.getElementById('allCount').innerText = PRODUCTS.length;
@@ -408,6 +404,9 @@
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             const noProducts = document.getElementById('noProductsFound');
+            const emptyTitle = document.getElementById('emptyTitle');
+            const emptySub = document.getElementById('emptySubtitle');
+            const resetBtn = document.getElementById('resetFilterBtn');
 
             let filtered = PRODUCTS.filter(p => {
                 let matchCat = activeCategory === 'all';
@@ -422,8 +421,8 @@
                 }
 
                 const matchSearch = !searchQuery || 
-                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                    p.brand.toLowerCase().includes(searchQuery.toLowerCase());
+                    (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase());
 
                 return matchCat && matchSearch;
             });
@@ -431,11 +430,20 @@
             // Sort
             if (currentSort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
             else if (currentSort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-            else if (currentSort === 'brand') filtered.sort((a, b) => a.brand.localeCompare(b.brand));
+            else if (currentSort === 'brand') filtered.sort((a, b) => (a.brand || '').localeCompare(b.brand || ''));
             else filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
+                if (PRODUCTS.length === 0) {
+                    emptyTitle.innerText = "Aucune pièce disponible pour le moment";
+                    emptySub.innerText = "Le prochain drop Qualité 1:1 arrive très bientôt. Restez connectés !";
+                    resetBtn.classList.add('hidden');
+                } else {
+                    emptyTitle.innerText = "Aucun article ne correspond à votre recherche";
+                    emptySub.innerText = "Essayez d'autres mots-clés ou réinitialisez les filtres.";
+                    resetBtn.classList.remove('hidden');
+                }
                 noProducts.classList.remove('hidden');
                 return;
             }
