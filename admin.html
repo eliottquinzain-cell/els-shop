@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — ELS.SHOP (Gestion Stocks & Bénéfices)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        els: {
+                            bg: '#0a0a0d',
+                            card: '#121217',
+                            cardHover: '#181820',
+                            border: '#23232c',
+                            accent: '#22c55e',
+                            cyan: '#38bdf8',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Syne"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0d;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0d; }
+        ::-webkit-scrollbar-thumb { background: #23232c; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-white selection:text-black">
+
+    <!-- ========================================== -->
+    <!-- 1. AUTHENTICATION LOCK SCREEN -->
+    <!-- ========================================== -->
+    <div id="authScreen" class="fixed inset-0 bg-[#0a0a0d] z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-7 shadow-2xl text-center space-y-6">
+            <div class="w-12 h-12 bg-zinc-900 border border-els-border rounded-xl flex items-center justify-center mx-auto text-emerald-400">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="font-display font-extrabold text-2xl text-white">ELS<span class="text-zinc-500">.</span>ADMIN</h1>
+                <p class="text-xs text-zinc-400 mt-1">Espace réservé à la gestion des stocks et bénéfices</p>
+            </div>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-left text-[11px] font-bold text-zinc-400 uppercase mb-1">Mot de passe Administrateur</label>
+                    <input 
+                        type="password" 
+                        id="adminPasswordInput" 
+                        placeholder="Entrez votre mot de passe..." 
+                        required
+                        class="w-full bg-zinc-950 border border-els-border focus:border-zinc-400 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition"
+                    >
+                </div>
+                <button type="submit" class="w-full bg-white hover:bg-zinc-200 text-black font-bold py-3 rounded-xl text-xs transition active:scale-95">
+                    Déverrouiller l'Espace Admin
+                </button>
+            </form>
+            <div class="text-[11px] text-zinc-600">
+                Code par défaut : <code class="bg-zinc-900 px-2 py-0.5 rounded text-zinc-300">els2026</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. ADMIN DASHBOARD CONTENT -->
+    <!-- ========================================== -->
+    <div id="adminContent" class="hidden flex-1 flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-zinc-950 border-b border-els-border sticky top-0 z-30 px-6 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/" class="flex items-center gap-2 group" title="Voir la boutique en ligne">
+                    <span class="font-display font-extrabold text-xl text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded">ADMIN 1:1</span>
+                </a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="/" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-semibold text-zinc-300 flex items-center gap-1.5 transition">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">Voir la boutique</span>
+                </a>
+                <button onclick="openNewProductModal()" class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-black text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Nouveau Produit</span>
+                </button>
+                <button onclick="handleLogout()" class="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 transition" title="Déconnexion">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8 flex-1">
+            
+            <!-- FINANCES & BÉNÉFICES KPI CARDS -->
+            <section class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+                        Rentabilité & Marges de Stock
+                    </h2>
+                    <span class="text-xs text-zinc-500 font-mono">Calculs basés sur le stock 1:1 actuel</span>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    
+                    <!-- KPI 1: Chiffre d'Affaires Potentiel -->
+                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Chiffre d'Affaires Stock</span>
+                        <div id="kpiTotalRevenue" class="font-black text-xl text-white">0 €</div>
+                        <span class="text-[10px] text-zinc-400">Valeur totale prix de vente</span>
+                    </div>
+
+                    <!-- KPI 2: Coût d'Achat Fournisseur -->
+                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Coût d'Achat Global</span>
+                        <div id="kpiTotalCost" class="font-black text-xl text-zinc-300">0 €</div>
+                        <span class="text-[10px] text-zinc-500">Prix de revient fournisseur</span>
+                    </div>
+
+                    <!-- KPI 3: Bénéfice Net Projeté -->
+                    <div class="bg-els-card border border-emerald-500/30 p-4 rounded-xl space-y-1 bg-gradient-to-b from-emerald-950/20 to-els-card">
+                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Bénéfice Net Estimé</span>
+                        <div id="kpiTotalProfit" class="font-black text-2xl text-emerald-400">0 €</div>
+                        <span class="text-[10px] text-emerald-400/80">Gain net après vente</span>
+                    </div>
+
+                    <!-- KPI 4: Marge Moyenne -->
+                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Taux de Marge Moyen</span>
+                        <div id="kpiAverageMargin" class="font-black text-xl text-sky-400">0%</div>
+                        <span class="text-[10px] text-zinc-500">Marge brute moyenne</span>
+                    </div>
+
+                    <!-- KPI 5: Pièces en Stock -->
+                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Pièces en Stock</span>
+                        <div id="kpiTotalUnits" class="font-black text-xl text-white">0</div>
+                        <span class="text-[10px] text-zinc-500">Unités disponibles</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- PRODUCTS & STOCK TABLE -->
+            <section class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Gestion des Produits & Stocks</h2>
+                        <p class="text-xs text-zinc-500">Ajustez les stocks en temps réel par taille et visualisez vos marges unitaires.</p>
+                    </div>
+
+                    <!-- Filters & Search -->
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-48">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                            <input 
+                                type="text" 
+                                id="adminSearchInput" 
+                                oninput="handleAdminSearch(this.value)"
+                                placeholder="Filtrer article..." 
+                                class="w-full bg-zinc-900 border border-els-border rounded-lg py-1.5 pl-8 pr-3 text-xs text-white focus:outline-none focus:border-zinc-400 transition"
+                            >
+                        </div>
+                        <select 
+                            id="adminCategoryFilter" 
+                            onchange="handleAdminCategoryFilter(this.value)"
+                            class="bg-zinc-900 border border-els-border rounded-lg text-xs text-zinc-300 px-3 py-1.5 focus:outline-none cursor-pointer"
+                        >
+                            <option value="all">Toutes catégories</option>
+                            <option value="chaussures">Chaussures / Sneakers</option>
+                            <option value="sweats">Sweats & Hoodies</option>
+                            <option value="vestes">Vestes</option>
+                            <option value="t-shirts">T-Shirts</option>
+                            <option value="pantalons">Pantalons</option>
+                            <option value="accessoires">Accessoires</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="bg-els-card border border-els-border rounded-xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-zinc-950 border-b border-els-border text-zinc-400 font-bold uppercase text-[10px] tracking-wider">
+                                <tr>
+                                    <th class="py-3 px-4">Article</th>
+                                    <th class="py-3 px-4">Catégorie</th>
+                                    <th class="py-3 px-4">Prix Vente</th>
+                                    <th class="py-3 px-4">Coût Achat</th>
+                                    <th class="py-3 px-4">Bénéfice Unitaire</th>
+                                    <th class="py-3 px-4">Gestion des Stocks par Taille</th>
+                                    <th class="py-3 px-4 text-center">Stock Total</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductsTableBody" class="divide-y divide-zinc-900">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-els-border bg-zinc-950 py-4 px-6 text-center text-xs text-zinc-600">
+            ELS.SHOP — Espace d'Administration & Gestion Commerciale 1:1
+        </footer>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. MODAL: PUBLIER UN NOUVEAU PRODUIT -->
+    <!-- ========================================== -->
+    <div id="newProductBackdrop" onclick="closeNewProductModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="newProductModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[85%] max-w-xl bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[90vh] overflow-y-auto p-6 sm:p-7 shadow-2xl">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-5">
+            <div class="flex items-center gap-2">
+                <i data-lucide="package-plus" class="w-5 h-5 text-emerald-400"></i>
+                <h3 class="font-display font-bold text-lg text-white">Publier un Nouveau Produit 1:1</h3>
+            </div>
+            <button onclick="closeNewProductModal()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="newProductForm" onsubmit="handleCreateProduct(event)" class="space-y-4">
+            
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom de l'article *</label>
+                    <input type="text" id="newProdName" required placeholder="Ex: Alcatraz Hoodie Noir" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Marque *</label>
+                    <input type="text" id="newProdBrand" required placeholder="Ex: Corteiz, Arc'teryx, Jordan" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Catégorie *</label>
+                    <select id="newProdCategory" onchange="adjustSizesForCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                        <option value="sweats">Sweats & Hoodies</option>
+                        <option value="chaussures">Chaussures / Sneakers</option>
+                        <option value="vestes">Vestes & Manteaux</option>
+                        <option value="t-shirts">T-Shirts</option>
+                        <option value="pantalons">Pantalons & Cargos</option>
+                        <option value="accessoires">Accessoires</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Qualité / Mention</label>
+                    <input type="text" id="newProdGrade" value="1:1 Miroir" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Price & Cost (Profit calculation) -->
+            <div class="grid sm:grid-cols-3 gap-3 p-3.5 bg-zinc-950 rounded-xl border border-zinc-800">
+                <div>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix de vente (€) *</label>
+                    <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateModalProfit()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût d'achat (€)</label>
+                    <input type="number" id="newProdCost" placeholder="40" oninput="calculateModalProfit()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire</label>
+                    <div id="newProdMarginDisplay" class="text-xs font-black text-emerald-400 py-1.5">+0 € (0%)</div>
+                </div>
+            </div>
+
+            <!-- Stocks per size -->
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1.5">Stock initial par taille</label>
+                <div id="newProdSizesContainer" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Image URL -->
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">URL de la photo du produit</label>
+                <input type="url" id="newProdImage" placeholder="https://images.unsplash.com/..." class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Description (Détails 1:1, boîtes, etc.)</label>
+                <textarea id="newProdDesc" rows="2" placeholder="Qualité 1:1 haute précision, étiquettes conformes, sachet/boîte inclus..." class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none"></textarea>
+            </div>
+
+            <button type="submit" id="newProdSubmitBtn" class="w-full bg-white hover:bg-zinc-200 text-black font-extrabold py-3 rounded-xl text-xs transition active:scale-95 shadow-md flex items-center justify-center gap-2">
+                <i data-lucide="check" class="w-4 h-4"></i>
+                <span>Enregistrer & Mettre en Ligne</span>
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC & LOCAL PERSISTENCE -->
+    <!-- ========================================== -->
+    <script>
+        let adminProducts = [];
+        let adminSearch = '';
+        let adminCat = 'all';
+
+        function initIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Authentication
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem('els_admin_logged') === 'true';
+            if (isAuth) {
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('adminContent').classList.remove('hidden');
+                loadAdminData();
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('adminContent').classList.add('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPasswordInput').value;
+            if (pwd === 'els2026' || pwd === 'admin123') {
+                sessionStorage.setItem('els_admin_logged', 'true');
+                checkAuth();
+            } else {
+                alert('Mot de passe incorrect ! (Indice: els2026)');
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('els_admin_logged');
+            checkAuth();
+        }
+
+        // Load Products & Calculate Financials
+        async function loadAdminData() {
+            try {
+                // Try from API
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (data.success && data.products) {
+                    adminProducts = data.products;
+                }
+            } catch (err) {
+                console.warn('API error, using local fallback:', err);
+            }
+
+            // Sync with local modifications if any
+            const localCustom = localStorage.getItem('els_custom_products');
+            if (localCustom) {
+                try {
+                    const parsed = JSON.parse(localCustom);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        adminProducts = parsed;
+                    }
+                } catch (e) {}
+            }
+
+            renderAdminProducts();
+            calculateKPIs();
+            initIcons();
+        }
+
+        function saveProductsLocally() {
+            localStorage.setItem('els_custom_products', JSON.stringify(adminProducts));
+            calculateKPIs();
+            renderAdminProducts();
+        }
+
+        // Financial KPIs Calculation
+        function calculateKPIs() {
+            let totalRevenue = 0;
+            let totalCost = 0;
+            let totalUnits = 0;
+
+            adminProducts.forEach(p => {
+                const stockObj = p.stock || {};
+                const units = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                const price = Number(p.price || 0);
+                const cost = Number(p.costPrice || Math.round(price * 0.35));
+
+                totalUnits += units;
+                totalRevenue += (price * units);
+                totalCost += (cost * units);
+            });
+
+            const netProfit = totalRevenue - totalCost;
+            const avgMargin = totalRevenue > 0 ? Math.round((netProfit / totalRevenue) * 100) : 0;
+
+            document.getElementById('kpiTotalRevenue').innerText = `${totalRevenue.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiTotalCost').innerText = `${totalCost.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiTotalProfit').innerText = `+${netProfit.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiAverageMargin').innerText = `${avgMargin}%`;
+            document.getElementById('kpiTotalUnits').innerText = `${totalUnits} pcs`;
+        }
+
+        // Render Table Rows
+        function renderAdminProducts() {
+            const tbody = document.getElementById('adminProductsTableBody');
+
+            let filtered = adminProducts.filter(p => {
+                const matchCat = adminCat === 'all' || (p.category || '').toLowerCase() === adminCat.toLowerCase();
+                const matchSearch = !adminSearch || 
+                    (p.name || '').toLowerCase().includes(adminSearch.toLowerCase()) || 
+                    (p.brand || '').toLowerCase().includes(adminSearch.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-zinc-500">Aucun produit trouvé</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => {
+                const stockObj = p.stock || {};
+                const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                const cost = Number(p.costPrice || Math.round(p.price * 0.35));
+                const unitProfit = Number(p.price) - cost;
+                const marginPct = Math.round((unitProfit / Number(p.price)) * 100);
+
+                return `
+                <tr class="hover:bg-zinc-900/50 transition">
+                    <!-- Photo & Title -->
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover bg-zinc-950 shrink-0">
+                            <div>
+                                <span class="text-[10px] text-zinc-500 font-extrabold uppercase">${p.brand}</span>
+                                <div class="font-bold text-white">${p.name}</div>
+                                <span class="text-[10px] text-emerald-400 font-mono font-bold">${p.conditionGrade || '1:1 Miroir'}</span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Category -->
+                    <td class="py-3 px-4 text-zinc-400 capitalize">${p.category}</td>
+
+                    <!-- Sale Price -->
+                    <td class="py-3 px-4 font-black text-white">${p.price} €</td>
+
+                    <!-- Cost Price -->
+                    <td class="py-3 px-4 text-zinc-400 font-mono">${cost} €</td>
+
+                    <!-- Unit Profit -->
+                    <td class="py-3 px-4">
+                        <div class="text-emerald-400 font-black">+${unitProfit} €</div>
+                        <span class="text-[10px] text-emerald-500/80 font-bold">${marginPct}% marge</span>
+                    </td>
+
+                    <!-- Size Stocks with +/- buttons -->
+                    <td class="py-3 px-4">
+                        <div class="flex flex-wrap gap-1.5 items-center">
+                            ${(p.sizes || []).map(sz => {
+                                const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                return `
+                                    <div class="flex items-center border border-zinc-800 rounded bg-zinc-950 px-1.5 py-0.5 text-[11px]">
+                                        <span class="font-bold text-zinc-400 mr-1.5">${sz}:</span>
+                                        <button onclick="changeProductStock('${p.id}', '${sz}', -1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">-</button>
+                                        <span class="font-mono font-bold ${count === 0 ? 'text-red-400' : 'text-white'} px-1">${count}</span>
+                                        <button onclick="changeProductStock('${p.id}', '${sz}', 1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">+</button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </td>
+
+                    <!-- Total Stock -->
+                    <td class="py-3 px-4 text-center">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                            ${totalUnits} pcs
+                        </span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="editProductPrompt('${p.id}')" class="p-1 rounded text-zinc-400 hover:text-white" title="Modifier prix/coût">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteProduct('${p.id}')" class="p-1 rounded text-zinc-500 hover:text-red-400" title="Supprimer">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            initIcons();
+        }
+
+        // Change Stock Live
+        function changeProductStock(prodId, size, delta) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) return;
+            if (!p.stock) p.stock = {};
+            const current = Number(p.stock[size] || 0);
+            p.stock[size] = Math.max(0, current + delta);
+            saveProductsLocally();
+        }
+
+        // Quick Edit Price & Cost
+        function editProductPrompt(prodId) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) return;
+            const newPrice = prompt(`Nouveau prix de vente pour "${p.name}" (€) :`, p.price);
+            if (newPrice !== null && !isNaN(newPrice)) {
+                p.price = Number(newPrice);
+                const currentCost = p.costPrice || Math.round(p.price * 0.35);
+                const newCost = prompt(`Nouveau coût d'achat fournisseur (€) :`, currentCost);
+                if (newCost !== null && !isNaN(newCost)) {
+                    p.costPrice = Number(newCost);
+                }
+                saveProductsLocally();
+            }
+        }
+
+        // Delete Product
+        function deleteProduct(prodId) {
+            if (confirm('Êtes-vous sûr de vouloir retirer ce produit du catalogue ?')) {
+                adminProducts = adminProducts.filter(p => p.id !== prodId);
+                saveProductsLocally();
+            }
+        }
+
+        // Filter handlers
+        function handleAdminSearch(val) {
+            adminSearch = val.trim();
+            renderAdminProducts();
+        }
+
+        function handleAdminCategoryFilter(val) {
+            adminCat = val;
+            renderAdminProducts();
+        }
+
+        // Modal: Create Product
+        function openNewProductModal() {
+            document.getElementById('newProductBackdrop').classList.remove('hidden');
+            document.getElementById('newProductModal').classList.remove('hidden');
+            adjustSizesForCategory(document.getElementById('newProdCategory').value);
+            initIcons();
+        }
+
+        function closeNewProductModal() {
+            document.getElementById('newProductBackdrop').classList.add('hidden');
+            document.getElementById('newProductModal').classList.add('hidden');
+        }
+
+        function adjustSizesForCategory(cat) {
+            const container = document.getElementById('newProdSizesContainer');
+            let sizes = ["S", "M", "L", "XL"];
+            if (cat === 'chaussures') {
+                sizes = ["40", "41", "42", "43", "44", "45"];
+            } else if (cat === 'accessoires') {
+                sizes = ["Unique"];
+            }
+
+            container.innerHTML = sizes.map(s => `
+                <div class="bg-zinc-900 border border-zinc-800 rounded p-1.5 text-center">
+                    <span class="block text-[10px] font-bold text-zinc-400">${s}</span>
+                    <input type="number" id="sizeStock_${s}" value="5" min="0" class="w-full bg-black text-center text-xs font-mono font-bold text-white rounded mt-1 border border-zinc-700 py-0.5">
+                </div>
+            `).join('');
+        }
+
+        function calculateModalProfit() {
+            const price = Number(document.getElementById('newProdPrice').value || 0);
+            const cost = Number(document.getElementById('newProdCost').value || Math.round(price * 0.35));
+            const margin = price - cost;
+            const pct = price > 0 ? Math.round((margin / price) * 100) : 0;
+            document.getElementById('newProdMarginDisplay').innerText = `+${margin} € (${pct}% marge)`;
+        }
+
+        async function handleCreateProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('newProdName').value;
+            const brand = document.getElementById('newProdBrand').value;
+            const category = document.getElementById('newProdCategory').value;
+            const price = Number(document.getElementById('newProdPrice').value);
+            const cost = Number(document.getElementById('newProdCost').value || Math.round(price * 0.35));
+            const image = document.getElementById('newProdImage').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+            const desc = document.getElementById('newProdDesc').value || 'Qualité 1:1 supérieure avec finitions et détails identiques.';
+            const grade = document.getElementById('newProdGrade').value || '1:1 Miroir';
+
+            // Gather sizes & stocks
+            let sizes = ["S", "M", "L", "XL"];
+            if (category === 'chaussures') sizes = ["40", "41", "42", "43", "44", "45"];
+            else if (category === 'accessoires') sizes = ["Unique"];
+
+            const stockObj = {};
+            sizes.forEach(s => {
+                const el = document.getElementById(`sizeStock_${s}`);
+                stockObj[s] = el ? Number(el.value || 0) : 5;
+            });
+
+            const newProd = {
+                id: 'els-' + (adminProducts.length + 1).toString().padStart(3, '0'),
+                name,
+                brand,
+                category,
+                price,
+                costPrice: cost,
+                condition: 'Neuf (1:1)',
+                conditionGrade: grade,
+                sizes,
+                stock: stockObj,
+                badge: 'NOUVEAU 1:1',
+                image,
+                description: desc
+            };
+
+            // Add locally
+            adminProducts.unshift(newProd);
+            saveProductsLocally();
+
+            // Try posting to API
+            try {
+                await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newProd)
+                });
+            } catch (err) {}
+
+            closeNewProductModal();
+            document.getElementById('newProductForm').reset();
+            alert(`Produit "${name}" publié avec succès !`);
+        }
+
+        // On Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initIcons();
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
