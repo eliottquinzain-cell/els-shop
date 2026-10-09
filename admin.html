@@ -350,20 +350,49 @@
         <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="space-y-5">
             <input type="hidden" id="editProductId" value="">
 
-            <!-- Article Name & Brand -->
+            <!-- Article Name & Dynamic Brand -->
             <div class="grid sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom de l'article *</label>
-                    <input type="text" id="newProdName" required placeholder="Ex: Alcatraz Pullover Hoodie" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <input type="text" id="newProdName" required placeholder="Ex: Wyndham Parka, Alcatraz Hoodie..." class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Marque *</label>
-                    <input type="text" id="newProdBrand" required placeholder="Ex: Corteiz, Arc'teryx, Jordan, Trapstar" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[11px] font-bold text-zinc-400 uppercase">Marque *</label>
+                        <button type="button" onclick="toggleNewBrandInput(true)" id="toggleBrandBtn" class="text-[10px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition">
+                            <i data-lucide="plus-circle" class="w-3 h-3"></i> + Ajouter une marque
+                        </button>
+                    </div>
+                    
+                    <select id="brandSelect" onchange="handleBrandSelectChange(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                        <option value="">Sélectionner une marque...</option>
+                        <!-- Populated dynamically with existing brands -->
+                        <option value="__NEW__">➕ Autre marque (créer nouvelle)...</option>
+                    </select>
+
+                    <!-- Input pour saisir une nouvelle marque -->
+                    <div id="newBrandInputContainer" class="hidden mt-2 flex items-center gap-2 bg-zinc-900/90 p-2 rounded-lg border border-sky-500/40">
+                        <input 
+                            type="text" 
+                            id="newCustomBrandInput" 
+                            placeholder="Nom de la marque (ex: Canada Goose, Moncler)..." 
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();confirmCustomBrand();}"
+                            class="flex-1 bg-zinc-950 border border-zinc-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
+                        >
+                        <button type="button" onclick="confirmCustomBrand()" class="px-3 py-1.5 rounded bg-sky-400 hover:bg-sky-300 text-black font-black text-xs transition">
+                            Ajouter
+                        </button>
+                        <button type="button" onclick="toggleNewBrandInput(false)" class="p-1.5 text-zinc-400 hover:text-white text-xs">
+                            ✕
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="newProdBrand" required>
                 </div>
             </div>
 
             <!-- Category & Quality -->
-            <div class="grid sm:grid-cols-3 gap-4">
+            <div class="grid sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Catégorie *</label>
                     <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
@@ -376,12 +405,63 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Coloris</label>
-                    <input type="text" id="newProdColor" placeholder="Ex: Triple Black" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Qualité</label>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Qualité certifiée</label>
                     <input type="text" id="newProdGrade" value="1:1 Miroir" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
+                </div>
+            </div>
+
+            <!-- MULTI-COLORIS (Plusieurs coloris sur un seul article) -->
+            <div class="space-y-2 p-3.5 bg-zinc-950/80 rounded-xl border border-zinc-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
+                            <i data-lucide="palette" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            Coloris disponibles (Multi-coloris pour cet article)
+                        </label>
+                        <p class="text-[10px] text-zinc-400">
+                            Ajoutez tous les coloris disponibles. Le client choisira directement son coloris sur la boutique sans doublon d'article.
+                        </p>
+                    </div>
+                    <span id="colorCountBadge" class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">
+                        0 coloris
+                    </span>
+                </div>
+
+                <!-- Active Color Tags List -->
+                <div id="activeColorsContainer" class="flex flex-wrap gap-1.5 min-h-[38px] p-2 bg-black/80 border border-zinc-800 rounded-lg items-center">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Color input + quick shortcuts -->
+                <div class="flex items-center gap-2 pt-1">
+                    <input 
+                        type="text" 
+                        id="newColorInput" 
+                        placeholder="Tapez un coloris (ex: Noir Mat, Gris Graphite, Bleu Marine, Blanc)..." 
+                        onkeydown="if(event.key==='Enter'){event.preventDefault();addColorTag(this.value);}"
+                        class="flex-1 bg-zinc-900 border border-zinc-700 focus:border-white rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
+                    >
+                    <button 
+                        type="button" 
+                        onclick="addColorTag(document.getElementById('newColorInput').value)" 
+                        class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg font-bold text-xs flex items-center gap-1 transition shrink-0"
+                    >
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Ajouter</span>
+                    </button>
+                </div>
+
+                <!-- Quick shortcut color chips -->
+                <div class="flex flex-wrap items-center gap-1.5 pt-1 text-[11px]">
+                    <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis :</span>
+                    <button type="button" onclick="addColorTag('Noir Mat')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Noir Mat</button>
+                    <button type="button" onclick="addColorTag('Gris Graphite')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Gris Graphite</button>
+                    <button type="button" onclick="addColorTag('Bleu Marine')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Bleu Marine</button>
+                    <button type="button" onclick="addColorTag('Noir')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Noir</button>
+                    <button type="button" onclick="addColorTag('Blanc')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Blanc</button>
+                    <button type="button" onclick="addColorTag('Kaki')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Kaki</button>
+                    <button type="button" onclick="addColorTag('Beige')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Beige</button>
+                    <button type="button" onclick="addColorTag('Gris Chiné')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Gris Chiné</button>
                 </div>
             </div>
 
@@ -583,6 +663,165 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        // ==========================================
+        // DYNAMIC BRANDS MANAGEMENT
+        // ==========================================
+        const defaultBrands = [
+            "Corteiz",
+            "Canada Goose",
+            "Arc'teryx",
+            "Jordan",
+            "Stüssy",
+            "Moncler",
+            "Trapstar",
+            "Sp5der",
+            "Denim Tears",
+            "Fear of God Essentials",
+            "Palm Angels",
+            "Supreme",
+            "Nike",
+            "Dior"
+        ];
+        let availableBrands = [...defaultBrands];
+
+        function syncAvailableBrands() {
+            const productBrands = (adminProducts || []).map(p => (p.brand || '').trim()).filter(Boolean);
+            availableBrands = [...new Set([...defaultBrands, ...productBrands])].sort((a, b) => a.localeCompare(b));
+            populateBrandSelect();
+        }
+
+        function populateBrandSelect(selectedVal = '') {
+            const select = document.getElementById('brandSelect');
+            if (!select) return;
+
+            let html = '<option value="">Sélectionner une marque...</option>';
+            availableBrands.forEach(b => {
+                html += `<option value="${b}">${b}</option>`;
+            });
+            html += '<option value="__NEW__">➕ Autre marque (créer nouvelle)...</option>';
+            select.innerHTML = html;
+
+            if (selectedVal) {
+                select.value = selectedVal;
+                document.getElementById('newProdBrand').value = selectedVal;
+            }
+        }
+
+        function handleBrandSelectChange(val) {
+            if (val === '__NEW__') {
+                toggleNewBrandInput(true);
+            } else {
+                toggleNewBrandInput(false);
+                document.getElementById('newProdBrand').value = val;
+            }
+        }
+
+        function toggleNewBrandInput(show) {
+            const container = document.getElementById('newBrandInputContainer');
+            const input = document.getElementById('newCustomBrandInput');
+            if (show) {
+                container.classList.remove('hidden');
+                input.focus();
+            } else {
+                container.classList.add('hidden');
+                input.value = '';
+                if (document.getElementById('brandSelect').value === '__NEW__') {
+                    document.getElementById('brandSelect').value = '';
+                    document.getElementById('newProdBrand').value = '';
+                }
+            }
+        }
+
+        function confirmCustomBrand() {
+            const input = document.getElementById('newCustomBrandInput');
+            const brandName = (input.value || '').trim();
+            if (!brandName) {
+                alert('Veuillez entrer le nom de la nouvelle marque (ex: Canada Goose).');
+                return;
+            }
+
+            if (!availableBrands.includes(brandName)) {
+                availableBrands.push(brandName);
+                availableBrands.sort((a, b) => a.localeCompare(b));
+            }
+
+            populateBrandSelect(brandName);
+            document.getElementById('newProdBrand').value = brandName;
+            toggleNewBrandInput(false);
+        }
+
+        function setBrandValue(brandName) {
+            const trimmed = (brandName || '').trim();
+            if (trimmed && !availableBrands.includes(trimmed)) {
+                availableBrands.push(trimmed);
+                availableBrands.sort((a, b) => a.localeCompare(b));
+            }
+            populateBrandSelect(trimmed);
+            document.getElementById('newProdBrand').value = trimmed;
+        }
+
+        // ==========================================
+        // MULTI-COLOR MANAGEMENT
+        // ==========================================
+        let activeColors = ['Noir'];
+
+        function renderColorTags() {
+            const container = document.getElementById('activeColorsContainer');
+            const countBadge = document.getElementById('colorCountBadge');
+            if (!container) return;
+
+            countBadge.innerText = `${activeColors.length} coloris`;
+
+            if (activeColors.length === 0) {
+                container.innerHTML = `<span class="text-zinc-500 text-xs italic">Aucun coloris sélectionné (cliquez sur les raccourcis ou tapez un coloris ci-dessous)</span>`;
+                return;
+            }
+
+            container.innerHTML = activeColors.map(c => `
+                <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 px-2.5 py-1 rounded-lg text-xs font-semibold text-white transition">
+                    <span class="w-2 h-2 rounded-full ${getColorDotClass(c)}"></span>
+                    <span>${c}</span>
+                    <button type="button" onclick="removeColorTag('${c}')" class="text-zinc-400 hover:text-red-400 p-0.5 rounded transition font-black ml-0.5" title="Retirer ce coloris">
+                        ✕
+                    </button>
+                </span>
+            `).join('');
+
+            initIcons();
+        }
+
+        function getColorDotClass(name) {
+            const n = name.toLowerCase();
+            if (n.includes('noir') || n.includes('black')) return 'bg-zinc-700 border border-zinc-500';
+            if (n.includes('blanc') || n.includes('white') || n.includes('sail')) return 'bg-white border border-zinc-400';
+            if (n.includes('gris') || n.includes('grey') || n.includes('graphite')) return 'bg-zinc-400';
+            if (n.includes('bleu') || n.includes('blue') || n.includes('marine') || n.includes('navy')) return 'bg-sky-500';
+            if (n.includes('kaki') || n.includes('vert') || n.includes('green') || n.includes('olive')) return 'bg-emerald-600';
+            if (n.includes('beige') || n.includes('crème') || n.includes('cream')) return 'bg-amber-200';
+            if (n.includes('rouge') || n.includes('red') || n.includes('bordeaux')) return 'bg-rose-500';
+            if (n.includes('jaune') || n.includes('yellow')) return 'bg-yellow-400';
+            if (n.includes('orange')) return 'bg-orange-500';
+            return 'bg-emerald-400';
+        }
+
+        function addColorTag(colorStr) {
+            const trimmed = (colorStr || '').trim();
+            if (!trimmed) return;
+
+            const exists = activeColors.some(c => c.toLowerCase() === trimmed.toLowerCase());
+            if (!exists) {
+                activeColors.push(trimmed);
+                renderColorTags();
+            }
+            const input = document.getElementById('newColorInput');
+            if (input) input.value = '';
+        }
+
+        function removeColorTag(colorStr) {
+            activeColors = activeColors.filter(c => c !== colorStr);
+            renderColorTags();
+        }
+
         // Account Selection
         function selectAccount(username) {
             selectedLoginUsername = username;
@@ -717,6 +956,7 @@
             } catch (err) {
                 console.warn('API fetch error, using local fallback:', err);
             }
+            syncAvailableBrands();
             renderTable();
             calculateKPIs();
         }
@@ -726,6 +966,7 @@
             let totalRev = 0;
             let totalCost = 0;
             let totalUnits = 0;
+            let totalCatalogPieces = adminProducts.length;
 
             adminProducts.forEach(p => {
                 const stockObj = p.stock || {};
@@ -774,16 +1015,22 @@
                 const cost = Number(p.costPrice || Math.round(p.price * 0.35));
                 const unitProfit = Number(p.price) - cost;
                 const marginPct = Number(p.price) > 0 ? Math.round((unitProfit / Number(p.price)) * 100) : 0;
+                const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
 
                 return `
                 <tr class="hover:bg-zinc-900/50 transition">
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-3">
-                            <img src="${p.image}" alt="${p.name}" class="w-11 h-11 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
+                            <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
                             <div>
-                                <span class="text-[10px] text-zinc-500 font-extrabold uppercase">${p.brand}</span>
+                                <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
                                 <div class="font-bold text-white">${p.name}</div>
-                                <span class="text-[10px] text-emerald-400 font-mono font-bold">${p.conditionGrade || '1:1 Miroir'}</span>
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">${p.conditionGrade || '1:1 Miroir'}</span>
+                                    ${pColors.map(c => `
+                                        <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -918,6 +1165,11 @@
             document.getElementById('photoPreviewContainer').classList.add('hidden');
             finalCroppedDataUrl = '';
             
+            setBrandValue('');
+            toggleNewBrandInput(false);
+            activeColors = ['Noir'];
+            renderColorTags();
+
             switchSizesByCategory('sweats');
             document.getElementById('newProductBackdrop').classList.remove('hidden');
             document.getElementById('newProductModal').classList.remove('hidden');
@@ -933,14 +1185,23 @@
             document.getElementById('saveBtnText').innerText = 'Mettre à jour l\'article';
 
             document.getElementById('newProdName').value = p.name;
-            document.getElementById('newProdBrand').value = p.brand;
+            setBrandValue(p.brand || '');
+            toggleNewBrandInput(false);
             document.getElementById('newProdCategory').value = p.category;
-            document.getElementById('newProdColor').value = p.color || '';
             document.getElementById('newProdGrade').value = p.conditionGrade || '1:1 Miroir';
             document.getElementById('newProdPrice').value = p.price;
             document.getElementById('newProdCost').value = p.costPrice || Math.round(p.price * 0.35);
             document.getElementById('newProdImageUrl').value = p.image || '';
             document.getElementById('newProdDescription').value = p.description || '';
+
+            if (Array.isArray(p.colors) && p.colors.length > 0) {
+                activeColors = [...p.colors];
+            } else if (p.color) {
+                activeColors = [p.color];
+            } else {
+                activeColors = ['Noir'];
+            }
+            renderColorTags();
 
             calculateMargin();
             switchSizesByCategory(p.category, p.stock || {});
@@ -1001,13 +1262,12 @@
         }
 
         // ==========================================
-        // AI DESCRIPTION GENERATOR
+        // AI DESCRIPTION GENERATOR (EXPERT STREETWEAR 1:1)
         // ==========================================
         async function triggerAIDescription() {
             const name = document.getElementById('newProdName').value;
             const brand = document.getElementById('newProdBrand').value;
             const category = document.getElementById('newProdCategory').value;
-            const color = document.getElementById('newProdColor').value;
             const grade = document.getElementById('newProdGrade').value;
 
             if (!name && !brand) {
@@ -1016,14 +1276,20 @@
             }
 
             const btn = document.getElementById('aiGenBtn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Recherche & Rédaction IA...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Rédaction IA Streetwear 1:1...`;
             initIcons();
 
             try {
                 const res = await fetch('/api/ai-description', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, brand, category, color, grade })
+                    body: JSON.stringify({ 
+                        name, 
+                        brand, 
+                        category, 
+                        colors: activeColors, 
+                        grade 
+                    })
                 });
 
                 const data = await res.json();
@@ -1032,15 +1298,30 @@
                 }
             } catch (err) {
                 // Fallback client-side generator
+                const colorStr = activeColors.length > 0 ? activeColors.join(', ') : 'Noir';
                 document.getElementById('newProdDescription').value = 
-`Pièce de collection ${name} ${color ? `en coloris ${color}` : ''} sélectionnée en Qualité 1:1 Miroir.
+`### **${brand || 'ELS'} — ${name}**
+*(Version Certifiée Qualité ${grade || '1:1 Miroir'})*
 
-🔹 Confection : Coton lourd haute densité et finitions identiques à l'original.
-🔹 Détails 1:1 : Broderies haute précision, étiquettes intérieures et puces/wash tags conformes.
-🔹 Packaging : Fourni sous sachet protecteur scellé avec accessoires complets.
-🔹 Coupe : Streetwear authentique. Prenez votre taille habituelle.
+Pièce emblématique du vestiaire streetwear contemporain sélectionnée en Qualité 1:1 Miroir.
 
-⚠️ Mention ELS.SHOP : Produit en Qualité 1:1 Miroir (matières, coutures et détails strictement identiques).`;
+---
+
+#### 🔍 **1. Conception & Matières d'Exception**
+- **Textile & Tissage :** Tissu premium haute densité au tombé lourd identique au retail.
+- **Poids & Tenue :** Grammage lourd garantissant une tenue parfaite au fil des lavages.
+
+#### ✂️ **2. Finitions Qualité 1:1 Miroir**
+- **Détails & Précision :** Broderies haute précision, coutures renforcées, étiquettes intérieures et puces/wash tags conformes.
+- **Packaging :** Livré sous emballage protecteur scellé avec accessoires complets.
+
+#### 📏 **3. Conseils de Coupe & Guide des Tailles**
+- Coupe streetwear authentique. Prenez votre taille habituelle.
+🎨 **Coloris disponibles :** ${colorStr}
+
+---
+⚠️ **Engagement Transparence ELS.SHOP :**
+*Article certifié Qualité 1:1 Miroir (finitions, matières, étiquettes et accessoires rigoureusement identiques).*`;
             } finally {
                 btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> <span>Générer avec l'IA ELS (Qualité 1:1)</span>`;
                 initIcons();
@@ -1206,14 +1487,22 @@
             e.preventDefault();
             const editId = document.getElementById('editProductId').value;
             const name = document.getElementById('newProdName').value;
-            const brand = document.getElementById('newProdBrand').value;
+            const brand = (document.getElementById('newProdBrand').value || '').trim();
             const category = document.getElementById('newProdCategory').value;
-            const color = document.getElementById('newProdColor').value;
             const grade = document.getElementById('newProdGrade').value;
             const price = Number(document.getElementById('newProdPrice').value);
             const cost = Number(document.getElementById('newProdCost').value || Math.round(price * 0.35));
             const image = finalCroppedDataUrl || document.getElementById('newProdImageUrl').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
             const desc = document.getElementById('newProdDescription').value;
+
+            if (!brand) {
+                alert('Veuillez sélectionner ou ajouter une marque pour cet article.');
+                return;
+            }
+
+            // Colors array
+            const colorsArr = activeColors.length > 0 ? activeColors : ['Noir'];
+            const defaultColor = colorsArr[0];
 
             // Collect sizes and stocks
             let sizeList = [];
@@ -1238,7 +1527,8 @@
                 name,
                 brand,
                 category,
-                color,
+                color: defaultColor,
+                colors: colorsArr,
                 conditionGrade: grade || '1:1 Miroir',
                 price,
                 costPrice: cost,
