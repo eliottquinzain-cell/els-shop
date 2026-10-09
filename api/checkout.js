@@ -100,7 +100,6 @@ module.exports = async (req, res) => {
       // Metadata
       params.append('metadata[orderNumber]', orderNumber);
       params.append('metadata[source]', 'els.shop');
-      params.append('metadata[founders]', 'Eliott & Ilies');
       params.append('metadata[itemCount]', String(items.length));
 
       const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
