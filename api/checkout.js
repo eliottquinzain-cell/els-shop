@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
           currency: 'eur',
           product_data: {
             name: `${item.brand || 'ELS'} - ${item.name}`,
-            description: `Taille : ${item.size || 'Unique'} | État : ${item.condition || 'Certifié 10/10'} | Réf : ${item.id || 'ELS'}`,
+            description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
             images: item.image ? [item.image] : []
           },
           unit_amount: Math.round(unitPrice * 100) // en centimes
