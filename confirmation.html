@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commande Confirmée — ELS.SHOP</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        els: {
+                            bg: '#0a0a0c',
+                            card: '#121217',
+                            border: '#262633',
+                            accent: '#22c55e',
+                            cyan: '#38bdf8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Syne"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-els-bg text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-els-accent selection:text-black">
+
+    <!-- Header -->
+    <header class="border-b border-els-border py-4 px-6 bg-els-bg/90 backdrop-blur-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-9 h-9 bg-zinc-900 rounded-lg border border-els-border flex items-center justify-center font-display font-black text-white text-base">
+                    E<span class="text-els-accent">.</span>
+                </div>
+                <span class="font-display font-extrabold text-xl tracking-tight text-white">ELS<span class="text-els-accent">.</span>SHOP</span>
+            </a>
+            <span class="text-xs text-zinc-500 font-mono">Validation Sécurisée Stripe</span>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-3xl mx-auto px-4 py-12 flex-1 w-full space-y-8">
+        
+        <!-- Big Success Hero Card -->
+        <div class="bg-els-card border border-els-border rounded-2xl p-8 text-center space-y-5 shadow-2xl relative overflow-hidden">
+            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400">
+                <i data-lucide="check" class="w-10 h-10"></i>
+            </div>
+
+            <div class="space-y-2">
+                <span class="text-xs uppercase font-extrabold text-emerald-400 tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full">
+                    Paiement Validé avec Succès
+                </span>
+                <h1 class="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                    Merci pour votre commande !
+                </h1>
+                <p class="text-sm text-zinc-400 max-w-md mx-auto">
+                    Votre paiement a bien été traité par Stripe. Eliott et Ilies préparent votre colis avec le plus grand soin.
+                </p>
+            </div>
+
+            <!-- Order Reference Badge -->
+            <div class="inline-block bg-zinc-950 border border-zinc-800 rounded-xl px-6 py-3 font-mono text-sm">
+                <span class="text-zinc-500 block text-xs">NUMÉRO DE COMMANDE</span>
+                <strong id="orderNumberDisplay" class="text-white text-lg tracking-wider">ELS-948123</strong>
+            </div>
+
+        </div>
+
+        <!-- Next Steps Timeline -->
+        <div class="bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 space-y-6">
+            <h3 class="font-display font-bold text-lg text-white">Les prochaines étapes de votre commande :</h3>
+
+            <div class="space-y-6 relative before:absolute before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-zinc-800">
+                
+                <div class="flex items-start gap-4 relative">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-black flex items-center justify-center font-bold text-xs shrink-0 z-10">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">1. Commande enregistrée & vérifiée</h4>
+                        <p class="text-xs text-zinc-400">Le récapitulatif de paiement et votre reçu Stripe vous ont été envoyés.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 relative">
+                    <div class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 text-els-cyan flex items-center justify-center font-bold text-xs shrink-0 z-10">
+                        2
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">2. Contrôle final & Scellé ELS.SHOP</h4>
+                        <p class="text-xs text-zinc-400">Eliott & Ilies réinspectent la pièce une dernière fois et apposent le scellé de garantie numéroté.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 relative">
+                    <div class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-400 flex items-center justify-center font-bold text-xs shrink-0 z-10">
+                        3
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">3. Expédition sous 24/48h</h4>
+                        <p class="text-xs text-zinc-400">Remise au transporteur (Colissimo ou Chronopost suivi) avec numéro de suivi en direct.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Help / Contact Card -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="space-y-1 text-center sm:text-left">
+                <h4 class="font-bold text-sm text-white">Une question sur votre livraison ?</h4>
+                <p class="text-xs text-zinc-400">Eliott & Ilies répondent directement sur Instagram ou par email.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="https://instagram.com" target="_blank" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                    <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> @els.shop
+                </a>
+                <a href="/" class="px-5 py-2 rounded-xl bg-white hover:bg-slate-200 text-black text-xs font-black transition">
+                    Retour Boutique
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-els-border py-6 text-center text-xs text-zinc-600">
+        © 2026 ELS.SHOP — Géré par Eliott & Ilies.
+    </footer>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+
+            // Clear cart from storage upon successful checkout
+            localStorage.removeItem('els_cart');
+
+            const params = new URLSearchParams(window.location.search);
+            const order = params.get('order') || ('ELS-' + Math.floor(100000 + Math.random() * 900000));
+            document.getElementById('orderNumberDisplay').innerText = order;
+        });
+    </script>
+</body>
+</html>
