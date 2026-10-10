@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suivi de Livraison en Direct — ELS.SHOP</title>
+
+    <!-- Meta Tags -->
+    <meta name="description" content="Suivez l'avancement de votre commande et de votre livraison Colissimo en direct sur ELS.SHOP.">
+    <meta name="theme-color" content="#0a0a0d">
+
+    <!-- Fonts & Scripts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        els: {
+                            bg: '#0a0a0d',
+                            card: '#121217',
+                            cardHover: '#181820',
+                            border: '#23232c',
+                            accent: '#22c55e',
+                            cyan: '#38bdf8',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+                        display: ['"Syne"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-els-bg text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-white selection:text-black">
+
+    <!-- Header -->
+    <header class="border-b border-els-border py-4 px-6 bg-els-bg/95 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5 group">
+                <div class="w-8 h-8 bg-zinc-900 rounded-lg border border-els-border flex items-center justify-center font-display font-black text-white text-sm group-hover:border-zinc-500 transition">
+                    E<span class="text-emerald-500">.</span>
+                </div>
+                <span class="font-display font-extrabold text-xl tracking-tight text-white">ELS<span class="text-emerald-500">.</span>SHOP</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <a href="/" class="text-xs font-bold text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                    <span>Boutique</span>
+                </a>
+                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">
+                    SUIVI EN DIRECT
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-3xl mx-auto px-4 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Title Section -->
+        <div class="text-center space-y-2">
+            <h1 class="font-display font-black text-3xl sm:text-4xl text-white tracking-tight">
+                Suivi de Commande & Livraison
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto">
+                Consultez en temps réel l'avancement de la préparation de vos pièces et l'acheminement de votre colis.
+            </p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 shadow-2xl">
+            <form onsubmit="handleSearchSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                    <i data-lucide="package" class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    <input 
+                        type="text" 
+                        id="trackingInput"
+                        placeholder="Ex : ELS-CMD-1084"
+                        required
+                        class="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-400 transition uppercase tracking-wider font-mono"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    id="searchBtn"
+                    class="bg-white hover:bg-zinc-200 text-black font-black px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span>Suivre ma commande</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden text-center py-12 space-y-3">
+            <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="text-xs text-zinc-400 font-mono">Recherche de votre commande chez ELS.SHOP...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden bg-red-500/10 border border-red-500/30 rounded-2xl p-5 text-center space-y-2">
+            <i data-lucide="alert-circle" class="w-6 h-6 text-red-400 mx-auto"></i>
+            <h4 class="font-bold text-sm text-red-300">Commande introuvable</h4>
+            <p id="errorMsgText" class="text-xs text-zinc-400 max-w-sm mx-auto">
+                Vérifiez la référence de commande indiquée dans votre email ou message de confirmation.
+            </p>
+        </div>
+
+        <!-- Result Card (Shown when order loaded) -->
+        <div id="resultContainer" class="hidden space-y-6">
+
+            <!-- Hero Summary Card -->
+            <div class="bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-zinc-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-zinc-500 uppercase font-mono font-bold">Référence :</span>
+                            <span id="resOrderId" class="font-mono font-black text-lg text-white">ELS-CMD-1084</span>
+                        </div>
+                        <div id="resOrderDate" class="text-xs text-zinc-400 mt-1">Passée le 10 octobre 2026</div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span id="resStatusBadge" class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                            En préparation
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Live ETA Banner -->
+                <div id="etaBanner" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                            <i data-lucide="truck" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Estimation de Réception</div>
+                            <div id="resEtaText" class="font-bold text-sm text-white">Entre le 12 et le 14 octobre</div>
+                        </div>
+                    </div>
+
+                    <div class="text-left sm:text-right">
+                        <div class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Transporteur</div>
+                        <div id="resCarrierText" class="font-mono font-bold text-xs text-sky-400">Colissimo 24/48h</div>
+                    </div>
+                </div>
+
+                <!-- Carrier Tracking Button (If Colissimo / Chronopost tracking number available) -->
+                <div id="carrierTrackingContainer" class="hidden p-4 rounded-xl bg-gradient-to-r from-sky-950/40 via-zinc-900 to-black border border-sky-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <span class="text-[10px] text-sky-400 font-bold uppercase block">Numéro de suivi officiel :</span>
+                        <span id="resTrackingNum" class="font-mono font-black text-sm text-white">6A18492049281</span>
+                    </div>
+                    <a 
+                        id="resCarrierLink" 
+                        href="#" 
+                        target="_blank" 
+                        class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition active:scale-95"
+                    >
+                        <span>Suivre sur La Poste</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- 5-Stage Live Delivery Timeline -->
+            <div class="bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-display font-bold text-base sm:text-lg text-white">Étapes de la livraison :</h3>
+                    <span class="text-xs text-zinc-500 font-mono">Mis à jour en temps réel</span>
+                </div>
+
+                <div id="timelineContainer" class="space-y-6 relative before:absolute before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-zinc-800">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Ordered Items Recap -->
+            <div class="bg-els-card border border-els-border rounded-2xl p-6 space-y-4">
+                <h3 class="font-display font-bold text-base text-white">Articles de votre commande :</h3>
+                <div id="resItemsList" class="space-y-2">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="pt-3 border-t border-zinc-800 flex justify-between items-center">
+                    <span class="text-xs font-bold text-zinc-400">Total réglé</span>
+                    <span id="resTotalAmount" class="font-mono font-black text-base text-emerald-400">0 €</span>
+                </div>
+            </div>
+
+            <!-- Contact / Assistance -->
+            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                <div>
+                    <h4 class="font-bold text-sm text-white">Besoin d'aide avec votre commande ?</h4>
+                    <p class="text-xs text-zinc-400">Notre équipe ELS.SHOP vous répond directement 7j/7.</p>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <a href="https://instagram.com" target="_blank" class="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                        <i data-lucide="instagram" class="w-3.5 h-3.5 text-pink-400"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a id="helpWhatsappBtn" href="https://wa.me/" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-black text-xs font-bold flex items-center gap-1.5 transition">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-els-border py-6 text-center text-xs text-zinc-600">
+        © 2026 ELS.SHOP — Confection 1:1 Miroir & Streetwear. Tous droits réservés.
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        function initIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function fetchOrderTracking(orderId) {
+            if (!orderId) return;
+
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+
+            try {
+                const res = await fetch(`/api/track?id=${encodeURIComponent(orderId)}`);
+                const data = await res.json();
+
+                document.getElementById('loadingState').classList.add('hidden');
+
+                if (data.success && data.order) {
+                    renderOrderTracking(data.order);
+                } else {
+                    document.getElementById('errorMsgText').innerText = data.error || 'Commande introuvable.';
+                    document.getElementById('errorState').classList.remove('hidden');
+                }
+            } catch (err) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorMsgText').innerText = 'Erreur réseau lors de la recherche du colis.';
+                document.getElementById('errorState').classList.remove('hidden');
+            }
+        }
+
+        function renderOrderTracking(order) {
+            document.getElementById('resOrderId').innerText = order.id;
+            document.getElementById('resOrderDate').innerText = `Passée le ${new Date(order.createdAt).toLocaleDateString('fr-FR', {
+                day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            })}`;
+            document.getElementById('resEtaText').innerText = order.estimatedDelivery || 'Sous 24/48h';
+            document.getElementById('resCarrierText').innerText = order.carrier || 'Colissimo 24/48h';
+            document.getElementById('resTotalAmount').innerText = `${order.total} €`;
+
+            // Status Badge Colors
+            const badge = document.getElementById('resStatusBadge');
+            const statusConfig = {
+                'en_attente': { label: 'En attente', color: 'bg-zinc-800 text-zinc-300 border-zinc-700' },
+                'en_preparation': { label: 'En préparation', color: 'bg-amber-500/10 text-amber-400 border-amber-500/30' },
+                'expedie': { label: 'Expédiée', color: 'bg-sky-500/10 text-sky-400 border-sky-500/30' },
+                'livre': { label: 'Livrée avec succès', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' },
+                'annule': { label: 'Annulée', color: 'bg-red-500/10 text-red-400 border-red-500/30' }
+            };
+            const sc = statusConfig[order.status] || { label: order.statusLabel || order.status, color: 'bg-zinc-800 text-white' };
+            badge.innerText = sc.label;
+            badge.className = `px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border ${sc.color}`;
+
+            // Carrier tracking button
+            const carrierContainer = document.getElementById('carrierTrackingContainer');
+            if (order.trackingNumber) {
+                document.getElementById('resTrackingNum').innerText = order.trackingNumber;
+                document.getElementById('resCarrierLink').href = order.trackingUrl || '#';
+                carrierContainer.classList.remove('hidden');
+            } else {
+                carrierContainer.classList.add('hidden');
+            }
+
+            // Timeline Steps
+            renderTimeline(order);
+
+            // Items List
+            const itemsContainer = document.getElementById('resItemsList');
+            itemsContainer.innerHTML = (order.items || []).map(it => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 text-xs">
+                    <div>
+                        <div class="font-bold text-white">${it.brand} ${it.name}</div>
+                        <div class="text-[10px] text-zinc-400">Taille : <strong>${it.size}</strong> • Coloris : ${it.color || 'Standard'} • Qte : ${it.quantity}</div>
+                    </div>
+                    <span class="font-mono font-bold text-white">${it.price * (it.quantity || 1)} €</span>
+                </div>
+            `).join('');
+
+            // Help WhatsApp Button with custom message
+            const waBtn = document.getElementById('helpWhatsappBtn');
+            const waText = encodeURIComponent(`Bonjour ELS.SHOP, j'ai une question concernant ma commande ${order.id}.`);
+            waBtn.href = `https://wa.me/33612345678?text=${waText}`;
+
+            document.getElementById('resultContainer').classList.remove('hidden');
+            initIcons();
+        }
+
+        function renderTimeline(order) {
+            const container = document.getElementById('timelineContainer');
+            const isMainPropre = (order.carrier || '').toLowerCase().includes('main propre') || 
+                                (order.customerAddressCity || '').toLowerCase().includes('main propre');
+
+            // Timeline Stages
+            // Levels: 1 (Commande validée), 2 (Préparation), 3 (Expédiée / Prêt), 4 (En cours), 5 (Livrée)
+            let currentLevel = 1;
+            if (order.status === 'en_preparation') currentLevel = 2;
+            if (order.status === 'expedie') currentLevel = 3;
+            if (order.status === 'livre') currentLevel = 5;
+
+            const stagesColissimo = [
+                {
+                    lvl: 1,
+                    title: '1. Commande Validée & Contrôlée',
+                    desc: 'Paiement confirmé. La commande a été transmise à notre atelier.'
+                },
+                {
+                    lvl: 2,
+                    title: '2. Préparation & Contrôle Qualité 1:1',
+                    desc: 'Inspection des coutures, contrôle des matières originales et pose du scellé de garantie.'
+                },
+                {
+                    lvl: 3,
+                    title: '3. Prise en charge par le transporteur',
+                    desc: order.trackingNumber ? `Colis remis à ${order.carrier || 'Colissimo'} avec le n° de suivi ${order.trackingNumber}.` : 'Colis en cours de remise au centre de tri.'
+                },
+                {
+                    lvl: 4,
+                    title: '4. En cours d\'acheminement',
+                    desc: 'Le transporteur achemine votre colis vers votre adresse de livraison.'
+                },
+                {
+                    lvl: 5,
+                    title: '5. Colis Livré',
+                    desc: 'Colis déposé en boîte aux lettres ou remis contre signature.'
+                }
+            ];
+
+            const stagesIRL = [
+                {
+                    lvl: 1,
+                    title: '1. Vente Enregistrée',
+                    desc: 'Votre article a été réservé et validé par notre équipe.'
+                },
+                {
+                    lvl: 2,
+                    title: '2. Pièce Inspectée & Prête',
+                    desc: 'Contrôle qualité 1:1 certifié.'
+                },
+                {
+                    lvl: 3,
+                    title: '3. Rendez-vous Convenu',
+                    desc: 'Lieu de rencontre fixé avec le client.'
+                },
+                {
+                    lvl: 5,
+                    title: '4. Remise en Main Propre Effectuée',
+                    desc: 'Article remis directement au client en personne.'
+                }
+            ];
+
+            const stages = isMainPropre ? stagesIRL : stagesColissimo;
+
+            container.innerHTML = stages.map(s => {
+                const isPassed = currentLevel >= s.lvl;
+                const isCurrent = (currentLevel === s.lvl) || (currentLevel === 3 && s.lvl === 3);
+
+                let dotClass = 'bg-zinc-900 border border-zinc-700 text-zinc-500';
+                let iconHtml = `${s.lvl}`;
+
+                if (isPassed) {
+                    dotClass = 'bg-emerald-500 text-black border-emerald-400';
+                    iconHtml = '<i data-lucide="check" class="w-4 h-4"></i>';
+                }
+                if (isCurrent) {
+                    dotClass = 'bg-sky-500 text-black border-sky-400 ring-4 ring-sky-500/20';
+                    iconHtml = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i>';
+                }
+
+                return `
+                <div class="flex items-start gap-4 relative">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 z-10 transition-all ${dotClass}">
+                        ${iconHtml}
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm ${isPassed ? 'text-white' : 'text-zinc-500'}">${s.title}</h4>
+                        <p class="text-xs ${isPassed ? 'text-zinc-400' : 'text-zinc-600'} mt-0.5 leading-relaxed">${s.desc}</p>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function handleSearchSubmit(e) {
+            e.preventDefault();
+            const val = document.getElementById('trackingInput').value.trim();
+            if (val) {
+                // Update URL query string without reloading
+                const url = new URL(window.location);
+                url.searchParams.set('order', val);
+                window.history.pushState({}, '', url);
+
+                fetchOrderTracking(val);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initIcons();
+            const params = new URLSearchParams(window.location.search);
+            const orderFromQuery = params.get('order') || params.get('id');
+
+            if (orderFromQuery) {
+                document.getElementById('trackingInput').value = orderFromQuery;
+                fetchOrderTracking(orderFromQuery);
+            }
+        });
+    </script>
+</body>
+</html>
