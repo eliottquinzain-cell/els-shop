@@ -2,12 +2,29 @@
 <html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration — ELS.SHOP (Comptes Eliott & Ilies)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ELS Admin — Gestion Stocks, Articles & Commandes (Eliott & Ilies)</title>
     
+    <!-- iOS PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ELS Admin">
+    <meta name="application-name" content="ELS Admin">
+    <meta name="theme-color" content="#0a0a0d">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Web App Manifest & Apple Touch Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+
+    <!-- Fonts: Plus Jakarta Sans & Syne -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS & Lucide Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -28,7 +45,7 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
                         display: ['"Syne"', 'sans-serif']
                     }
                 }
@@ -37,20 +54,36 @@
     </script>
 
     <style>
+        :root {
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+        }
+
         body {
             background-color: #0a0a0d;
             color: #f1f5f9;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            padding-top: var(--sat);
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
         }
-        ::-webkit-scrollbar { width: 6px; }
+
+        /* Prevent auto zoom in iOS Safari on focus */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #0a0a0d; }
         ::-webkit-scrollbar-thumb { background: #23232c; border-radius: 4px; }
 
         /* Canvas Cropper Guide */
         .crop-container {
             position: relative;
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             overflow: hidden;
             background: #000;
             border-radius: 12px;
@@ -60,9 +93,7 @@
             user-select: none;
             touch-action: none;
         }
-        .crop-container:active {
-            cursor: grabbing;
-        }
+        .crop-container:active { cursor: grabbing; }
         .crop-overlay-grid {
             position: absolute;
             inset: 0;
@@ -73,35 +104,45 @@
                 linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
             background-size: 33.33% 33.33%;
         }
+
+        /* Active Tab styles */
+        .tab-btn.active {
+            color: #ffffff;
+            border-color: #22c55e;
+            background-color: rgba(34, 197, 94, 0.1);
+        }
+        .bottom-tab-btn.active {
+            color: #22c55e;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-white selection:text-black">
+<body class="min-h-screen flex flex-col justify-between selection:bg-white selection:text-black pb-[calc(env(safe-area-inset-bottom)+74px)] md:pb-0">
 
-    <!-- ========================================== -->
-    <!-- 1. AUTHENTICATION (COMPTES ELIOTT & ILIES) -->
-    <!-- ========================================== -->
+    <!-- ============================================================== -->
+    <!-- 1. AUTHENTICATION SCREEN (COMPTES ELIOTT & ILIES)              -->
+    <!-- ============================================================== -->
     <div id="authScreen" class="fixed inset-0 bg-[#0a0a0d] z-50 flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-els-card border border-els-border rounded-2xl p-8 shadow-2xl space-y-6">
+        <div class="w-full max-w-md bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
             
             <div class="text-center space-y-2">
-                <div class="w-12 h-12 bg-zinc-900 border border-els-border rounded-xl flex items-center justify-center mx-auto text-emerald-400">
-                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                <div class="w-14 h-14 bg-zinc-900 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-500/10">
+                    <i data-lucide="shield-check" class="w-7 h-7"></i>
                 </div>
-                <h1 class="font-display font-black text-2xl text-white">ELS<span class="text-zinc-500">.</span>ADMIN</h1>
-                <p class="text-xs text-zinc-400">Espace réservé aux administrateurs ELS.SHOP</p>
+                <h1 class="font-display font-black text-2xl text-white tracking-tight">ELS<span class="text-emerald-500">.</span>ADMIN</h1>
+                <p class="text-xs text-zinc-400">Application mobile réservée à Eliott & Ilies</p>
             </div>
 
-            <!-- Account Selector (Eliott ou Ilies) -->
+            <!-- Account Selector -->
             <div class="space-y-2">
-                <label class="block text-xs font-bold text-zinc-400 uppercase">Sélectionnez votre compte :</label>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase">Sélectionnez votre compte :</label>
                 <div class="grid grid-cols-2 gap-3">
                     <button 
                         type="button" 
                         onclick="selectAccount('eliott')" 
                         id="btnAccountEliott"
-                        class="p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition"
+                        class="p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition cursor-pointer"
                     >
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500 text-black font-black text-xs flex items-center justify-center">E</div>
+                        <div class="w-9 h-9 rounded-lg bg-emerald-500 text-black font-black text-sm flex items-center justify-center shrink-0">E</div>
                         <div class="text-left">
                             <div class="font-bold text-xs">Eliott</div>
                             <div class="text-[10px] text-emerald-400 font-mono">Super Admin</div>
@@ -112,9 +153,9 @@
                         type="button" 
                         onclick="selectAccount('ilies')" 
                         id="btnAccountIlies"
-                        class="p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition"
+                        class="p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer"
                     >
-                        <div class="w-8 h-8 rounded-lg bg-sky-500 text-black font-black text-xs flex items-center justify-center">I</div>
+                        <div class="w-9 h-9 rounded-lg bg-sky-500 text-black font-black text-sm flex items-center justify-center shrink-0">I</div>
                         <div class="text-left">
                             <div class="font-bold text-xs">Ilies</div>
                             <div class="text-[10px] text-sky-400 font-mono">Super Admin</div>
@@ -125,14 +166,22 @@
 
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-zinc-400 uppercase mb-1">Mot de passe</label>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Mot de passe secret</label>
                     <input 
                         type="password" 
                         id="loginPasswordInput" 
                         placeholder="Entrez votre mot de passe..." 
                         required
-                        class="w-full bg-zinc-950 border border-els-border focus:border-emerald-400 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition"
+                        autocomplete="current-password"
+                        class="w-full bg-zinc-950 border border-els-border focus:border-emerald-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition"
                     >
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="rememberMeCheck" checked class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+                    <label for="rememberMeCheck" class="text-xs text-zinc-400 select-none cursor-pointer">
+                        Rester connecté sur cet iPhone (Auto-connexion)
+                    </label>
                 </div>
 
                 <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-semibold p-2.5 rounded-lg bg-red-500/10 border border-red-500/30">
@@ -142,181 +191,404 @@
                 <button 
                     type="submit" 
                     id="loginBtn"
-                    class="w-full bg-white hover:bg-zinc-200 text-black font-black py-3 rounded-xl text-xs transition active:scale-95 shadow-md flex items-center justify-center gap-2"
+                    class="w-full bg-white hover:bg-zinc-200 text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                     <i data-lucide="lock" class="w-4 h-4"></i>
-                    <span>Accéder au Back-Office ELS</span>
+                    <span>Ouvrir l'application ELS Admin</span>
                 </button>
             </form>
 
-            <div class="text-[11px] text-zinc-600 text-center border-t border-zinc-900 pt-4">
-                Comptes sécurisés par signature JWT & hash de sécurité ELS.
+            <div class="text-[11px] text-zinc-500 text-center border-t border-zinc-900 pt-4 leading-relaxed">
+                Accès crypté par token de sécurité persistant. Conçu pour une utilisation plein écran sur iPhone.
             </div>
 
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. ADMIN DASHBOARD CONTENT -->
-    <!-- ========================================== -->
+    <!-- ============================================================== -->
+    <!-- 2. IPHONE PWA INSTALLATION HINT BANNER                         -->
+    <!-- ============================================================== -->
+    <div id="iosInstallBanner" class="hidden bg-gradient-to-r from-emerald-950 via-zinc-900 to-black border-b border-emerald-500/30 px-4 py-2 text-xs flex items-center justify-between text-zinc-300 z-30">
+        <div class="flex items-center gap-2">
+            <span class="text-base">📱</span>
+            <span>Installer l'app sur cet iPhone : appuyez sur <strong>Partager</strong> <i data-lucide="share" class="w-3.5 h-3.5 inline"></i> puis <strong>« Sur l'écran d'accueil »</strong></span>
+        </div>
+        <button onclick="dismissInstallBanner()" class="text-zinc-500 hover:text-white p-1">✕</button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 3. MAIN APPLICATION INTERFACE                                  -->
+    <!-- ============================================================== -->
     <div id="adminContent" class="hidden flex-1 flex flex-col">
         
         <!-- Header -->
-        <header class="bg-zinc-950 border-b border-els-border sticky top-0 z-30 px-6 py-3.5 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="/" class="flex items-center gap-2 group" title="Voir la boutique en ligne">
-                    <span class="font-display font-extrabold text-xl text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
-                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded">ADMIN 1:1</span>
-                </a>
-                <span class="text-zinc-700">|</span>
-                <!-- Current Admin Account Badge -->
-                <div class="flex items-center gap-2 text-xs">
+        <header class="bg-zinc-950/95 backdrop-blur-md border-b border-els-border sticky top-0 z-30 px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="font-display font-black text-xl text-white">ELS<span class="text-emerald-500">.</span>ADMIN</span>
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">1:1 APP</span>
+                </div>
+                
+                <span class="text-zinc-700 hidden sm:inline">|</span>
+
+                <!-- Active Admin Badge -->
+                <div class="hidden sm:flex items-center gap-2 text-xs">
                     <div id="currentAdminAvatar" class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-[11px] flex items-center justify-center">E</div>
-                    <span class="text-zinc-400">Connecté : <strong id="currentAdminName" class="text-white">Eliott</strong> <span class="text-[10px] bg-zinc-900 text-emerald-400 px-1.5 py-0.2 rounded border border-zinc-800">Super Admin</span></span>
+                    <span class="text-zinc-400"><strong id="currentAdminName" class="text-white">Eliott</strong></span>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <a href="/" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-semibold text-zinc-300 flex items-center gap-1.5 transition">
-                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                    <span class="hidden sm:inline">Boutique en direct</span>
-                </a>
-                <button onclick="openNewProductModal()" class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-black text-xs font-black flex items-center gap-1.5 transition shadow-sm active:scale-95">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span>Nouveau Produit</span>
+            <!-- Desktop Tabs Switcher -->
+            <nav class="hidden md:flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 text-xs font-bold">
+                <button onclick="switchTab('articles')" id="tabBtn-articles" class="tab-btn active px-3.5 py-1.5 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                    <span>Articles</span>
                 </button>
-                <button onclick="handleLogout()" class="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 transition" title="Se déconnecter">
+                <button onclick="switchTab('stocks')" id="tabBtn-stocks" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                    <span>Stocks</span>
+                </button>
+                <button onclick="switchTab('orders')" id="tabBtn-orders" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                    <span>Commandes</span>
+                    <span id="tabOrderCountBadgeDesktop" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-black font-black hidden">0</span>
+                </button>
+                <button onclick="switchTab('profit')" id="tabBtn-profit" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                    <span>Bénéfices</span>
+                </button>
+            </nav>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-2">
+                <a href="/" target="_blank" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition" title="Voir la boutique en direct">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Boutique</span>
+                </a>
+
+                <button onclick="openNewProductModal()" class="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-black flex items-center gap-1.5 transition active:scale-95 shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Nouveau Produit</span>
+                    <span class="sm:hidden">Ajouter</span>
+                </button>
+
+                <button onclick="handleLogout()" class="p-2 text-zinc-500 hover:text-red-400 transition" title="Se déconnecter">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
-        <!-- Main Body -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8 flex-1">
+        <!-- Main Body Screens Container -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
             
-            <!-- KPI CARDS (BÉNÉFICES & RENTABILITÉ) -->
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                        <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
-                        Rentabilité & Marges de Stock (1:1 Miroir)
-                    </h2>
-                    <span class="text-xs text-zinc-500 font-mono">Synchronisé en temps réel avec GitHub</span>
-                </div>
-
-                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                    
-                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Chiffre d'Affaires Stock</span>
-                        <div id="kpiTotalRevenue" class="font-black text-xl text-white">0 €</div>
-                        <span class="text-[10px] text-zinc-400">Valeur totale prix de vente</span>
-                    </div>
-
-                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Coût Fournisseur Total</span>
-                        <div id="kpiTotalCost" class="font-black text-xl text-zinc-300">0 €</div>
-                        <span class="text-[10px] text-zinc-500">Prix de revient d'achat</span>
-                    </div>
-
-                    <div class="bg-els-card border border-emerald-500/30 p-4 rounded-xl space-y-1 bg-gradient-to-b from-emerald-950/20 to-els-card">
-                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Bénéfice Net Projeté</span>
-                        <div id="kpiTotalProfit" class="font-black text-2xl text-emerald-400">0 €</div>
-                        <span class="text-[10px] text-emerald-400/80">Gain net potentiel</span>
-                    </div>
-
-                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Taux de Marge Moyen</span>
-                        <div id="kpiAverageMargin" class="font-black text-xl text-sky-400">0%</div>
-                        <span class="text-[10px] text-zinc-500">Marge brute moyenne</span>
-                    </div>
-
-                    <div class="bg-els-card border border-els-border p-4 rounded-xl space-y-1">
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Pièces en Stock</span>
-                        <div id="kpiTotalUnits" class="font-black text-xl text-white">0 pcs</div>
-                        <span class="text-[10px] text-zinc-500">Toutes tailles confondues</span>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- PRODUCTS TABLE -->
-            <section class="space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <h2 class="font-display font-bold text-lg text-white">Catalogue & Gestion des Stocks</h2>
-                            <span id="syncStatusBadge" class="text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Synchro GitHub Active
-                            </span>
+            <!-- ============================================================== -->
+            <!-- TAB 1: ARTICLES (CATALOGUE & FICHES PRODUITS)                   -->
+            <!-- ============================================================== -->
+            <section id="viewArticles" class="space-y-6">
+                
+                <!-- Controls & Filters -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-950 p-3.5 rounded-2xl border border-els-border">
+                    <div class="flex items-center gap-2 flex-1">
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            <input 
+                                type="text" 
+                                id="adminSearchInput" 
+                                oninput="handleAdminSearch(this.value)"
+                                placeholder="Rechercher article, marque..." 
+                                class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2 pl-9 pr-3 text-xs text-white focus:outline-none focus:border-zinc-500 transition"
+                            >
                         </div>
-                        <p class="text-xs text-zinc-500">Ajustez les stocks par taille avec les boutons + / -, ajoutez ou retirez des pièces en direct.</p>
-                    </div>
-
-                    <!-- Filters & Search -->
-                    <div class="flex items-center gap-2">
-                        <input 
-                            type="text" 
-                            id="adminSearchInput" 
-                            oninput="handleAdminSearch(this.value)"
-                            placeholder="Rechercher article..." 
-                            class="bg-zinc-900 border border-els-border rounded-lg py-1.5 px-3 text-xs text-white focus:outline-none focus:border-zinc-400 transition w-36 sm:w-48"
-                        >
                         <select 
                             id="adminCategoryFilter" 
                             onchange="handleAdminCategoryFilter(this.value)"
-                            class="bg-zinc-900 border border-els-border rounded-lg text-xs text-zinc-300 px-3 py-1.5 focus:outline-none cursor-pointer"
+                            class="bg-zinc-900 border border-zinc-800 rounded-xl text-xs text-zinc-300 px-3 py-2 focus:outline-none cursor-pointer"
                         >
                             <option value="all">Toutes catégories</option>
-                            <option value="chaussures">Chaussures / Sneakers</option>
+                            <option value="vestes">Vestes & Manteaux</option>
                             <option value="sweats">Sweats & Hoodies</option>
-                            <option value="vestes">Vestes</option>
+                            <option value="chaussures">Chaussures / Sneakers</option>
                             <option value="t-shirts">T-Shirts</option>
                             <option value="pantalons">Pantalons</option>
                             <option value="accessoires">Accessoires</option>
                         </select>
-                        <button onclick="resetDemoCatalogPrompt()" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition" title="Restaurer pièces de démo">
-                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between sm:justify-end gap-2 text-xs">
+                        <span id="articleCountBadge" class="font-mono text-zinc-400 text-[11px]">0 articles</span>
+                        <button onclick="loadProducts()" class="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white" title="Actualiser le catalogue">
+                            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Products Table -->
-                <div class="bg-els-card border border-els-border rounded-xl overflow-hidden shadow-xl">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-zinc-950 border-b border-els-border text-zinc-400 font-bold uppercase text-[10px] tracking-wider">
-                                <tr>
-                                    <th class="py-3 px-4">Article</th>
-                                    <th class="py-3 px-4">Catégorie</th>
-                                    <th class="py-3 px-4">Prix Vente</th>
-                                    <th class="py-3 px-4">Coût Achat</th>
-                                    <th class="py-3 px-4">Bénéfice Net</th>
-                                    <th class="py-3 px-4">Stocks par Taille (XS ➔ 3XL)</th>
-                                    <th class="py-3 px-4 text-center">Total</th>
-                                    <th class="py-3 px-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminProductsTableBody" class="divide-y divide-zinc-900">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Mobile Cards Grid (Responsive for iPhone) -->
+                <div id="mobileProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Desktop Table View -->
+                <div class="hidden lg:block bg-els-card border border-els-border rounded-2xl overflow-hidden shadow-xl">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-zinc-950 border-b border-els-border text-zinc-400 font-bold uppercase text-[10px] tracking-wider">
+                            <tr>
+                                <th class="py-3.5 px-4">Article</th>
+                                <th class="py-3.5 px-4">Catégorie</th>
+                                <th class="py-3.5 px-4">Prix Vente</th>
+                                <th class="py-3.5 px-4">Coût Achat</th>
+                                <th class="py-3.5 px-4">Bénéfice Net</th>
+                                <th class="py-3.5 px-4">Stocks par Taille</th>
+                                <th class="py-3.5 px-4 text-center">Total</th>
+                                <th class="py-3.5 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTableBody" class="divide-y divide-zinc-900">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Empty State -->
-                <div id="adminEmptyState" class="hidden py-16 text-center space-y-4 bg-els-card border border-els-border rounded-xl">
+                <div id="adminEmptyState" class="hidden py-16 text-center space-y-4 bg-els-card border border-els-border rounded-2xl">
                     <i data-lucide="package-search" class="w-12 h-12 text-zinc-600 mx-auto"></i>
                     <div class="space-y-1">
-                        <h3 class="font-bold text-base text-white">Le catalogue est actuellement vide</h3>
-                        <p class="text-xs text-zinc-400">Vous avez supprimé les anciens articles. Vous pouvez maintenant publier vos propres pièces ou restaurer les exemples 1:1.</p>
+                        <h3 class="font-bold text-base text-white">Aucun article dans cette sélection</h3>
+                        <p class="text-xs text-zinc-400">Ajoutez une nouvelle pièce ou modifiez vos filtres de recherche.</p>
                     </div>
-                    <div class="flex items-center justify-center gap-3 pt-2">
-                        <button onclick="openNewProductModal()" class="px-4 py-2 rounded-xl bg-white text-black font-black text-xs hover:bg-zinc-200 transition">
-                            + Publier mon premier article
+                    <button onclick="openNewProductModal()" class="px-4 py-2.5 rounded-xl bg-white text-black font-black text-xs hover:bg-zinc-200 transition">
+                        + Publier un article 1:1
+                    </button>
+                </div>
+
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- TAB 2: STOCKS (CONTRÔLE RAPIDE TACTILE IPHONE)                 -->
+            <!-- ============================================================== -->
+            <section id="viewStocks" class="hidden space-y-6">
+                
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-950 p-4 rounded-2xl border border-els-border">
+                    <div>
+                        <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
+                            <i data-lucide="layers" class="w-5 h-5 text-emerald-400"></i>
+                            <span>Gestionnaire Tactile des Stocks</span>
+                        </h2>
+                        <p class="text-xs text-zinc-400">Ajustez les quantités par taille d'un coup de pouce avec les boutons tactiles + et -.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs">
+                        <button onclick="filterStocksMode('all')" id="btnStockFilterAll" class="px-3 py-1.5 rounded-xl bg-white text-black font-bold">
+                            Tous les stocks
                         </button>
-                        <button onclick="resetDemoCatalogPrompt()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-bold hover:text-white transition">
-                            Restaurer les pièces démo 1:1
+                        <button onclick="filterStocksMode('low')" id="btnStockFilterLow" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold">
+                            ⚠️ Stock faible / Épuisé
                         </button>
+                    </div>
+                </div>
+
+                <!-- Tactile Stocks Cards List -->
+                <div id="tactileStocksContainer" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- TAB 3: COMMANDES (SUIVI STRIPE & VENTES DIRECTES IRL)          -->
+            <!-- ============================================================== -->
+            <section id="viewOrders" class="hidden space-y-6">
+                
+                <!-- Orders Stats & Action -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-950 p-4 rounded-2xl border border-els-border">
+                    <div class="space-y-1">
+                        <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
+                            <span>Commandes & Ventes Directes</span>
+                        </h2>
+                        <p class="text-xs text-zinc-400">Suivi des commandes en ligne Stripe et enregistrement des ventes en main propre.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="openNewOrderModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black flex items-center gap-2 transition active:scale-95 shadow-lg shadow-emerald-500/20">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>+ Nouvelle Vente Directe</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Filter Tabs -->
+                <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+                    <button onclick="filterOrdersByStatus('all')" id="btnOrderTabAll" class="px-3.5 py-1.5 rounded-xl bg-white text-black transition">
+                        Toutes (<span id="countOrderAll">0</span>)
+                    </button>
+                    <button onclick="filterOrdersByStatus('pending')" id="btnOrderTabPending" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:text-white transition">
+                        En préparation (<span id="countOrderPending">0</span>)
+                    </button>
+                    <button onclick="filterOrdersByStatus('expedie')" id="btnOrderTabExpedie" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sky-400 hover:text-white transition">
+                        Expédiées (<span id="countOrderExpedie">0</span>)
+                    </button>
+                    <button onclick="filterOrdersByStatus('livre')" id="btnOrderTabLivre" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-emerald-400 hover:text-white transition">
+                        Livrées (<span id="countOrderLivre">0</span>)
+                    </button>
+                </div>
+
+                <!-- Orders List -->
+                <div id="ordersCardsContainer" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Orders Empty State -->
+                <div id="ordersEmptyState" class="hidden py-16 text-center space-y-4 bg-els-card border border-els-border rounded-2xl">
+                    <i data-lucide="inbox" class="w-12 h-12 text-zinc-600 mx-auto"></i>
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-base text-white">Aucune commande enregistrée</h3>
+                        <p class="text-xs text-zinc-400">Les commandes passées sur la boutique Stripe apparaîtront ici, et vous pouvez ajouter des ventes directes.</p>
+                    </div>
+                    <button onclick="openNewOrderModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 text-black font-black text-xs hover:bg-emerald-400 transition">
+                        + Enregistrer une vente directe
+                    </button>
+                </div>
+
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- TAB 4: BÉNÉFICES (KPIs & RENTABILITÉ FINANCIÈRE)                -->
+            <!-- ============================================================== -->
+            <section id="viewProfit" class="hidden space-y-6">
+                
+                <div class="bg-zinc-950 p-4 rounded-2xl border border-els-border">
+                    <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+                        <span>Analyse de Rentabilité & Marges (1:1 Miroir)</span>
+                    </h2>
+                    <p class="text-xs text-zinc-400">Calcul automatique des gains nets potentiels et réels pour Eliott & Ilies.</p>
+                </div>
+
+                <!-- KPIs Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <div class="bg-els-card border border-emerald-500/40 p-5 rounded-2xl space-y-1.5 bg-gradient-to-br from-emerald-950/30 to-els-card col-span-2 sm:col-span-1 shadow-lg shadow-emerald-500/5">
+                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Bénéfice Net Projeté
+                        </span>
+                        <div id="kpiTotalProfit" class="font-black text-3xl text-emerald-400">+0 €</div>
+                        <span class="text-[11px] text-emerald-400/80">Gain net sur tout le stock</span>
+                    </div>
+
+                    <div class="bg-els-card border border-els-border p-5 rounded-2xl space-y-1.5">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Chiffre d'Affaires Stock</span>
+                        <div id="kpiTotalRevenue" class="font-black text-2xl text-white">0 €</div>
+                        <span class="text-[11px] text-zinc-500">Valeur totale vente public</span>
+                    </div>
+
+                    <div class="bg-els-card border border-els-border p-5 rounded-2xl space-y-1.5">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Coût Fournisseur</span>
+                        <div id="kpiTotalCost" class="font-black text-2xl text-zinc-300">0 €</div>
+                        <span class="text-[11px] text-zinc-500">Prix de revient d'achat</span>
+                    </div>
+
+                    <div class="bg-els-card border border-els-border p-5 rounded-2xl space-y-1.5">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Taux de Marge Moyen</span>
+                        <div id="kpiAverageMargin" class="font-black text-2xl text-sky-400">0%</div>
+                        <span class="text-[11px] text-zinc-500">Marge brute moyenne</span>
+                    </div>
+
+                </div>
+
+                <!-- Secondary KPIs -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] text-zinc-500 font-bold uppercase">Volume Total en Stock</div>
+                            <div id="kpiTotalUnits" class="font-black text-xl text-white">0 pièces</div>
+                        </div>
+                        <i data-lucide="boxes" class="w-8 h-8 text-zinc-700"></i>
+                    </div>
+
+                    <div class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] text-zinc-500 font-bold uppercase">Ventes Commandes Encaissées</div>
+                            <div id="kpiTotalSalesOrders" class="font-black text-xl text-emerald-400">0 €</div>
+                        </div>
+                        <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-600/50"></i>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- TAB 5: COMPTE & GUIDE APP IPHONE                               -->
+            <!-- ============================================================== -->
+            <section id="viewAccount" class="hidden space-y-6">
+                
+                <!-- Account Card -->
+                <div class="bg-els-card border border-els-border p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div id="accountProfileAvatar" class="w-14 h-14 rounded-2xl bg-emerald-500 text-black font-black text-2xl flex items-center justify-center shadow-lg">
+                            E
+                        </div>
+                        <div>
+                            <h3 id="accountProfileName" class="font-bold text-lg text-white">Eliott</h3>
+                            <div class="text-xs text-emerald-400 font-mono font-bold">Compte Super Administrateur ELS</div>
+                            <div class="text-[11px] text-zinc-500 mt-0.5">Droits d'administration complets partagés avec Ilies</div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-zinc-800 flex flex-wrap gap-3">
+                        <a href="/" target="_blank" class="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-white text-xs font-bold flex items-center gap-2 transition">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            <span>Ouvrir la Boutique ELS.SHOP</span>
+                        </a>
+                        <button onclick="handleLogout()" class="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white text-xs font-bold flex items-center gap-2 transition">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Se déconnecter de l'iPhone</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- iPhone App Installation Tutorial -->
+                <div class="bg-zinc-950 border border-emerald-500/30 p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-2 text-white font-bold text-base">
+                        <span class="text-xl">📲</span>
+                        <span>Guide d'Installation de l'Application sur iPhone</span>
+                    </div>
+
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Pour ouvrir l'espace Admin comme une vraie application sans passer par Safari à chaque fois :
+                    </p>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-start gap-3 p-3 bg-black/60 rounded-xl border border-zinc-800">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">1</div>
+                            <div>
+                                <div class="font-bold text-white">Ouvrez Safari sur votre iPhone</div>
+                                <div class="text-zinc-400 text-[11px]">Accédez à <strong>https://els-shop.vercel.app/admin.html</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-black/60 rounded-xl border border-zinc-800">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">2</div>
+                            <div>
+                                <div class="font-bold text-white">Appuyez sur le bouton de Partage</div>
+                                <div class="text-zinc-400 text-[11px]">C'est l'icône carrée avec la flèche vers le haut <i data-lucide="share" class="w-3 h-3 inline"></i> située en bas au centre de Safari.</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-black/60 rounded-xl border border-zinc-800">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">3</div>
+                            <div>
+                                <div class="font-bold text-white">Sélectionnez « Sur l'écran d'accueil »</div>
+                                <div class="text-zinc-400 text-[11px]">Faites défiler le menu vers le bas jusqu'à voir l'option avec l'icône « + ».</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-3 bg-black/60 rounded-xl border border-zinc-800">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">4</div>
+                            <div>
+                                <div class="font-bold text-white">Validez « Ajouter » en haut à droite</div>
+                                <div class="text-zinc-400 text-[11px]">L'icône noire <strong>ELS ADMIN</strong> apparaît instantanément sur votre écran d'iPhone et s'ouvre en 1 tap en vrai plein écran natif !</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -324,67 +596,96 @@
 
         </main>
 
-        <!-- Footer -->
-        <footer class="border-t border-els-border bg-zinc-950 py-4 px-6 text-center text-xs text-zinc-600">
-            ELS.SHOP — Administration sécurisée pour Eliott & Ilies.
+        <!-- ============================================================== -->
+        <!-- 4. IPHONE BOTTOM NAVIGATION TAB BAR (ERGONOMIE MOBILE 1 MAIN)   -->
+        <!-- ============================================================== -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 px-2 py-2 flex items-center justify-around text-center">
+            
+            <button onclick="switchTab('articles')" id="bottomTab-articles" class="bottom-tab-btn active flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="package" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold">Articles</span>
+            </button>
+
+            <button onclick="switchTab('stocks')" id="bottomTab-stocks" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold">Stocks</span>
+            </button>
+
+            <button onclick="switchTab('orders')" id="bottomTab-orders" class="bottom-tab-btn relative flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold">Commandes</span>
+                <span id="tabOrderCountBadgeMobile" class="absolute top-0 right-3 w-4 h-4 rounded-full bg-emerald-500 text-black font-black text-[9px] flex items-center justify-center hidden">0</span>
+            </button>
+
+            <button onclick="switchTab('profit')" id="bottomTab-profit" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="trending-up" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold">Bénéfices</span>
+            </button>
+
+            <button onclick="switchTab('account')" id="bottomTab-account" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold">Compte</span>
+            </button>
+
+        </nav>
+
+        <!-- Desktop Footer -->
+        <footer class="hidden md:block border-t border-els-border bg-zinc-950 py-4 px-6 text-center text-xs text-zinc-600">
+            ELS.ADMIN — Application de gestion sécurisée pour Eliott & Ilies.
         </footer>
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- 3. MODAL: PUBLIER / MODIFIER UN PRODUIT -->
-    <!-- ========================================== -->
+    <!-- ============================================================== -->
+    <!-- 5. MODAL: PUBLIER / MODIFIER UN PRODUIT                        -->
+    <!-- ============================================================== -->
     <div id="newProductBackdrop" onclick="closeNewProductModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-    <div id="newProductModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-2xl bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-6 sm:p-8 shadow-2xl">
+    <div id="newProductModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-2xl bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-8 shadow-2xl">
         
-        <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-5">
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
             <div class="flex items-center gap-2">
                 <i data-lucide="package-plus" class="w-5 h-5 text-emerald-400"></i>
-                <h3 id="modalTitle" class="font-display font-bold text-lg text-white">Publier un Nouveau Produit 1:1</h3>
+                <h3 id="modalTitle" class="font-display font-bold text-base sm:text-lg text-white">Publier un Nouveau Produit 1:1</h3>
             </div>
             <button onclick="closeNewProductModal()" class="p-1 rounded text-zinc-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
 
-        <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="space-y-5">
+        <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="space-y-4">
             <input type="hidden" id="editProductId" value="">
 
-            <!-- Article Name & Dynamic Brand -->
-            <div class="grid sm:grid-cols-2 gap-4">
+            <!-- Article Name & Brand -->
+            <div class="grid sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom de l'article *</label>
-                    <input type="text" id="newProdName" required placeholder="Ex: Wyndham Parka, Alcatraz Hoodie..." class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <input type="text" id="newProdName" required placeholder="Ex: Wyndham Parka, Alcatraz Hoodie..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
                 </div>
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-[11px] font-bold text-zinc-400 uppercase">Marque *</label>
                         <button type="button" onclick="toggleNewBrandInput(true)" id="toggleBrandBtn" class="text-[10px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition">
-                            <i data-lucide="plus-circle" class="w-3 h-3"></i> + Ajouter une marque
+                            <i data-lucide="plus-circle" class="w-3 h-3"></i> + Ajouter marque
                         </button>
                     </div>
                     
-                    <select id="brandSelect" onchange="handleBrandSelectChange(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <select id="brandSelect" onchange="handleBrandSelectChange(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
                         <option value="">Sélectionner une marque...</option>
-                        <!-- Populated dynamically with existing brands -->
                         <option value="__NEW__">➕ Autre marque (créer nouvelle)...</option>
                     </select>
 
-                    <!-- Input pour saisir une nouvelle marque -->
-                    <div id="newBrandInputContainer" class="hidden mt-2 flex items-center gap-2 bg-zinc-900/90 p-2 rounded-lg border border-sky-500/40">
+                    <div id="newBrandInputContainer" class="hidden mt-2 flex items-center gap-2 bg-zinc-900/90 p-2 rounded-xl border border-sky-500/40">
                         <input 
                             type="text" 
                             id="newCustomBrandInput" 
-                            placeholder="Nom de la marque (ex: Canada Goose, Moncler)..." 
+                            placeholder="Nom marque (ex: Canada Goose)..." 
                             onkeydown="if(event.key==='Enter'){event.preventDefault();confirmCustomBrand();}"
-                            class="flex-1 bg-zinc-950 border border-zinc-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
+                            class="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
                         >
-                        <button type="button" onclick="confirmCustomBrand()" class="px-3 py-1.5 rounded bg-sky-400 hover:bg-sky-300 text-black font-black text-xs transition">
+                        <button type="button" onclick="confirmCustomBrand()" class="px-3 py-1.5 rounded-lg bg-sky-400 hover:bg-sky-300 text-black font-black text-xs transition">
                             Ajouter
                         </button>
-                        <button type="button" onclick="toggleNewBrandInput(false)" class="p-1.5 text-zinc-400 hover:text-white text-xs">
-                            ✕
-                        </button>
+                        <button type="button" onclick="toggleNewBrandInput(false)" class="p-1 text-zinc-400 hover:text-white text-xs">✕</button>
                     </div>
 
                     <input type="hidden" id="newProdBrand" required>
@@ -392,54 +693,45 @@
             </div>
 
             <!-- Category & Quality -->
-            <div class="grid sm:grid-cols-2 gap-4">
+            <div class="grid sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Catégorie *</label>
-                    <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                        <option value="vestes">Vestes & Manteaux</option>
                         <option value="sweats">Sweats & Hoodies</option>
                         <option value="chaussures">Chaussures / Sneakers</option>
-                        <option value="vestes">Vestes & Manteaux</option>
                         <option value="t-shirts">T-Shirts</option>
                         <option value="pantalons">Pantalons & Cargos</option>
                         <option value="accessoires">Accessoires</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Qualité certifiée</label>
-                    <input type="text" id="newProdGrade" value="1:1 Miroir" class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Grade Qualité</label>
+                    <input type="text" id="newProdGrade" value="1:1 Miroir" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
                 </div>
             </div>
 
-            <!-- MULTI-COLORIS (Plusieurs coloris sur un seul article) -->
-            <div class="space-y-2 p-3.5 bg-zinc-950/80 rounded-xl border border-zinc-800">
+            <!-- MULTI-COLORIS -->
+            <div class="space-y-2 p-3 bg-zinc-950 rounded-xl border border-zinc-800">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
-                            <i data-lucide="palette" class="w-3.5 h-3.5 text-emerald-400"></i>
-                            Coloris disponibles (Multi-coloris pour cet article)
-                        </label>
-                        <p class="text-[10px] text-zinc-400">
-                            Ajoutez tous les coloris disponibles. Le client choisira directement son coloris sur la boutique sans doublon d'article.
-                        </p>
-                    </div>
+                    <label class="text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
+                        <i data-lucide="palette" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        Coloris disponibles (Multi-coloris pour l'article)
+                    </label>
                     <span id="colorCountBadge" class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">
                         0 coloris
                     </span>
                 </div>
 
-                <!-- Active Color Tags List -->
-                <div id="activeColorsContainer" class="flex flex-wrap gap-1.5 min-h-[38px] p-2 bg-black/80 border border-zinc-800 rounded-lg items-center">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="activeColorsContainer" class="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-black/80 border border-zinc-800 rounded-lg items-center"></div>
 
-                <!-- Color input + quick shortcuts -->
                 <div class="flex items-center gap-2 pt-1">
                     <input 
                         type="text" 
                         id="newColorInput" 
-                        placeholder="Tapez un coloris (ex: Noir Mat, Gris Graphite, Bleu Marine, Blanc)..." 
+                        placeholder="Tapez un coloris (ex: Noir Mat, Gris Graphite, Baby Blue)..." 
                         onkeydown="if(event.key==='Enter'){event.preventDefault();addColorTag(this.value);}"
-                        class="flex-1 bg-zinc-900 border border-zinc-700 focus:border-white rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
+                        class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
                     >
                     <button 
                         type="button" 
@@ -451,134 +743,230 @@
                     </button>
                 </div>
 
-                <!-- Quick shortcut color chips -->
-                <div class="flex flex-wrap items-center gap-1.5 pt-1 text-[11px]">
+                <div class="flex flex-wrap items-center gap-1 pt-1 text-[11px]">
                     <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis :</span>
-                    <button type="button" onclick="addColorTag('Noir Mat')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Noir Mat</button>
-                    <button type="button" onclick="addColorTag('Gris Graphite')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Gris Graphite</button>
-                    <button type="button" onclick="addColorTag('Bleu Marine')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Bleu Marine</button>
-                    <button type="button" onclick="addColorTag('Noir')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Noir</button>
-                    <button type="button" onclick="addColorTag('Blanc')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Blanc</button>
-                    <button type="button" onclick="addColorTag('Kaki')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Kaki</button>
-                    <button type="button" onclick="addColorTag('Beige')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Beige</button>
-                    <button type="button" onclick="addColorTag('Gris Chiné')" class="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition text-[11px]">+ Gris Chiné</button>
+                    <button type="button" onclick="addColorTag('Noir Mat')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Noir Mat</button>
+                    <button type="button" onclick="addColorTag('Gris Graphite')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Gris Graphite</button>
+                    <button type="button" onclick="addColorTag('Bleu Marine')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Bleu Marine</button>
+                    <button type="button" onclick="addColorTag('Blanc')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Blanc</button>
+                    <button type="button" onclick="addColorTag('Kaki')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Kaki</button>
+                    <button type="button" onclick="addColorTag('Triple Black')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Triple Black</button>
                 </div>
             </div>
 
-            <!-- Prices & Live Profit Calculation -->
-            <div class="grid sm:grid-cols-3 gap-3 p-4 bg-zinc-950 rounded-xl border border-zinc-800">
+            <!-- Prices & Live Margin -->
+            <div class="grid sm:grid-cols-3 gap-2.5 p-3 bg-zinc-950 rounded-xl border border-zinc-800">
                 <div>
-                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix de vente public (€) *</label>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente (€) *</label>
                     <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateMargin()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût d'achat fournisseur (€)</label>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût achat (€)</label>
                     <input type="number" id="newProdCost" placeholder="40" oninput="calculateMargin()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire Net</label>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire</label>
                     <div id="newProdMarginDisplay" class="text-xs font-black text-emerald-400 py-1.5">+0 € (0% marge)</div>
                 </div>
             </div>
 
-            <!-- PHOTO IMPORT (PHOTOTHÈQUE / FICHIERS + RECADRAGE) -->
+            <!-- Photo Import with Camera / Gallery -->
             <div class="space-y-2">
                 <label class="block text-[11px] font-bold text-zinc-400 uppercase">
-                    Photo de l'article (Importer ou Coller une URL)
+                    Photo de l'article (Importer ou Coller URL)
                 </label>
                 
-                <div class="flex flex-col sm:flex-row items-center gap-3">
-                    
-                    <!-- File input trigger (Photothèque / Fichiers) -->
+                <div class="flex flex-col sm:flex-row items-center gap-2">
                     <label class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition">
-                        <i data-lucide="image-plus" class="w-4 h-4 text-sky-400"></i>
-                        <span>Importer photo (Galerie / Fichiers)</span>
+                        <i data-lucide="camera" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Prendre photo / Photothèque</span>
                         <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
                     </label>
-
-                    <span class="text-xs text-zinc-600">ou URL directe :</span>
 
                     <input 
                         type="url" 
                         id="newProdImageUrl" 
-                        placeholder="https://..." 
+                        placeholder="ou coller URL photo..." 
                         oninput="updateImagePreview(this.value)"
-                        class="flex-1 bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none w-full"
+                        class="flex-1 bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none w-full"
                     >
                 </div>
 
-                <!-- Preview Thumbnail -->
-                <div id="photoPreviewContainer" class="hidden items-center gap-3 p-3 bg-zinc-950 rounded-xl border border-zinc-800">
-                    <img id="photoPreviewImg" src="" alt="Aperçu" class="w-16 h-16 rounded-lg object-cover bg-black border border-zinc-700">
-                    <div class="text-xs space-y-1">
+                <div id="photoPreviewContainer" class="hidden items-center gap-3 p-2 bg-zinc-950 rounded-xl border border-zinc-800">
+                    <img id="photoPreviewImg" src="" alt="Aperçu" class="w-14 h-14 rounded-lg object-cover bg-black border border-zinc-700">
+                    <div class="text-xs space-y-0.5">
                         <div class="text-emerald-400 font-bold flex items-center gap-1">
-                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Photo prête (Format 1:1 Carré)
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Photo recadrée 1:1 Carré
                         </div>
                         <button type="button" onclick="reopenCropper()" class="text-sky-400 hover:underline text-[11px]">
-                            Recadrer à nouveau
+                            Modifier le cadrage
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- SIZES & STOCKS (XS, S, M, L, XL, XXL, 3XL & SHOES) -->
+            <!-- Sizes & Stocks -->
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase">Stocks par Taille (XS à 3XL)</label>
-                    <span class="text-[10px] text-zinc-500">Indiquez la quantité disponible pour chaque taille</span>
+                    <span class="text-[10px] text-zinc-500">Quantité par taille</span>
                 </div>
-                
-                <div id="sizesStockGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="sizesStockGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-2"></div>
             </div>
 
-            <!-- AI DESCRIPTION GENERATOR -->
-            <div class="space-y-2">
+            <!-- AI Streetwear Description -->
+            <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase">Description du Produit (1:1)</label>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase">Description Qualité 1:1</label>
                     <button 
                         type="button" 
                         onclick="triggerAIDescription()" 
                         id="aiGenBtn"
-                        class="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1.5 bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-lg transition"
+                        class="text-[11px] font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg transition"
                     >
                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                        <span>Générer avec l'IA ELS (Qualité 1:1)</span>
+                        <span>Générer IA Streetwear</span>
                     </button>
                 </div>
                 <textarea 
                     id="newProdDescription" 
                     rows="3" 
                     required
-                    placeholder="Détails des finitions 1:1, grammage, accessoires fournis..." 
-                    class="w-full bg-zinc-950 border border-els-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
+                    placeholder="Détails finitions 1:1, grammage coton, hologramme..." 
+                    class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                 ></textarea>
             </div>
 
-            <div class="pt-3 border-t border-zinc-800 flex items-center justify-end gap-3">
-                <button type="button" onclick="closeNewProductModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition">
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeNewProductModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white">
                     Annuler
                 </button>
-                <button type="submit" id="saveProductBtn" class="bg-white hover:bg-zinc-200 text-black px-6 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 transition shadow-md active:scale-95">
+                <button type="submit" id="saveProductBtn" class="bg-white hover:bg-zinc-200 text-black px-5 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 transition active:scale-95 shadow-md">
                     <i data-lucide="check" class="w-4 h-4"></i>
-                    <span id="saveBtnText">Enregistrer & Publier en direct</span>
+                    <span id="saveBtnText">Enregistrer & Publier</span>
                 </button>
             </div>
 
         </form>
-
     </div>
 
-    <!-- ========================================== -->
-    <!-- 4. MODAL: OUTIL DE RECADRAGE IMAGE (1:1 CARRÉ) -->
-    <!-- ========================================== -->
-    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-els-card border border-els-border rounded-2xl p-6 shadow-2xl space-y-4">
+    <!-- ============================================================== -->
+    <!-- 6. MODAL: NOUVELLE VENTE DIRECTE / COMMANDE                    -->
+    <!-- ============================================================== -->
+    <div id="newOrderBackdrop" onclick="closeNewOrderModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="newOrderModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-lg bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-7 shadow-2xl">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
+                <h3 class="font-display font-bold text-base sm:text-lg text-white">Enregistrer une Vente Directe</h3>
+            </div>
+            <button onclick="closeNewOrderModal()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="newOrderForm" onsubmit="handleNewOrderSubmit(event)" class="space-y-4">
             
-            <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom du client *</label>
+                    <input type="text" id="orderCustomerName" required placeholder="Ex: Lucas, Mehdi..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Téléphone / Insta</label>
+                    <input type="text" id="orderCustomerPhone" placeholder="06... / @pseudo" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Product Selection -->
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Article vendu *</label>
+                <select id="orderProductSelect" onchange="handleOrderProductChange(this.value)" required class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    <option value="">Sélectionner un article...</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Coloris</label>
+                    <select id="orderColorSelect" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="Unique">Standard</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Taille vendue *</label>
+                    <select id="orderSizeSelect" required class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="M">M</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Quantité *</label>
+                    <input type="number" id="orderQuantity" value="1" min="1" required class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Montant encaissé (€) *</label>
+                    <input type="number" id="orderTotalPrice" required placeholder="120" class="w-full bg-zinc-950 border border-emerald-500/40 rounded-xl px-3 py-2 text-xs text-emerald-400 font-black focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Règlement</label>
+                    <select id="orderPaymentMethod" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="Espèces">Espèces (Direct)</option>
+                        <option value="Lydia / Paylib">Lydia / Paylib</option>
+                        <option value="Virement Instantané">Virement Instantané</option>
+                        <option value="Stripe (CB)">Stripe (CB)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Statut Initial</label>
+                    <select id="orderStatus" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="livre">Livrée / Remise en main propre</option>
+                        <option value="en_preparation">En préparation</option>
+                        <option value="expedie">Expédiée (Colissimo)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Notes / Lieu de rendez-vous</label>
+                <input type="text" id="orderNotes" placeholder="Ex: Main propre Châtelet, client Snapchat..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            </div>
+
+            <div class="flex items-center gap-2 p-2.5 bg-emerald-950/20 border border-emerald-500/30 rounded-xl">
+                <input type="checkbox" id="orderDeductStockCheck" checked class="w-4 h-4 accent-emerald-500 rounded">
+                <label for="orderDeductStockCheck" class="text-xs text-emerald-400 font-bold select-none cursor-pointer">
+                    Déduire automatiquement la pièce du stock catalogue
+                </label>
+            </div>
+
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeNewOrderModal()" class="px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white">
+                    Annuler
+                </button>
+                <button type="submit" id="saveOrderBtn" class="bg-emerald-500 hover:bg-emerald-400 text-black px-5 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 transition active:scale-95 shadow-md">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Valider la Vente</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 7. MODAL: RECADRAGE IMAGE 1:1 CARRÉ                             -->
+    <!-- ============================================================== -->
+    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-5 shadow-2xl space-y-3">
+            
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="crop" class="w-5 h-5 text-sky-400"></i>
+                    <i data-lucide="crop" class="w-4 h-4 text-sky-400"></i>
                     <h4 class="font-bold text-sm text-white">Recadrage Photo 1:1 Carré</h4>
                 </div>
                 <button onclick="closeCropper()" class="p-1 rounded text-zinc-400 hover:text-white">
@@ -586,19 +974,13 @@
                 </button>
             </div>
 
-            <p class="text-xs text-zinc-400">
-                Glissez la photo et utilisez le zoom pour que le vêtement soit parfaitement centré dans le carré.
-            </p>
-
-            <!-- Cropper Canvas Box -->
             <div class="crop-container" id="cropBox">
-                <canvas id="cropCanvas" width="320" height="320" class="w-full h-full"></canvas>
+                <canvas id="cropCanvas" width="280" height="280" class="w-full h-full"></canvas>
                 <div class="crop-overlay-grid"></div>
             </div>
 
-            <!-- Controls: Zoom & Rotate -->
-            <div class="space-y-3 pt-2">
-                <div class="flex items-center justify-between text-xs text-zinc-400">
+            <div class="space-y-2 pt-1 text-xs">
+                <div class="flex items-center justify-between text-zinc-400">
                     <span>Zoom</span>
                     <span id="zoomValText" class="font-mono">100%</span>
                 </div>
@@ -612,39 +994,45 @@
                     oninput="handleZoomChange(this.value)"
                     class="w-full accent-sky-400 cursor-pointer"
                 >
-
-                <div class="flex items-center justify-between gap-3">
-                    <button type="button" onclick="rotateImage()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 hover:text-white flex items-center gap-1.5">
-                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
-                        <span>Pivoter 90°</span>
+                <div class="flex items-center justify-between gap-2 pt-1">
+                    <button type="button" onclick="rotateImage()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs flex items-center gap-1">
+                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Pivoter 90°
                     </button>
-                    <button type="button" onclick="resetCropTransform()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 hover:text-white">
+                    <button type="button" onclick="resetCropTransform()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs">
                         Réinitialiser
                     </button>
                 </div>
             </div>
 
-            <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                <button onclick="closeCropper()" class="px-4 py-2 text-xs font-bold text-zinc-400 hover:text-white">
-                    Annuler
-                </button>
-                <button onclick="applyCrop()" class="px-5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center gap-1.5 transition">
-                    <i data-lucide="check" class="w-4 h-4"></i>
-                    <span>Valider le recadrage 1:1</span>
+            <div class="pt-2 border-t border-zinc-800 flex justify-end gap-2">
+                <button onclick="closeCropper()" class="px-3 py-1.5 text-xs text-zinc-400 hover:text-white">Annuler</button>
+                <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center gap-1 transition">
+                    <i data-lucide="check" class="w-4 h-4"></i> Valider 1:1
                 </button>
             </div>
 
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT & STATE MANAGEMENT -->
-    <!-- ========================================== -->
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-20 md:bottom-6 right-6 bg-zinc-950 border border-emerald-500 text-white px-4 py-2.5 rounded-xl z-50 text-xs font-bold uppercase tracking-wider shadow-2xl translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toastMessage">Action effectuée</span>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 8. JAVASCRIPT STATE & APPLICATION ENGINE                        -->
+    <!-- ============================================================== -->
     <script>
-        // State
+        // Global State
         let adminProducts = [];
+        let adminOrders = [];
         let currentAdmin = null;
         let selectedLoginUsername = 'eliott';
+        let currentTab = 'articles';
+        let stockFilterMode = 'all'; // 'all' or 'low'
+        let orderFilterStatus = 'all';
+
         let adminSearch = '';
         let adminCat = 'all';
 
@@ -663,12 +1051,69 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        // Show Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastMessage');
+            if (!toast || !toastText) return;
+            toastText.innerText = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // ==========================================
+        // TAB SWITCHING (ARTICLES, STOCKS, ORDERS, PROFIT, ACCOUNT)
+        // ==========================================
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Hide all tab views
+            ['viewArticles', 'viewStocks', 'viewOrders', 'viewProfit', 'viewAccount'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.bottom-tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected view
+            const viewMap = {
+                'articles': 'viewArticles',
+                'stocks': 'viewStocks',
+                'orders': 'viewOrders',
+                'profit': 'viewProfit',
+                'account': 'viewAccount'
+            };
+
+            const targetView = document.getElementById(viewMap[tabName]);
+            if (targetView) targetView.classList.remove('hidden');
+
+            // Activate buttons
+            const desktopBtn = document.getElementById(`tabBtn-${tabName}`);
+            if (desktopBtn) desktopBtn.classList.add('active');
+
+            const bottomBtn = document.getElementById(`bottomTab-${tabName}`);
+            if (bottomBtn) bottomBtn.classList.add('active');
+
+            // Trigger specific renders
+            if (tabName === 'stocks') renderTactileStocks();
+            if (tabName === 'orders') loadOrders();
+            if (tabName === 'profit') calculateKPIs();
+            if (tabName === 'articles') renderProductsList();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            initIcons();
+        }
+
         // ==========================================
         // DYNAMIC BRANDS MANAGEMENT
         // ==========================================
         const defaultBrands = [
-            "Corteiz",
             "Canada Goose",
+            "Corteiz",
             "Arc'teryx",
             "Jordan",
             "Stüssy",
@@ -736,7 +1181,7 @@
             const input = document.getElementById('newCustomBrandInput');
             const brandName = (input.value || '').trim();
             if (!brandName) {
-                alert('Veuillez entrer le nom de la nouvelle marque (ex: Canada Goose).');
+                alert('Veuillez entrer le nom de la nouvelle marque.');
                 return;
             }
 
@@ -748,16 +1193,6 @@
             populateBrandSelect(brandName);
             document.getElementById('newProdBrand').value = brandName;
             toggleNewBrandInput(false);
-        }
-
-        function setBrandValue(brandName) {
-            const trimmed = (brandName || '').trim();
-            if (trimmed && !availableBrands.includes(trimmed)) {
-                availableBrands.push(trimmed);
-                availableBrands.sort((a, b) => a.localeCompare(b));
-            }
-            populateBrandSelect(trimmed);
-            document.getElementById('newProdBrand').value = trimmed;
         }
 
         // ==========================================
@@ -773,7 +1208,7 @@
             countBadge.innerText = `${activeColors.length} coloris`;
 
             if (activeColors.length === 0) {
-                container.innerHTML = `<span class="text-zinc-500 text-xs italic">Aucun coloris sélectionné (cliquez sur les raccourcis ou tapez un coloris ci-dessous)</span>`;
+                container.innerHTML = `<span class="text-zinc-500 text-xs italic">Aucun coloris sélectionné</span>`;
                 return;
             }
 
@@ -781,9 +1216,7 @@
                 <span class="inline-flex items-center gap-1.5 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 px-2.5 py-1 rounded-lg text-xs font-semibold text-white transition">
                     <span class="w-2 h-2 rounded-full ${getColorDotClass(c)}"></span>
                     <span>${c}</span>
-                    <button type="button" onclick="removeColorTag('${c}')" class="text-zinc-400 hover:text-red-400 p-0.5 rounded transition font-black ml-0.5" title="Retirer ce coloris">
-                        ✕
-                    </button>
+                    <button type="button" onclick="removeColorTag('${c}')" class="text-zinc-400 hover:text-red-400 p-0.5 rounded transition font-black ml-0.5" title="Retirer">✕</button>
                 </span>
             `).join('');
 
@@ -791,7 +1224,7 @@
         }
 
         function getColorDotClass(name) {
-            const n = name.toLowerCase();
+            const n = (name || '').toLowerCase();
             if (n.includes('noir') || n.includes('black')) return 'bg-zinc-700 border border-zinc-500';
             if (n.includes('blanc') || n.includes('white') || n.includes('sail')) return 'bg-white border border-zinc-400';
             if (n.includes('gris') || n.includes('grey') || n.includes('graphite')) return 'bg-zinc-400';
@@ -807,7 +1240,6 @@
         function addColorTag(colorStr) {
             const trimmed = (colorStr || '').trim();
             if (!trimmed) return;
-
             const exists = activeColors.some(c => c.toLowerCase() === trimmed.toLowerCase());
             if (!exists) {
                 activeColors.push(trimmed);
@@ -822,22 +1254,23 @@
             renderColorTags();
         }
 
-        // Account Selection
+        // ==========================================
+        // AUTHENTICATION & SESSION PERSISTENCE
+        // ==========================================
         function selectAccount(username) {
             selectedLoginUsername = username;
             const btnEliott = document.getElementById('btnAccountEliott');
             const btnIlies = document.getElementById('btnAccountIlies');
 
             if (username === 'eliott') {
-                btnEliott.className = 'p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition';
-                btnIlies.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition';
+                btnEliott.className = 'p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition cursor-pointer';
+                btnIlies.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
             } else {
-                btnIlies.className = 'p-3 rounded-xl border border-sky-500/60 bg-sky-500/10 text-white flex items-center gap-3 transition';
-                btnEliott.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition';
+                btnIlies.className = 'p-3 rounded-xl border border-sky-500/60 bg-sky-500/10 text-white flex items-center gap-3 transition cursor-pointer';
+                btnEliott.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
             }
         }
 
-        // Check Session
         async function checkAdminAuth() {
             const token = localStorage.getItem('els_admin_jwt');
             if (!token) {
@@ -857,7 +1290,6 @@
                     showLoginScreen();
                 }
             } catch (err) {
-                // Fallback to local session
                 const localUser = JSON.parse(localStorage.getItem('els_admin_user') || 'null');
                 if (localUser) {
                     currentAdmin = localUser;
@@ -877,21 +1309,33 @@
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('adminContent').classList.remove('hidden');
 
-            document.getElementById('currentAdminName').innerText = currentAdmin.displayName || currentAdmin.username;
+            const name = currentAdmin.displayName || currentAdmin.username;
+            document.getElementById('currentAdminName').innerText = name;
+            document.getElementById('accountProfileName').innerText = name;
+
             const avatar = document.getElementById('currentAdminAvatar');
+            const accAvatar = document.getElementById('accountProfileAvatar');
+            
             if (currentAdmin.username === 'ilies') {
                 avatar.innerText = 'I';
                 avatar.className = 'w-6 h-6 rounded-full bg-sky-500 text-black font-black text-[11px] flex items-center justify-center';
+                accAvatar.innerText = 'I';
+                accAvatar.className = 'w-14 h-14 rounded-2xl bg-sky-500 text-black font-black text-2xl flex items-center justify-center shadow-lg';
             } else {
                 avatar.innerText = 'E';
                 avatar.className = 'w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-[11px] flex items-center justify-center';
+                accAvatar.innerText = 'E';
+                accAvatar.className = 'w-14 h-14 rounded-2xl bg-emerald-500 text-black font-black text-2xl flex items-center justify-center shadow-lg';
             }
 
+            // Check iOS banner
+            checkiOSBanner();
+
             loadProducts();
+            loadOrders();
             initIcons();
         }
 
-        // Login Submit
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const password = document.getElementById('loginPasswordInput').value;
@@ -919,7 +1363,6 @@
                     errorMsg.classList.remove('hidden');
                 }
             } catch (err) {
-                // Local fallback check
                 if ((selectedLoginUsername === 'eliott' && password === 'eliott2026') || 
                     (selectedLoginUsername === 'ilies' && password === 'ilies2026')) {
                     const fallbackUser = {
@@ -945,10 +1388,26 @@
             showLoginScreen();
         }
 
-        // Fetch products from persistent backend
+        function checkiOSBanner() {
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+            const banner = document.getElementById('iosInstallBanner');
+            if (isIOS && !isStandalone && banner) {
+                banner.classList.remove('hidden');
+            }
+        }
+
+        function dismissInstallBanner() {
+            const banner = document.getElementById('iosInstallBanner');
+            if (banner) banner.classList.add('hidden');
+        }
+
+        // ==========================================
+        // PRODUCTS MANAGEMENT
+        // ==========================================
         async function loadProducts() {
             try {
-                const res = await fetch('/api/products');
+                const res = await fetch('/api/products?t=' + Date.now());
                 const data = await res.json();
                 if (data.success && Array.isArray(data.products)) {
                     adminProducts = data.products;
@@ -957,16 +1416,664 @@
                 console.warn('API fetch error, using local fallback:', err);
             }
             syncAvailableBrands();
-            renderTable();
+            renderProductsList();
+            renderTactileStocks();
             calculateKPIs();
+            populateOrderProductSelect();
         }
 
-        // KPI Calculations
+        function handleAdminSearch(val) {
+            adminSearch = val;
+            renderProductsList();
+        }
+
+        function handleAdminCategoryFilter(val) {
+            adminCat = val;
+            renderProductsList();
+        }
+
+        function renderProductsList() {
+            const tbody = document.getElementById('adminProductsTableBody');
+            const mobileGrid = document.getElementById('mobileProductsGrid');
+            const emptyState = document.getElementById('adminEmptyState');
+            const countBadge = document.getElementById('articleCountBadge');
+
+            let filtered = adminProducts.filter(p => {
+                const matchCat = adminCat === 'all' || (p.category || '').toLowerCase() === adminCat.toLowerCase();
+                const matchSearch = !adminSearch || 
+                    (p.name || '').toLowerCase().includes(adminSearch.toLowerCase()) || 
+                    (p.brand || '').toLowerCase().includes(adminSearch.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (countBadge) countBadge.innerText = `${filtered.length} pièces`;
+
+            if (filtered.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (mobileGrid) mobileGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // 1. Mobile Cards View
+            if (mobileGrid) {
+                mobileGrid.innerHTML = filtered.map(p => {
+                    const stockObj = p.stock || {};
+                    const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                    const cost = Number(p.costPrice || Math.round(p.price * 0.35));
+                    const unitProfit = Number(p.price) - cost;
+                    const marginPct = Number(p.price) > 0 ? Math.round((unitProfit / Number(p.price)) * 100) : 0;
+                    const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
+
+                    return `
+                    <div class="bg-els-card border border-els-border rounded-2xl p-4 space-y-3 shadow-lg">
+                        <div class="flex gap-3">
+                            <img src="${p.image}" alt="${p.name}" class="w-20 h-20 rounded-xl object-cover bg-black border border-zinc-800 shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider">${p.brand}</div>
+                                <h4 class="font-bold text-sm text-white truncate">${p.name}</h4>
+                                <div class="flex items-center gap-1.5 mt-1">
+                                    <span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded">1:1 Miroir</span>
+                                    <span class="text-[10px] text-zinc-400 capitalize">${p.category}</span>
+                                </div>
+                                <div class="flex items-baseline gap-2 mt-1.5">
+                                    <span class="font-black text-base text-white">${p.price} €</span>
+                                    <span class="text-[11px] text-emerald-400 font-bold">+${unitProfit} € net (${marginPct}%)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colors chips -->
+                        <div class="flex flex-wrap gap-1 items-center pt-1 border-t border-zinc-900">
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase">Coloris :</span>
+                            ${pColors.map(c => `
+                                <span class="text-[10px] bg-zinc-900 text-zinc-300 border border-zinc-800 px-2 py-0.5 rounded font-mono">${c}</span>
+                            `).join('')}
+                        </div>
+
+                        <!-- Sizes / Quick Stock Pills -->
+                        <div class="flex flex-wrap gap-1.5 items-center">
+                            ${(p.sizes || []).map(sz => {
+                                const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                return `
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${count === 0 ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-zinc-900 border-zinc-800 text-zinc-300'}">
+                                        <strong>${sz}</strong>: ${count}
+                                    </span>
+                                `;
+                            }).join('')}
+                            <span class="ml-auto text-[10px] font-black px-2 py-0.5 rounded ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                                Total: ${totalUnits}
+                            </span>
+                        </div>
+
+                        <!-- Card Action Buttons -->
+                        <div class="pt-2 border-t border-zinc-900 flex items-center justify-between">
+                            <button onclick="switchTab('stocks')" class="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1">
+                                <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                                <span>Ajuster stocks</span>
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="editProduct('${p.id}')" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-bold hover:text-white flex items-center gap-1">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                    <span>Modifier</span>
+                                </button>
+                                <button onclick="deleteProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-red-400" title="Supprimer">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // 2. Desktop Table View
+            if (tbody) {
+                tbody.innerHTML = filtered.map(p => {
+                    const stockObj = p.stock || {};
+                    const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                    const cost = Number(p.costPrice || Math.round(p.price * 0.35));
+                    const unitProfit = Number(p.price) - cost;
+                    const marginPct = Number(p.price) > 0 ? Math.round((unitProfit / Number(p.price)) * 100) : 0;
+                    const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
+
+                    return `
+                    <tr class="hover:bg-zinc-900/50 transition">
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
+                                <div>
+                                    <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
+                                    <div class="font-bold text-white">${p.name}</div>
+                                    <div class="flex flex-wrap items-center gap-1 mt-1">
+                                        <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">${p.conditionGrade || '1:1 Miroir'}</span>
+                                        ${pColors.map(c => `
+                                            <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-zinc-400 capitalize">${p.category}</td>
+                        <td class="py-3.5 px-4 font-black text-white">${p.price} €</td>
+                        <td class="py-3.5 px-4 text-zinc-400 font-mono">${cost} €</td>
+                        <td class="py-3.5 px-4">
+                            <div class="text-emerald-400 font-black">+${unitProfit} €</div>
+                            <span class="text-[10px] text-emerald-500 font-bold">${marginPct}% marge</span>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex flex-wrap gap-1.5 items-center max-w-sm">
+                                ${(p.sizes || []).map(sz => {
+                                    const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                    return `
+                                        <div class="flex items-center border border-zinc-800 rounded bg-zinc-950 px-1.5 py-0.5 text-[11px]">
+                                            <span class="font-bold text-zinc-400 mr-1">${sz}:</span>
+                                            <button onclick="updateStockDelta('${p.id}', '${sz}', -1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">-</button>
+                                            <span class="font-mono font-bold ${count === 0 ? 'text-red-400' : 'text-white'} px-1">${count}</span>
+                                            <button onclick="updateStockDelta('${p.id}', '${sz}', 1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">+</button>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="px-2 py-0.5 rounded text-[11px] font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                                ${totalUnits} pcs
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <button onclick="editProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white" title="Modifier">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button onclick="deleteProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-red-400" title="Supprimer">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+            }
+
+            initIcons();
+        }
+
+        // ==========================================
+        // TAB 2: TACTILE STOCKS CONTROLLER (POUR IPHONE)
+        // ==========================================
+        function filterStocksMode(mode) {
+            stockFilterMode = mode;
+            const btnAll = document.getElementById('btnStockFilterAll');
+            const btnLow = document.getElementById('btnStockFilterLow');
+
+            if (mode === 'all') {
+                btnAll.className = 'px-3 py-1.5 rounded-xl bg-white text-black font-bold';
+                btnLow.className = 'px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold';
+            } else {
+                btnLow.className = 'px-3 py-1.5 rounded-xl bg-amber-500 text-black font-bold';
+                btnAll.className = 'px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold';
+            }
+            renderTactileStocks();
+        }
+
+        function renderTactileStocks() {
+            const container = document.getElementById('tactileStocksContainer');
+            if (!container) return;
+
+            let list = adminProducts;
+            if (stockFilterMode === 'low') {
+                list = list.filter(p => {
+                    const stockObj = p.stock || {};
+                    return (p.sizes || []).some(sz => (stockObj[sz] || 0) <= 2);
+                });
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center text-zinc-500 text-xs bg-els-card border border-els-border rounded-2xl">
+                        Aucun article avec stock faible détecté. Tout est au vert !
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(p => {
+                const stockObj = p.stock || {};
+                const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+
+                return `
+                <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-xl object-cover bg-black border border-zinc-700">
+                            <div>
+                                <span class="text-[10px] font-black uppercase text-zinc-400 tracking-wider">${p.brand}</span>
+                                <h3 class="font-bold text-sm text-white">${p.name}</h3>
+                                <div class="text-[11px] text-zinc-400">${p.price} € • ${p.category}</div>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-xl text-xs font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                            ${totalUnits} en stock
+                        </span>
+                    </div>
+
+                    <!-- Tactile Sizes Stepper Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                        ${(p.sizes || []).map(sz => {
+                            const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                            const isZero = count === 0;
+                            const isLow = count > 0 && count <= 2;
+
+                            return `
+                            <div class="bg-black/70 border border-zinc-800 rounded-xl p-2 flex flex-col items-center justify-between gap-1.5">
+                                <div class="flex items-center justify-between w-full px-1">
+                                    <span class="font-black text-xs text-zinc-300 uppercase">${sz}</span>
+                                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${isZero ? 'bg-red-500/20 text-red-400' : isLow ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                                        ${count}
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between w-full gap-1 pt-1 border-t border-zinc-900">
+                                    <button 
+                                        onclick="updateStockDelta('${p.id}', '${sz}', -1)"
+                                        class="w-8 h-8 rounded-lg bg-zinc-900 hover:bg-zinc-800 active:scale-90 text-white font-black text-base flex items-center justify-center border border-zinc-700 transition"
+                                    >
+                                        -
+                                    </button>
+                                    <button 
+                                        onclick="updateStockDelta('${p.id}', '${sz}', 1)"
+                                        class="w-8 h-8 rounded-lg bg-white hover:bg-zinc-200 active:scale-90 text-black font-black text-base flex items-center justify-center transition shadow"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            initIcons();
+        }
+
+        async function updateStockDelta(prodId, size, delta) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) return;
+            if (!p.stock) p.stock = {};
+            const cur = Number(p.stock[size] || 0);
+            p.stock[size] = Math.max(0, cur + delta);
+
+            calculateKPIs();
+            renderProductsList();
+            renderTactileStocks();
+            showToast(`${p.name} (${size}) : ${p.stock[size]} pcs`);
+
+            // Persist to backend
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch('/api/products', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id: p.id, stock: p.stock })
+                });
+            } catch (err) {}
+        }
+
+        // ==========================================
+        // TAB 3: COMMANDES & VENTES DIRECTES (ORDERS)
+        // ==========================================
+        async function loadOrders() {
+            const token = localStorage.getItem('els_admin_jwt');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/orders?t=' + Date.now(), {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success && Array.isArray(data.orders)) {
+                    adminOrders = data.orders;
+                }
+            } catch (e) {
+                console.warn('Orders fetch error:', e);
+            }
+
+            renderOrdersCards();
+            updateOrderBadges();
+        }
+
+        function updateOrderBadges() {
+            const pendingCount = adminOrders.filter(o => o.status === 'en_attente' || o.status === 'en_preparation').length;
+            
+            const badgeDesktop = document.getElementById('tabOrderCountBadgeDesktop');
+            const badgeMobile = document.getElementById('tabOrderCountBadgeMobile');
+
+            if (pendingCount > 0) {
+                if (badgeDesktop) {
+                    badgeDesktop.innerText = pendingCount;
+                    badgeDesktop.classList.remove('hidden');
+                }
+                if (badgeMobile) {
+                    badgeMobile.innerText = pendingCount;
+                    badgeMobile.classList.remove('hidden');
+                }
+            } else {
+                if (badgeDesktop) badgeDesktop.classList.add('hidden');
+                if (badgeMobile) badgeMobile.classList.add('hidden');
+            }
+
+            document.getElementById('countOrderAll').innerText = adminOrders.length;
+            document.getElementById('countOrderPending').innerText = pendingCount;
+            document.getElementById('countOrderExpedie').innerText = adminOrders.filter(o => o.status === 'expedie').length;
+            document.getElementById('countOrderLivre').innerText = adminOrders.filter(o => o.status === 'livre').length;
+
+            const salesTotal = adminOrders
+                .filter(o => o.status !== 'annule')
+                .reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+            
+            const salesKpi = document.getElementById('kpiTotalSalesOrders');
+            if (salesKpi) salesKpi.innerText = `${salesTotal.toLocaleString('fr-FR')} €`;
+        }
+
+        function filterOrdersByStatus(status) {
+            orderFilterStatus = status;
+            ['All', 'Pending', 'Expedie', 'Livre'].forEach(st => {
+                const btn = document.getElementById(`btnOrderTab${st}`);
+                if (btn) {
+                    if (st.toLowerCase() === status.toLowerCase()) {
+                        btn.className = 'px-3.5 py-1.5 rounded-xl bg-white text-black font-bold transition';
+                    } else {
+                        btn.className = 'px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold transition';
+                    }
+                }
+            });
+            renderOrdersCards();
+        }
+
+        function renderOrdersCards() {
+            const container = document.getElementById('ordersCardsContainer');
+            const emptyState = document.getElementById('ordersEmptyState');
+            if (!container) return;
+
+            let filtered = adminOrders;
+            if (orderFilterStatus === 'pending') {
+                filtered = filtered.filter(o => o.status === 'en_attente' || o.status === 'en_preparation');
+            } else if (orderFilterStatus !== 'all') {
+                filtered = filtered.filter(o => o.status === orderFilterStatus);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            const statusColors = {
+                'en_attente': 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+                'en_preparation': 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+                'expedie': 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+                'livre': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                'annule': 'bg-red-500/10 text-red-400 border-red-500/30'
+            };
+
+            container.innerHTML = filtered.map(o => {
+                const dateStr = new Date(o.createdAt).toLocaleDateString('fr-FR', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+
+                return `
+                <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-zinc-800">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono font-black text-xs text-white bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">${o.id}</span>
+                            <span class="text-xs text-zinc-400 font-medium">${dateStr}</span>
+                            <span class="text-[10px] text-zinc-500">• Vendeur: ${o.createdBy || 'Web'}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black border ${statusColors[o.status] || 'bg-zinc-800 text-white'}">
+                                ${o.statusLabel || o.status}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Client & Items -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="text-xs font-bold text-white flex items-center gap-2">
+                                <i data-lucide="user" class="w-3.5 h-3.5 text-zinc-400"></i>
+                                <span>${o.customerName}</span>
+                                ${o.customerPhone ? `<span class="font-mono text-zinc-400 text-[11px]">(${o.customerPhone})</span>` : ''}
+                            </div>
+                            <div class="text-[11px] text-zinc-400">${o.customerAddress || 'Remise directe'}</div>
+                        </div>
+
+                        <div class="text-left sm:text-right">
+                            <div class="font-black text-base text-white">${o.total} €</div>
+                            <div class="text-[10px] text-zinc-500 uppercase font-mono">${o.paymentMethod || 'Espèces'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Articles ordered list -->
+                    <div class="p-3 bg-black/60 rounded-xl border border-zinc-800 space-y-2">
+                        ${(o.items || []).map(it => `
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-black text-white">${it.quantity}x</span>
+                                    <span class="font-bold text-zinc-300">${it.brand} ${it.name}</span>
+                                    <span class="font-mono text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded">${it.size}</span>
+                                    ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
+                                </div>
+                                <span class="font-mono font-bold text-zinc-300">${it.price * (it.quantity || 1)} €</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Actions Bar (Change Status, Colissimo, Delete) -->
+                    <div class="pt-2 border-t border-zinc-900 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase">Statut :</span>
+                            <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-zinc-900 border border-zinc-700 text-white rounded-lg text-xs px-2.5 py-1 focus:outline-none">
+                                <option value="en_preparation" ${o.status === 'en_preparation' ? 'selected' : ''}>En préparation</option>
+                                <option value="expedie" ${o.status === 'expedie' ? 'selected' : ''}>Expédiée</option>
+                                <option value="livre" ${o.status === 'livre' ? 'selected' : ''}>Livrée</option>
+                                <option value="annule" ${o.status === 'annule' ? 'selected' : ''}>Annulée</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            ${o.trackingNumber ? `
+                                <span class="text-[11px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/30 px-2 py-0.5 rounded">
+                                    Colissimo : ${o.trackingNumber}
+                                </span>
+                            ` : `
+                                <button onclick="promptTrackingNumber('${o.id}')" class="text-xs text-sky-400 hover:text-white flex items-center gap-1">
+                                    <i data-lucide="truck" class="w-3.5 h-3.5"></i>
+                                    <span>+ Suivi Colissimo</span>
+                                </button>
+                            `}
+
+                            <button onclick="deleteOrder('${o.id}')" class="p-1 text-zinc-500 hover:text-red-400" title="Supprimer la commande">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            initIcons();
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch('/api/orders', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id: orderId, status: newStatus })
+                });
+                showToast(`Commande ${orderId} : ${newStatus}`);
+                loadOrders();
+            } catch (err) {
+                alert('Erreur lors de la mise à jour du statut.');
+            }
+        }
+
+        async function promptTrackingNumber(orderId) {
+            const num = prompt('Entrez le numéro de suivi Colissimo (ex: 6A18492049281) :');
+            if (num === null) return;
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch('/api/orders', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        id: orderId, 
+                        trackingNumber: num, 
+                        status: 'expedie',
+                        carrier: 'Colissimo 24/48h'
+                    })
+                });
+                showToast('Numéro de suivi enregistré.');
+                loadOrders();
+            } catch (err) {}
+        }
+
+        async function deleteOrder(orderId) {
+            if (!confirm(`Supprimer définitivement la commande ${orderId} ?`)) return;
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch(`/api/orders?id=${orderId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                showToast('Commande supprimée.');
+                loadOrders();
+            } catch (e) {}
+        }
+
+        // Vente directe Modal
+        function openNewOrderModal() {
+            populateOrderProductSelect();
+            document.getElementById('newOrderBackdrop').classList.remove('hidden');
+            document.getElementById('newOrderModal').classList.remove('hidden');
+        }
+
+        function closeNewOrderModal() {
+            document.getElementById('newOrderBackdrop').classList.add('hidden');
+            document.getElementById('newOrderModal').classList.add('hidden');
+        }
+
+        function populateOrderProductSelect() {
+            const select = document.getElementById('orderProductSelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">Sélectionner un article du catalogue...</option>' + 
+                adminProducts.map(p => `<option value="${p.id}">${p.brand} - ${p.name} (${p.price} €)</option>`).join('');
+        }
+
+        function handleOrderProductChange(prodId) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) return;
+
+            document.getElementById('orderTotalPrice').value = p.price;
+
+            // Sizes select
+            const sizeSelect = document.getElementById('orderSizeSelect');
+            sizeSelect.innerHTML = (p.sizes || []).map(sz => `<option value="${sz}">${sz}</option>`).join('');
+
+            // Colors select
+            const colorSelect = document.getElementById('orderColorSelect');
+            const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Standard']);
+            colorSelect.innerHTML = pColors.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        async function handleNewOrderSubmit(e) {
+            e.preventDefault();
+            const prodId = document.getElementById('orderProductSelect').value;
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) {
+                alert('Veuillez sélectionner un article.');
+                return;
+            }
+
+            const customerName = document.getElementById('orderCustomerName').value;
+            const customerPhone = document.getElementById('orderCustomerPhone').value;
+            const size = document.getElementById('orderSizeSelect').value;
+            const color = document.getElementById('orderColorSelect').value;
+            const quantity = parseInt(document.getElementById('orderQuantity').value, 10) || 1;
+            const total = parseFloat(document.getElementById('orderTotalPrice').value) || (p.price * quantity);
+            const paymentMethod = document.getElementById('orderPaymentMethod').value;
+            const status = document.getElementById('orderStatus').value;
+            const notes = document.getElementById('orderNotes').value;
+            const deductStock = document.getElementById('orderDeductStockCheck').checked;
+
+            const token = localStorage.getItem('els_admin_jwt');
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        customerName,
+                        customerPhone,
+                        customerAddress: 'Vente directe IRL',
+                        items: [{
+                            id: p.id,
+                            name: p.name,
+                            brand: p.brand,
+                            color,
+                            size,
+                            price: p.price,
+                            quantity
+                        }],
+                        total,
+                        paymentMethod,
+                        status,
+                        notes,
+                        deductStock
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    closeNewOrderModal();
+                    showToast('Vente enregistrée avec succès !');
+                    loadOrders();
+                    loadProducts(); // Refresh stock
+                } else {
+                    alert(data.error || 'Erreur lors de l\'enregistrement de la commande.');
+                }
+            } catch (err) {
+                alert('Erreur réseau lors de l\'enregistrement.');
+            }
+        }
+
+        // ==========================================
+        // TAB 4: CALCUL DES BÉNÉFICES & MARGES (KPIS)
+        // ==========================================
         function calculateKPIs() {
             let totalRev = 0;
             let totalCost = 0;
             let totalUnits = 0;
-            let totalCatalogPieces = adminProducts.length;
 
             adminProducts.forEach(p => {
                 const stockObj = p.stock || {};
@@ -986,194 +2093,33 @@
             document.getElementById('kpiTotalCost').innerText = `${totalCost.toLocaleString('fr-FR')} €`;
             document.getElementById('kpiTotalProfit').innerText = `+${netProfit.toLocaleString('fr-FR')} €`;
             document.getElementById('kpiAverageMargin').innerText = `${avgMargin}%`;
-            document.getElementById('kpiTotalUnits').innerText = `${totalUnits} pcs`;
+            document.getElementById('kpiTotalUnits').innerText = `${totalUnits} pièces`;
         }
-
-        // Render Table
-        function renderTable() {
-            const tbody = document.getElementById('adminProductsTableBody');
-            const emptyState = document.getElementById('adminEmptyState');
-
-            let filtered = adminProducts.filter(p => {
-                const matchCat = adminCat === 'all' || (p.category || '').toLowerCase() === adminCat.toLowerCase();
-                const matchSearch = !adminSearch || 
-                    (p.name || '').toLowerCase().includes(adminSearch.toLowerCase()) || 
-                    (p.brand || '').toLowerCase().includes(adminSearch.toLowerCase());
-                return matchCat && matchSearch;
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            tbody.innerHTML = filtered.map(p => {
-                const stockObj = p.stock || {};
-                const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
-                const cost = Number(p.costPrice || Math.round(p.price * 0.35));
-                const unitProfit = Number(p.price) - cost;
-                const marginPct = Number(p.price) > 0 ? Math.round((unitProfit / Number(p.price)) * 100) : 0;
-                const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
-
-                return `
-                <tr class="hover:bg-zinc-900/50 transition">
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-3">
-                            <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
-                            <div>
-                                <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
-                                <div class="font-bold text-white">${p.name}</div>
-                                <div class="flex flex-wrap items-center gap-1 mt-1">
-                                    <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">${p.conditionGrade || '1:1 Miroir'}</span>
-                                    ${pColors.map(c => `
-                                        <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td class="py-3 px-4 text-zinc-400 capitalize">${p.category}</td>
-
-                    <td class="py-3 px-4 font-black text-white">${p.price} €</td>
-
-                    <td class="py-3 px-4 text-zinc-400 font-mono">${cost} €</td>
-
-                    <td class="py-3 px-4">
-                        <div class="text-emerald-400 font-black">+${unitProfit} €</div>
-                        <span class="text-[10px] text-emerald-500 font-bold">${marginPct}% marge</span>
-                    </td>
-
-                    <td class="py-3 px-4">
-                        <div class="flex flex-wrap gap-1.5 items-center max-w-sm">
-                            ${(p.sizes || []).map(sz => {
-                                const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
-                                return `
-                                    <div class="flex items-center border border-zinc-800 rounded bg-zinc-950 px-1.5 py-0.5 text-[11px]">
-                                        <span class="font-bold text-zinc-400 mr-1">${sz}:</span>
-                                        <button onclick="updateStockDelta('${p.id}', '${sz}', -1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">-</button>
-                                        <span class="font-mono font-bold ${count === 0 ? 'text-red-400' : 'text-white'} px-1">${count}</span>
-                                        <button onclick="updateStockDelta('${p.id}', '${sz}', 1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">+</button>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </td>
-
-                    <td class="py-3 px-4 text-center">
-                        <span class="px-2 py-0.5 rounded text-[11px] font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
-                            ${totalUnits} pcs
-                        </span>
-                    </td>
-
-                    <td class="py-3 px-4 text-right">
-                        <div class="flex items-center justify-end gap-2">
-                            <button onclick="editProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white" title="Modifier">
-                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                            </button>
-                            <button onclick="deleteProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-red-400" title="Supprimer">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                `;
-            }).join('');
-
-            initIcons();
-        }
-
-        // Live Stock update
-        async function updateStockDelta(prodId, size, delta) {
-            const p = adminProducts.find(it => it.id === prodId);
-            if (!p) return;
-            if (!p.stock) p.stock = {};
-            const cur = Number(p.stock[size] || 0);
-            p.stock[size] = Math.max(0, cur + delta);
-
-            calculateKPIs();
-            renderTable();
-
-            // Persist to backend
-            const token = localStorage.getItem('els_admin_jwt');
-            try {
-                await fetch('/api/products', {
-                    method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ id: p.id, stock: p.stock })
-                });
-            } catch (err) {}
-        }
-
-        // Delete Product
-        async function deleteProduct(prodId) {
-            if (!confirm('Supprimer définitivement cet article du catalogue et de la vitrine ?')) return;
-
-            adminProducts = adminProducts.filter(p => p.id !== prodId);
-            calculateKPIs();
-            renderTable();
-
-            const token = localStorage.getItem('els_admin_jwt');
-            try {
-                await fetch(`/api/products?id=${prodId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-            } catch (err) {}
-        }
-
-        // Reset demo products prompt
-        async function resetDemoCatalogPrompt() {
-            if (!confirm('Voulez-vous réinitialiser le catalogue avec les pièces 1:1 de démonstration ?')) return;
-
-            const token = localStorage.getItem('els_admin_jwt');
-            try {
-                const res = await fetch('/api/products?action=reset_demo', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await res.json();
-                if (data.success && data.products) {
-                    adminProducts = data.products;
-                    calculateKPIs();
-                    renderTable();
-                    alert('Catalogue réinitialisé avec succès !');
-                }
-            } catch (e) {
-                alert('Erreur lors de la réinitialisation');
-            }
-        }
-
-        // Search & Filter
-        function handleAdminSearch(v) { adminSearch = v.trim(); renderTable(); }
-        function handleAdminCategoryFilter(v) { adminCat = v; renderTable(); }
 
         // ==========================================
-        // MODAL PRODUCT FORM (ADD / EDIT)
+        // MODAL: PUBLIER & ÉDITER UN ARTICLE
         // ==========================================
         function openNewProductModal() {
+            document.getElementById('newProductForm').reset();
             document.getElementById('editProductId').value = '';
             document.getElementById('modalTitle').innerText = 'Publier un Nouveau Produit 1:1';
-            document.getElementById('saveBtnText').innerText = 'Enregistrer & Publier en direct';
-            document.getElementById('newProductForm').reset();
-            document.getElementById('newProdGrade').value = '1:1 Miroir';
-            document.getElementById('photoPreviewContainer').classList.add('hidden');
-            finalCroppedDataUrl = '';
-            
-            setBrandValue('');
-            toggleNewBrandInput(false);
+            document.getElementById('saveBtnText').innerText = 'Enregistrer & Publier';
             activeColors = ['Noir'];
             renderColorTags();
+            finalCroppedDataUrl = '';
+            document.getElementById('photoPreviewContainer').classList.add('hidden');
+            document.getElementById('newProdImageUrl').value = '';
+            
+            switchSizesByCategory('vestes');
+            calculateMargin();
 
-            switchSizesByCategory('sweats');
             document.getElementById('newProductBackdrop').classList.remove('hidden');
             document.getElementById('newProductModal').classList.remove('hidden');
-            initIcons();
+        }
+
+        function closeNewProductModal() {
+            document.getElementById('newProductBackdrop').classList.add('hidden');
+            document.getElementById('newProductModal').classList.add('hidden');
         }
 
         function editProduct(prodId) {
@@ -1182,113 +2128,216 @@
 
             document.getElementById('editProductId').value = p.id;
             document.getElementById('modalTitle').innerText = `Modifier : ${p.name}`;
-            document.getElementById('saveBtnText').innerText = 'Mettre à jour l\'article';
+            document.getElementById('saveBtnText').innerText = 'Enregistrer les modifications';
 
             document.getElementById('newProdName').value = p.name;
-            setBrandValue(p.brand || '');
-            toggleNewBrandInput(false);
+            setBrandValue(p.brand);
             document.getElementById('newProdCategory').value = p.category;
             document.getElementById('newProdGrade').value = p.conditionGrade || '1:1 Miroir';
             document.getElementById('newProdPrice').value = p.price;
             document.getElementById('newProdCost').value = p.costPrice || Math.round(p.price * 0.35);
-            document.getElementById('newProdImageUrl').value = p.image || '';
             document.getElementById('newProdDescription').value = p.description || '';
 
-            if (Array.isArray(p.colors) && p.colors.length > 0) {
-                activeColors = [...p.colors];
-            } else if (p.color) {
-                activeColors = [p.color];
-            } else {
-                activeColors = ['Noir'];
-            }
+            // Colors
+            activeColors = Array.isArray(p.colors) && p.colors.length > 0 ? [...p.colors] : (p.color ? [p.color] : ['Noir']);
             renderColorTags();
 
-            calculateMargin();
-            switchSizesByCategory(p.category, p.stock || {});
-
+            // Photo
             if (p.image) {
                 finalCroppedDataUrl = p.image;
+                document.getElementById('newProdImageUrl').value = p.image;
                 document.getElementById('photoPreviewImg').src = p.image;
                 document.getElementById('photoPreviewContainer').classList.remove('hidden');
             }
 
+            // Sizes
+            switchSizesByCategory(p.category);
+            const stockObj = p.stock || {};
+            (p.sizes || []).forEach(sz => {
+                const input = document.getElementById(`stockSize_${sz}`);
+                if (input) input.value = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+            });
+
+            calculateMargin();
+
             document.getElementById('newProductBackdrop').classList.remove('hidden');
             document.getElementById('newProductModal').classList.remove('hidden');
-            initIcons();
         }
 
-        function closeNewProductModal() {
-            document.getElementById('newProductBackdrop').classList.add('hidden');
-            document.getElementById('newProductModal').classList.add('hidden');
+        function setBrandValue(brandName) {
+            const trimmed = (brandName || '').trim();
+            if (trimmed && !availableBrands.includes(trimmed)) {
+                availableBrands.push(trimmed);
+                availableBrands.sort((a, b) => a.localeCompare(b));
+            }
+            populateBrandSelect(trimmed);
+            document.getElementById('newProdBrand').value = trimmed;
         }
 
-        // Switch sizes layout (XS to 3XL, or shoe sizes)
-        function switchSizesByCategory(cat, existingStock = {}) {
-            const container = document.getElementById('sizesStockGrid');
-            let sizeList = [];
+        function switchSizesByCategory(cat) {
+            const grid = document.getElementById('sizesStockGrid');
+            if (!grid) return;
 
-            if (cat === 'chaussures') {
-                sizeList = ["38", "39", "40", "41", "42", "42.5", "43", "44", "45", "46"];
+            let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+            if (cat === 'vestes') {
+                sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+            } else if (cat === 'chaussures') {
+                sizes = ['40', '41', '42', '42.5', '43', '44', '45'];
             } else if (cat === 'accessoires') {
-                sizeList = ["Taille Unique"];
-            } else {
-                // Clothes: XS, S, M, L, XL, XXL, 3XL
-                sizeList = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+                sizes = ['Unique'];
             }
 
-            container.innerHTML = sizeList.map(sz => {
-                const val = existingStock[sz] !== undefined ? existingStock[sz] : (sz === '3XL' || sz === 'XS' ? 2 : 4);
-                return `
-                    <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-center">
-                        <span class="block text-[11px] font-bold text-zinc-400">${sz}</span>
-                        <input 
-                            type="number" 
-                            id="stock_input_${sz}" 
-                            value="${val}" 
-                            min="0" 
-                            class="w-full bg-black text-center text-xs font-mono font-bold text-white rounded mt-1 border border-zinc-700 py-1"
-                        >
-                    </div>
-                `;
-            }).join('');
+            grid.innerHTML = sizes.map(sz => `
+                <div class="bg-zinc-950 p-2 rounded-xl border border-zinc-800 text-center space-y-1">
+                    <span class="block text-[11px] font-black uppercase text-zinc-300">${sz}</span>
+                    <input 
+                        type="number" 
+                        id="stockSize_${sz}" 
+                        value="3" 
+                        min="0"
+                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg text-center py-1 text-xs text-white font-bold focus:outline-none"
+                    >
+                </div>
+            `).join('');
         }
 
         function calculateMargin() {
-            const price = Number(document.getElementById('newProdPrice').value || 0);
-            const cost = Number(document.getElementById('newProdCost').value || Math.round(price * 0.35));
-            const margin = price - cost;
-            const pct = price > 0 ? Math.round((margin / price) * 100) : 0;
-            document.getElementById('newProdMarginDisplay').innerText = `+${margin} € (${pct}% marge)`;
+            const price = parseFloat(document.getElementById('newProdPrice').value) || 0;
+            const cost = parseFloat(document.getElementById('newProdCost').value) || 0;
+            const profit = price - cost;
+            const pct = price > 0 ? Math.round((profit / price) * 100) : 0;
+
+            const display = document.getElementById('newProdMarginDisplay');
+            if (profit >= 0) {
+                display.innerText = `+${profit} € (${pct}% marge)`;
+                display.className = 'text-xs font-black text-emerald-400 py-1.5';
+            } else {
+                display.innerText = `${profit} € (Vente à perte)`;
+                display.className = 'text-xs font-black text-red-400 py-1.5';
+            }
+        }
+
+        // Form Submit
+        async function handleProductFormSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editProductId').value;
+            const name = document.getElementById('newProdName').value;
+            const brand = document.getElementById('newProdBrand').value || document.getElementById('brandSelect').value;
+            const category = document.getElementById('newProdCategory').value;
+            const conditionGrade = document.getElementById('newProdGrade').value || '1:1 Miroir';
+            const price = parseFloat(document.getElementById('newProdPrice').value);
+            const costPrice = parseFloat(document.getElementById('newProdCost').value) || Math.round(price * 0.35);
+            const description = document.getElementById('newProdDescription').value;
+            const image = finalCroppedDataUrl || document.getElementById('newProdImageUrl').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+
+            if (!brand) {
+                alert('Veuillez sélectionner ou ajouter une marque.');
+                return;
+            }
+
+            // Extract stocks
+            const stock = {};
+            const sizes = [];
+            document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
+                const sz = inp.id.replace('stockSize_', '');
+                sizes.push(sz);
+                stock[sz] = parseInt(inp.value, 10) || 0;
+            });
+
+            const productData = {
+                name,
+                brand,
+                category,
+                condition: 'Neuf (1:1)',
+                conditionGrade,
+                price,
+                costPrice,
+                color: activeColors[0] || 'Standard',
+                colors: activeColors.length > 0 ? activeColors : ['Standard'],
+                sizes,
+                stock,
+                image,
+                description,
+                badge: '1:1 BEST-SELLER'
+            };
+
+            const token = localStorage.getItem('els_admin_jwt');
+
+            try {
+                if (editId) {
+                    productData.id = editId;
+                    await fetch('/api/products', {
+                        method: 'PUT',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(productData)
+                    });
+                    showToast('Article modifié avec succès');
+                } else {
+                    await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(productData)
+                    });
+                    showToast('Nouvel article publié en direct');
+                }
+
+                closeNewProductModal();
+                loadProducts();
+            } catch (err) {
+                alert('Erreur lors de l\'enregistrement de l\'article.');
+            }
+        }
+
+        async function deleteProduct(prodId) {
+            if (!confirm('Supprimer définitivement cet article du catalogue et de la vitrine ?')) return;
+
+            adminProducts = adminProducts.filter(p => p.id !== prodId);
+            calculateKPIs();
+            renderProductsList();
+            renderTactileStocks();
+
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch(`/api/products?id=${prodId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                showToast('Article supprimé.');
+            } catch (err) {}
         }
 
         // ==========================================
-        // AI DESCRIPTION GENERATOR (EXPERT STREETWEAR 1:1)
+        // AI STREETWEAR COPY GENERATOR
         // ==========================================
         async function triggerAIDescription() {
             const name = document.getElementById('newProdName').value;
-            const brand = document.getElementById('newProdBrand').value;
+            const brand = document.getElementById('newProdBrand').value || document.getElementById('brandSelect').value;
             const category = document.getElementById('newProdCategory').value;
-            const grade = document.getElementById('newProdGrade').value;
 
-            if (!name && !brand) {
-                alert('Veuillez d\'abord saisir le nom et la marque pour générer la description avec l\'IA.');
+            if (!name) {
+                alert('Veuillez d\'abord saisir le nom de l\'article.');
                 return;
             }
 
             const btn = document.getElementById('aiGenBtn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Rédaction IA Streetwear 1:1...`;
+            btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Génération IA...`;
             initIcons();
 
             try {
                 const res = await fetch('/api/ai-description', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        name, 
-                        brand, 
-                        category, 
-                        colors: activeColors, 
-                        grade 
+                    body: JSON.stringify({
+                        name,
+                        brand: brand || 'Streetwear',
+                        category,
+                        colors: activeColors
                     })
                 });
 
@@ -1297,118 +2346,48 @@
                     document.getElementById('newProdDescription').value = data.description;
                 }
             } catch (err) {
-                // Fallback client-side generator
-                const colorStr = activeColors.length > 0 ? activeColors.join(', ') : 'Noir';
-                document.getElementById('newProdDescription').value = 
-`### **${brand || 'ELS'} — ${name}**
-*(Version Certifiée Qualité ${grade || '1:1 Miroir'})*
-
-Pièce emblématique du vestiaire streetwear contemporain sélectionnée en Qualité 1:1 Miroir.
-
----
-
-#### 🔍 **1. Conception & Matières d'Exception**
-- **Textile & Tissage :** Tissu premium haute densité au tombé lourd identique au retail.
-- **Poids & Tenue :** Grammage lourd garantissant une tenue parfaite au fil des lavages.
-
-#### ✂️ **2. Finitions Qualité 1:1 Miroir**
-- **Détails & Précision :** Broderies haute précision, coutures renforcées, étiquettes intérieures et puces/wash tags conformes.
-- **Packaging :** Livré sous emballage protecteur scellé avec accessoires complets.
-
-#### 📏 **3. Conseils de Coupe & Guide des Tailles**
-- Coupe streetwear authentique. Prenez votre taille habituelle.
-🎨 **Coloris disponibles :** ${colorStr}
-
----
-⚠️ **Engagement Transparence ELS.SHOP :**
-*Article certifié Qualité 1:1 Miroir (finitions, matières, étiquettes et accessoires rigoureusement identiques).*`;
-            } finally {
-                btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> <span>Générer avec l'IA ELS (Qualité 1:1)</span>`;
-                initIcons();
+                document.getElementById('newProdDescription').value = `Qualité 1:1 Miroir haute fidélité. Confection conforme dans les matières originales, étiquettes intérieures wash tags et finitions au millimètre.`;
             }
+
+            btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Générer IA Streetwear`;
+            initIcons();
         }
 
         // ==========================================
-        // PHOTO CROPPING TOOL (1:1 SQUARE)
+        // IMAGE CROPPER ENGINE (1:1 CARRÉ)
         // ==========================================
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
                     rawImage = img;
                     openCropper();
                 };
-                img.src = e.target.result;
+                img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         }
 
         function openCropper() {
-            cropScale = 1;
-            cropRotation = 0;
-            cropPanX = 0;
-            cropPanY = 0;
-            document.getElementById('zoomSlider').value = 1;
-            document.getElementById('zoomValText').innerText = '100%';
+            resetCropTransform();
             document.getElementById('cropModalBackdrop').classList.remove('hidden');
-            setupCanvasDrag();
-            drawCropper();
-            initIcons();
-        }
-
-        function reopenCropper() {
-            if (rawImage) {
-                document.getElementById('cropModalBackdrop').classList.remove('hidden');
-                drawCropper();
-            }
+            initCropperTouchDrag();
+            drawCrop();
         }
 
         function closeCropper() {
             document.getElementById('cropModalBackdrop').classList.add('hidden');
         }
 
-        function drawCropper() {
-            const canvas = document.getElementById('cropCanvas');
-            if (!canvas || !rawImage) return;
-            const ctx = canvas.getContext('2d');
-            const size = canvas.width;
-
-            ctx.clearRect(0, 0, size, size);
-            ctx.save();
-
-            // Center transform
-            ctx.translate(size / 2 + cropPanX, size / 2 + cropPanY);
-            ctx.rotate((cropRotation * Math.PI) / 180);
-            ctx.scale(cropScale, cropScale);
-
-            // Compute aspect ratio covering the box
-            const imgAspect = rawImage.width / rawImage.height;
-            let drawW, drawH;
-            if (imgAspect > 1) {
-                drawH = size;
-                drawW = size * imgAspect;
-            } else {
-                drawW = size;
-                drawH = size / imgAspect;
+        function reopenCropper() {
+            if (rawImage) {
+                document.getElementById('cropModalBackdrop').classList.remove('hidden');
+                drawCrop();
             }
-
-            ctx.drawImage(rawImage, -drawW / 2, -drawH / 2, drawW, drawH);
-            ctx.restore();
-        }
-
-        function handleZoomChange(val) {
-            cropScale = Number(val);
-            document.getElementById('zoomValText').innerText = `${Math.round(cropScale * 100)}%`;
-            drawCropper();
-        }
-
-        function rotateImage() {
-            cropRotation = (cropRotation + 90) % 360;
-            drawCropper();
         }
 
         function resetCropTransform() {
@@ -1418,57 +2397,86 @@ Pièce emblématique du vestiaire streetwear contemporain sélectionnée en Qual
             cropPanY = 0;
             document.getElementById('zoomSlider').value = 1;
             document.getElementById('zoomValText').innerText = '100%';
-            drawCropper();
+            drawCrop();
         }
 
-        function setupCanvasDrag() {
+        function handleZoomChange(val) {
+            cropScale = parseFloat(val);
+            document.getElementById('zoomValText').innerText = `${Math.round(cropScale * 100)}%`;
+            drawCrop();
+        }
+
+        function rotateImage() {
+            cropRotation = (cropRotation + 90) % 360;
+            drawCrop();
+        }
+
+        function drawCrop() {
+            const canvas = document.getElementById('cropCanvas');
+            if (!canvas || !rawImage) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.save();
+            ctx.translate(w / 2 + cropPanX, h / 2 + cropPanY);
+            ctx.rotate((cropRotation * Math.PI) / 180);
+            ctx.scale(cropScale, cropScale);
+
+            const aspect = rawImage.width / rawImage.height;
+            let drawW = w;
+            let drawH = h;
+            if (aspect > 1) {
+                drawW = h * aspect;
+            } else {
+                drawH = w / aspect;
+            }
+
+            ctx.drawImage(rawImage, -drawW / 2, -drawH / 2, drawW, drawH);
+            ctx.restore();
+        }
+
+        function initCropperTouchDrag() {
             const box = document.getElementById('cropBox');
+            if (!box) return;
 
-            const startDrag = (x, y) => {
+            const onStart = (e) => {
                 isDraggingCrop = true;
-                startDragX = x - cropPanX;
-                startDragY = y - cropPanY;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startDragX = clientX - cropPanX;
+                startDragY = clientY - cropPanY;
             };
 
-            const doDrag = (x, y) => {
+            const onMove = (e) => {
                 if (!isDraggingCrop) return;
-                cropPanX = x - startDragX;
-                cropPanY = y - startDragY;
-                drawCropper();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                cropPanX = clientX - startDragX;
+                cropPanY = clientY - startDragY;
+                drawCrop();
             };
 
-            const stopDrag = () => { isDraggingCrop = false; };
+            const onEnd = () => { isDraggingCrop = false; };
 
-            box.onmousedown = (e) => startDrag(e.clientX, e.clientY);
-            window.onmousemove = (e) => doDrag(e.clientX, e.clientY);
-            window.onmouseup = stopDrag;
+            box.onmousedown = onStart;
+            window.onmousemove = onMove;
+            window.onmouseup = onEnd;
 
-            box.ontouchstart = (e) => {
-                if (e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY);
-            };
-            box.ontouchmove = (e) => {
-                if (e.touches[0]) doDrag(e.touches[0].clientX, e.touches[0].clientY);
-            };
-            box.ontouchend = stopDrag;
+            box.ontouchstart = onStart;
+            box.ontouchmove = onMove;
+            box.ontouchend = onEnd;
         }
 
         function applyCrop() {
             const canvas = document.getElementById('cropCanvas');
-            // Export in high resolution 800x800 square
-            const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = 800;
-            exportCanvas.height = 800;
-            const expCtx = exportCanvas.getContext('2d');
+            if (!canvas) return;
 
-            // Draw current canvas scaled up
-            expCtx.drawImage(canvas, 0, 0, 800, 800);
-            finalCroppedDataUrl = exportCanvas.toDataURL('image/jpeg', 0.90);
-
-            // Update UI preview
+            finalCroppedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
             document.getElementById('photoPreviewImg').src = finalCroppedDataUrl;
             document.getElementById('photoPreviewContainer').classList.remove('hidden');
             document.getElementById('newProdImageUrl').value = '';
-
             closeCropper();
         }
 
@@ -1481,114 +2489,8 @@ Pièce emblématique du vestiaire streetwear contemporain sélectionnée en Qual
         }
 
         // ==========================================
-        // SUBMIT PRODUCT (CREATE OR EDIT)
+        // INIT ON PAGE LOAD
         // ==========================================
-        async function handleProductFormSubmit(e) {
-            e.preventDefault();
-            const editId = document.getElementById('editProductId').value;
-            const name = document.getElementById('newProdName').value;
-            const brand = (document.getElementById('newProdBrand').value || '').trim();
-            const category = document.getElementById('newProdCategory').value;
-            const grade = document.getElementById('newProdGrade').value;
-            const price = Number(document.getElementById('newProdPrice').value);
-            const cost = Number(document.getElementById('newProdCost').value || Math.round(price * 0.35));
-            const image = finalCroppedDataUrl || document.getElementById('newProdImageUrl').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
-            const desc = document.getElementById('newProdDescription').value;
-
-            if (!brand) {
-                alert('Veuillez sélectionner ou ajouter une marque pour cet article.');
-                return;
-            }
-
-            // Colors array
-            const colorsArr = activeColors.length > 0 ? activeColors : ['Noir'];
-            const defaultColor = colorsArr[0];
-
-            // Collect sizes and stocks
-            let sizeList = [];
-            if (category === 'chaussures') {
-                sizeList = ["38", "39", "40", "41", "42", "42.5", "43", "44", "45", "46"];
-            } else if (category === 'accessoires') {
-                sizeList = ["Taille Unique"];
-            } else {
-                sizeList = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
-            }
-
-            const stockObj = {};
-            const availableSizes = [];
-            sizeList.forEach(sz => {
-                const el = document.getElementById(`stock_input_${sz}`);
-                const val = el ? Number(el.value || 0) : 0;
-                stockObj[sz] = val;
-                if (val > 0) availableSizes.push(sz);
-            });
-
-            const payload = {
-                name,
-                brand,
-                category,
-                color: defaultColor,
-                colors: colorsArr,
-                conditionGrade: grade || '1:1 Miroir',
-                price,
-                costPrice: cost,
-                sizes: availableSizes.length > 0 ? availableSizes : sizeList,
-                stock: stockObj,
-                image,
-                description: desc
-            };
-
-            const btn = document.getElementById('saveProductBtn');
-            btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Enregistrement sur GitHub...`;
-            initIcons();
-
-            const token = localStorage.getItem('els_admin_jwt');
-
-            try {
-                let res;
-                if (editId) {
-                    // Update
-                    payload.id = editId;
-                    res = await fetch('/api/products', {
-                        method: 'PUT',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                } else {
-                    // Create
-                    res = await fetch('/api/products', {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                }
-
-                const data = await res.json();
-                if (data.success) {
-                    alert(data.message || 'Opération réussie !');
-                    closeNewProductModal();
-                    await loadProducts();
-                } else {
-                    alert('Erreur : ' + (data.error || 'Vérifiez vos données'));
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Erreur de connexion avec le serveur.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> <span id="saveBtnText">Enregistrer & Publier en direct</span>`;
-                initIcons();
-            }
-        }
-
-        // On Load
         window.addEventListener('DOMContentLoaded', () => {
             initIcons();
             checkAdminAuth();
