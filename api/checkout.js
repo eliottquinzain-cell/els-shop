@@ -1,7 +1,9 @@
 /**
- * ELS.SHOP - API de Checkout Stripe
- * Gère la création de sessions Stripe Checkout sécurisées pour le panier
+ * ELS.SHOP - API de Checkout Stripe & Enregistrement des Commandes
+ * Gère la création de sessions Stripe Checkout sécurisées et enregistre les commandes dans l'Admin
  */
+
+const { getOrders, saveOrders, getProducts, saveProducts } = require('./lib/storage');
 
 module.exports = async (req, res) => {
   // CORS configuration
@@ -37,7 +39,7 @@ module.exports = async (req, res) => {
     const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
     const origin = `${proto}://${host}`;
 
-    const orderNumber = 'ELS-' + Math.floor(100000 + Math.random() * 900000);
+    const orderNumber = 'ELS-CMD-' + Math.floor(1000 + Math.random() * 9000);
 
     // Calculate discount if promoCode is valid
     let discountPercent = 0;
@@ -45,8 +47,61 @@ module.exports = async (req, res) => {
       discountPercent = 0.10; // 10% de réduction
     }
 
+    // Helper: Enregistrer la commande dans orders.json et déduire le stock
+    const recordOrderAndDeductStock = async (paymentType = 'Stripe (CB)') => {
+      try {
+        const orders = await getOrders();
+        const totalAmount = items.reduce((acc, it) => acc + (parseFloat(it.price || 0) * (1 - discountPercent) * (parseInt(it.quantity, 10) || 1)), 0);
+
+        const newOrder = {
+          id: orderNumber,
+          customerName: customer?.name || customer?.email || 'Client Web ELS',
+          customerPhone: customer?.phone || '',
+          customerAddress: customer?.address || 'Commande en ligne',
+          items: items.map(it => ({
+            id: it.id || '',
+            name: it.name || 'Article',
+            brand: it.brand || '',
+            color: it.color || '',
+            size: it.size || 'Unique',
+            price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
+            quantity: parseInt(it.quantity, 10) || 1
+          })),
+          total: Math.round(totalAmount * 100) / 100,
+          paymentMethod: paymentType,
+          status: 'en_preparation',
+          statusLabel: 'En préparation',
+          trackingNumber: '',
+          carrier: 'Colissimo 24/48h',
+          notes: promoCode ? `Code promo ${promoCode.toUpperCase()} appliqué (-${discountPercent * 100}%)` : '',
+          createdAt: new Date().toISOString(),
+          createdBy: 'Boutique Web'
+        };
+
+        orders.unshift(newOrder);
+        await saveOrders(orders, `Checkout Web (${orderNumber})`);
+
+        // Déduire le stock
+        const products = await getProducts();
+        let stockChanged = false;
+        for (const item of items) {
+          const prod = products.find(p => p.id === item.id || (p.name.toLowerCase() === item.name.toLowerCase() && p.brand.toLowerCase() === item.brand.toLowerCase()));
+          if (prod && prod.stock && prod.stock[item.size] !== undefined) {
+            const currentStock = parseInt(prod.stock[item.size], 10) || 0;
+            prod.stock[item.size] = Math.max(0, currentStock - (parseInt(item.quantity, 10) || 1));
+            stockChanged = true;
+          }
+        }
+        if (stockChanged) {
+          await saveProducts(products, `Vente Web (${orderNumber})`);
+        }
+      } catch (err) {
+        console.error('Erreur enregistrement commande auto:', err);
+      }
+    };
+
     // Prepare line items
-    const lineItems = items.map((item, index) => {
+    const lineItems = items.map((item) => {
       let unitPrice = parseFloat(item.price || 0);
       if (discountPercent > 0) {
         unitPrice = Math.round(unitPrice * (1 - discountPercent) * 100) / 100;
@@ -59,7 +114,7 @@ module.exports = async (req, res) => {
             description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
             images: item.image ? [item.image] : []
           },
-          unit_amount: Math.round(unitPrice * 100) // en centimes
+          unit_amount: Math.round(unitPrice * 100)
         },
         quantity: Math.max(1, parseInt(item.quantity || 1, 10))
       };
@@ -68,7 +123,6 @@ module.exports = async (req, res) => {
     const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 
     if (STRIPE_SECRET) {
-      // Direct call to Stripe Checkout API
       const params = new URLSearchParams();
       params.append('payment_method_types[0]', 'card');
       params.append('mode', 'payment');
@@ -79,13 +133,11 @@ module.exports = async (req, res) => {
         params.append('customer_email', customer.email);
       }
 
-      // Collect shipping address
       params.append('shipping_address_collection[allowed_countries][0]', 'FR');
       params.append('shipping_address_collection[allowed_countries][1]', 'BE');
       params.append('shipping_address_collection[allowed_countries][2]', 'CH');
       params.append('shipping_address_collection[allowed_countries][3]', 'LU');
 
-      // Add line items
       lineItems.forEach((li, idx) => {
         params.append(`line_items[${idx}][price_data][currency]`, li.price_data.currency);
         params.append(`line_items[${idx}][price_data][unit_amount]`, String(li.price_data.unit_amount));
@@ -97,7 +149,6 @@ module.exports = async (req, res) => {
         params.append(`line_items[${idx}][quantity]`, String(li.quantity));
       });
 
-      // Metadata
       params.append('metadata[orderNumber]', orderNumber);
       params.append('metadata[source]', 'els.shop');
       params.append('metadata[itemCount]', String(items.length));
@@ -117,6 +168,9 @@ module.exports = async (req, res) => {
         return res.status(500).json({ success: false, error: session.error?.message || 'Erreur Stripe Checkout' });
       }
 
+      // Enregistrer la commande
+      await recordOrderAndDeductStock('Stripe');
+
       return res.status(200).json({
         success: true,
         orderNumber,
@@ -124,8 +178,9 @@ module.exports = async (req, res) => {
         sessionId: session.id
       });
     } else {
-      // In demonstration/preview mode without direct STRIPE_SECRET_KEY set in current env:
-      // Redirect seamlessly to confirmation page with complete receipt details
+      // Mode aperçu / pré-production
+      await recordOrderAndDeductStock('Commande Web Démo');
+
       const encodedOrder = encodeURIComponent(JSON.stringify({
         orderNumber,
         items,
