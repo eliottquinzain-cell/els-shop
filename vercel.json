@@ -5,11 +5,7 @@
   "rewrites": [
     {
       "source": "/suivi",
-      "destination": "/tracking.html"
-    },
-    {
-      "source": "/tracking",
-      "destination": "/tracking.html"
+      "destination": "/suivi.html"
     },
     {
       "source": "/admin",
