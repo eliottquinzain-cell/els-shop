@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELS.SHOP — Streetwear & Sneakers Authentifiés</title>
-    <meta name="description" content="Boutique streetwear haut de gamme. Corteiz, Stüssy, Arc'teryx, Supreme, Jordan. Pièces certifiées 100% authentiques, expédition sous 24/48h.">
+    <title>ELS.SHOP — Designers & Streetwear Qualité 1:1</title>
+    <meta name="description" content="Plateforme éditoriale de streetwear haut de gamme. Canada Goose, Corteiz, Arc'teryx, Moncler, Stüssy, Jordan. Sélection curatée en Qualité 1:1 Miroir.">
 
-    <!-- Fonts & Tailwind -->
+    <!-- Fonts: Inter (Body) & Space Grotesk (Editorial Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -20,19 +22,21 @@
             theme: {
                 extend: {
                     colors: {
-                        els: {
-                            bg: '#0a0a0c',
-                            card: '#121216',
-                            cardHover: '#18181f',
-                            border: '#23232b',
-                            borderLight: '#30303b',
-                            accent: '#22c55e',
-                            cyan: '#38bdf8'
+                        ssense: {
+                            black: '#000000',
+                            bg: '#0a0a0d',
+                            card: '#111115',
+                            cardHover: '#16161b',
+                            border: '#1f1f26',
+                            borderLight: '#2e2e38',
+                            muted: '#8b8b94',
+                            subtle: '#52525c',
+                            accent: '#ffffff'
                         }
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['"Syne"', 'sans-serif']
+                        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif']
                     }
                 }
             }
@@ -41,293 +45,421 @@
 
     <style>
         body {
-            background-color: #0a0a0c;
-            color: #f1f5f9;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0a0d;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        ::-webkit-scrollbar {
-            width: 7px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #23232b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #38bdf8;
-        }
+        /* Minimalist scrollbars */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #0a0a0d; }
+        ::-webkit-scrollbar-thumb { background: #22222a; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444452; }
 
-        .badge-verified {
-            background: rgba(34,197,94,0.12);
-            border: 1px solid rgba(34,197,94,0.3);
-            color: #4ade80;
+        /* SSENSE Typography details */
+        .editorial-caps {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
-
-        .badge-tag {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #e2e8f0;
+        .ssense-brand-title {
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="selection:bg-white selection:text-black min-h-screen flex flex-col justify-between">
+<body class="selection:bg-white selection:text-black min-h-screen flex flex-col justify-between text-[13px]">
 
-    <!-- TOP ANNOUNCEMENT BAR (SIMPLE & CLEAN - 1:1 MIROIR) -->
-    <div class="bg-zinc-950 border-b border-els-border text-[11px] py-2 px-4 text-center font-bold tracking-wide text-zinc-300">
-        ⚡ QUALITÉ 1:1 MIROIR HAUT DE GAMME • MATIÈRES & FINITIONS IDENTIQUES • EXPÉDITION 24/48H • STRIPE
+    <!-- ============================================================== -->
+    <!-- 1. TOP ANNOUNCEMENT TICKER (DISCREET SSENSE EDITORIAL NOTICE)  -->
+    <!-- ============================================================== -->
+    <div class="bg-black border-b border-ssense-border py-1.5 px-4 text-center text-[10px] tracking-widest font-semibold uppercase text-zinc-400">
+        CERTIFIÉ QUALITÉ 1:1 MIROIR • SÉLECTION CURATÉE DE PIÈCES DE MARQUE • EXPÉDITION 24/48H • STRIPE
     </div>
 
-    <!-- MAIN NAVBAR (SIMPLE & PURE) -->
-    <header class="bg-els-bg/95 backdrop-blur-md border-b border-els-border sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex items-center justify-between gap-4">
+    <!-- ============================================================== -->
+    <!-- 2. SSENSE SIGNATURE NAVBAR                                      -->
+    <!-- ============================================================== -->
+    <header class="bg-ssense-bg/95 backdrop-blur-md border-b border-ssense-border sticky top-0 z-40">
+        <div class="max-w-[1560px] mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-6">
             
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-2.5 group">
-                <div class="w-9 h-9 bg-zinc-900 border border-els-border rounded-lg flex items-center justify-center font-display font-black text-lg text-white group-hover:border-zinc-500 transition">
-                    E<span class="text-els-accent">.</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="font-display font-extrabold text-2xl tracking-tighter text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
-                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded tracking-wider">1:1</span>
-                </div>
-            </a>
-
-            <!-- Quick Navigation Categories -->
-            <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <!-- Left: Departments / Sections -->
+            <nav class="hidden md:flex items-center gap-6 text-[11px] font-bold editorial-caps text-zinc-400">
                 <a href="#catalogue" onclick="setCategory('all')" class="hover:text-white transition">Tout voir</a>
+                <a href="#catalogue" onclick="setCategory('vestes')" class="hover:text-white transition">Vestes & Manteaux</a>
+                <a href="#catalogue" onclick="setCategory('sweats')" class="hover:text-white transition">Sweats</a>
                 <a href="#catalogue" onclick="setCategory('chaussures')" class="hover:text-white transition">Chaussures</a>
-                <a href="#catalogue" onclick="setCategory('sweats')" class="hover:text-white transition">Sweats & Hoodies</a>
-                <a href="#catalogue" onclick="setCategory('vestes')" class="hover:text-white transition">Vestes</a>
-                <a href="#catalogue" onclick="setCategory('t-shirts')" class="hover:text-white transition">T-Shirts</a>
                 <a href="#catalogue" onclick="setCategory('accessoires')" class="hover:text-white transition">Accessoires</a>
             </nav>
 
-            <!-- Actions: Search & Cart -->
-            <div class="flex items-center gap-3">
-                <!-- Search input -->
-                <div class="relative w-36 sm:w-48">
-                    <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <!-- Center: Bold Stark SSENSE Wordmark -->
+            <a href="/" class="flex items-center group">
+                <span class="font-display font-black text-2xl tracking-tighter text-white uppercase group-hover:opacity-80 transition">
+                    ELS<span class="text-zinc-600">.</span>SHOP
+                </span>
+            </a>
+
+            <!-- Right: Search, Admin, Cart -->
+            <div class="flex items-center gap-4 sm:gap-6 text-[11px] font-bold editorial-caps">
+                <!-- Search Button / Quick input -->
+                <div class="relative flex items-center">
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 pointer-events-none"></i>
                     <input 
                         type="text" 
                         id="searchInput" 
-                        placeholder="Rechercher..." 
+                        placeholder="RECHERCHER..." 
                         oninput="handleSearch(this.value)"
-                        class="w-full bg-zinc-900 border border-els-border focus:border-zinc-400 rounded-lg py-1.5 pl-8 pr-3 text-xs text-white placeholder-zinc-500 focus:outline-none transition"
+                        class="bg-transparent border border-ssense-border hover:border-zinc-500 focus:border-white rounded-none py-1.5 pl-8 pr-3 text-[11px] text-white placeholder-zinc-500 focus:outline-none transition w-28 sm:w-44 uppercase font-medium"
                     >
                 </div>
+
+                <!-- Admin Link -->
+                <a href="/admin.html" class="hidden sm:inline text-zinc-400 hover:text-white transition" title="Espace Back-Office">
+                    Back-Office
+                </a>
 
                 <!-- Cart Button -->
                 <button 
                     onclick="openCart()" 
-                    class="flex items-center gap-2 bg-white hover:bg-zinc-200 text-black px-3.5 py-2 rounded-lg font-bold text-xs transition active:scale-95 shadow-sm"
+                    class="hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer text-white"
                 >
-                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Panier</span>
-                    <span id="cartCountBadge" class="bg-black text-white text-[10px] font-black px-1.5 py-0.2 rounded-full min-w-[18px] text-center">0</span>
+                    <span>PANIER</span>
+                    <span id="cartCountBadge" class="font-mono text-zinc-400">(0)</span>
                 </button>
             </div>
+
         </div>
     </header>
 
-    <!-- SIMPLE HERO SECTION (CLEAN & 1:1 STREETWEAR) -->
-    <section class="py-12 sm:py-16 border-b border-els-border bg-gradient-to-b from-zinc-950/80 to-els-bg">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-4">
-            
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-els-border text-[11px] font-bold text-emerald-400 uppercase tracking-widest">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                Streetwear & Sneakers Qualité 1:1 Miroir
+    <!-- ============================================================== -->
+    <!-- 3. EDITORIAL HERO (SSENSE MAGAZINE-STYLE "ABOVE THE FOLD")     -->
+    <!-- ============================================================== -->
+    <section class="border-b border-ssense-border bg-gradient-to-b from-black to-ssense-bg py-10 sm:py-16">
+        <div class="max-w-[1560px] mx-auto px-4 sm:px-8">
+            <div class="max-w-4xl space-y-4">
+                
+                <div class="text-[10px] tracking-widest font-black uppercase text-zinc-500 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+                    <span>AUTOMNE / HIVER 2026 — CURATION STREETWEAR</span>
+                </div>
+
+                <h1 class="font-display font-black text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.05] uppercase">
+                    Sélection Éditoriale <br class="hidden sm:inline">Qualité 1:1 Miroir.
+                </h1>
+
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed font-normal">
+                    Une curation rigoureuse des pièces de marque les plus convoitées du streetwear mondial — Canada Goose, Corteiz, Arc'teryx, Moncler, Stüssy, Jordan. Confectionnées dans les matières d'origine, coupes fidèles, étiquettes et finitions 1:1 certifiées.
+                </p>
+
+                <!-- Quick Filters Bar (Designers / Categories Shortcuts) -->
+                <div class="pt-2 flex flex-wrap items-center gap-2 text-[10px] uppercase font-bold tracking-wider">
+                    <button onclick="setCategory('all'); setBrand('all');" class="px-3 py-1.5 border border-white bg-white text-black hover:bg-zinc-200 transition">
+                        Tous les articles
+                    </button>
+                    <button onclick="setBrand('Canada Goose')" class="px-3 py-1.5 border border-ssense-border hover:border-white text-zinc-300 hover:text-white transition">
+                        Canada Goose
+                    </button>
+                    <button onclick="setBrand('Corteiz')" class="px-3 py-1.5 border border-ssense-border hover:border-white text-zinc-300 hover:text-white transition">
+                        Corteiz
+                    </button>
+                    <button onclick="setCategory('vestes')" class="px-3 py-1.5 border border-ssense-border hover:border-white text-zinc-300 hover:text-white transition">
+                        Manteaux & Parkas
+                    </button>
+                    <button onclick="setCategory('sweats')" class="px-3 py-1.5 border border-ssense-border hover:border-white text-zinc-300 hover:text-white transition">
+                        Sweats & Hoodies
+                    </button>
+                </div>
+
             </div>
-
-            <h1 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-tight">
-                Le Streetwear Qualité 1:1.
-            </h1>
-
-            <p class="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
-                Les pièces les plus recherchées en qualité miroir 1:1 : grammages lourds, coupes authentiques, broderies parfaites, étiquettes et boîtes complètes.
-            </p>
-
-            <!-- 3 Mini Guarantees -->
-            <div class="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-400 font-medium">
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
-                    Finition 1:1 Miroir
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="truck" class="w-4 h-4 text-sky-400"></i>
-                    Expédition 24/48h
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-zinc-300"></i>
-                    Paiement Sécurisé Stripe
-                </span>
-            </div>
-
         </div>
     </section>
 
-    <!-- CATALOGUE & ARTICLES -->
-    <main id="catalogue" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-8">
+    <!-- ============================================================== -->
+    <!-- 4. MAIN SSENSE CATALOGUE (SIDEBAR FILTER + MULTI-COL GRID)     -->
+    <!-- ============================================================== -->
+    <main id="catalogue" class="max-w-[1560px] mx-auto px-4 sm:px-8 py-8 flex-1 w-full">
         
-        <!-- Category Filters -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-els-border">
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
             
-            <!-- Category Tabs -->
-            <div class="flex flex-wrap items-center gap-2" id="categoryTabs">
-                <button onclick="setCategory('all')" class="cat-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-black" data-cat="all">
-                    Tous (<span id="allCount">12</span>)
-                </button>
-                <button onclick="setCategory('chaussures')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="chaussures">
-                    Chaussures / Sneakers
-                </button>
-                <button onclick="setCategory('sweats')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="sweats">
-                    Sweats & Hoodies
-                </button>
-                <button onclick="setCategory('vestes')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="vestes">
-                    Vestes
-                </button>
-                <button onclick="setCategory('t-shirts')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="t-shirts">
-                    T-Shirts
-                </button>
-                <button onclick="setCategory('pantalons')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="pantalons">
-                    Pantalons & Cargos
-                </button>
-                <button onclick="setCategory('accessoires')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border" data-cat="accessoires">
-                    Accessoires
-                </button>
+            <!-- ========================================================== -->
+            <!-- 4.1 LEFT SIDEBAR: DESIGNERS (A-Z) & CATEGORIES             -->
+            <!-- ========================================================== -->
+            <aside class="w-full lg:w-60 shrink-0 space-y-8">
+                
+                <!-- Active Filters / Reset -->
+                <div id="activeFilterSummary" class="hidden pb-4 border-b border-ssense-border space-y-2">
+                    <div class="flex items-center justify-between text-[11px] uppercase font-bold text-zinc-400">
+                        <span>Filtre actif :</span>
+                        <button onclick="resetFilters()" class="text-zinc-500 hover:text-white underline text-[10px]">
+                            Effacer tout
+                        </button>
+                    </div>
+                    <div id="activeFilterBadgeContainer" class="flex flex-wrap gap-1.5">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- DESIGNERS (A-Z) FILTER LIST -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-zinc-300 pb-2 border-b border-ssense-border">
+                        <span>Designers & Marques</span>
+                        <span id="sidebarBrandCount" class="font-mono text-[10px] text-zinc-500"></span>
+                    </div>
+
+                    <div id="sidebarBrandList" class="space-y-1.5 max-h-72 overflow-y-auto pr-1 text-xs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- CATEGORIES FILTER LIST -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-black uppercase tracking-widest text-zinc-300 pb-2 border-b border-ssense-border">
+                        Catégories
+                    </div>
+
+                    <div class="space-y-1.5 text-xs font-medium" id="sidebarCategoryList">
+                        <button onclick="setCategory('all')" class="sidebar-cat-btn block w-full text-left py-1 text-white font-bold transition" data-cat="all">
+                            Toutes les catégories
+                        </button>
+                        <button onclick="setCategory('vestes')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="vestes">
+                            Vestes & Manteaux
+                        </button>
+                        <button onclick="setCategory('sweats')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="sweats">
+                            Sweats & Hoodies
+                        </button>
+                        <button onclick="setCategory('chaussures')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="chaussures">
+                            Chaussures & Sneakers
+                        </button>
+                        <button onclick="setCategory('t-shirts')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="t-shirts">
+                            T-Shirts
+                        </button>
+                        <button onclick="setCategory('pantalons')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="pantalons">
+                            Pantalons & Cargos
+                        </button>
+                        <button onclick="setCategory('accessoires')" class="sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition" data-cat="accessoires">
+                            Accessoires
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SORT OPTIONS -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-black uppercase tracking-widest text-zinc-300 pb-2 border-b border-ssense-border">
+                        Trier par
+                    </div>
+                    <select 
+                        id="sortSelect" 
+                        onchange="handleSort(this.value)"
+                        class="w-full bg-black border border-ssense-border text-white text-xs py-2 px-3 focus:outline-none focus:border-white transition cursor-pointer font-medium uppercase"
+                    >
+                        <option value="featured">✨ Pièces vedettes</option>
+                        <option value="price-asc">Prix : du - cher au + cher</option>
+                        <option value="price-desc">Prix : du + cher au - cher</option>
+                        <option value="brand">Designer (A-Z)</option>
+                    </select>
+                </div>
+
+                <!-- SSENSE QUALITY PROMISE -->
+                <div class="p-4 border border-ssense-border bg-black/40 space-y-2 text-[11px] text-zinc-400">
+                    <div class="font-bold text-white uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-zinc-300"></i>
+                        <span>Norme 1:1 Miroir</span>
+                    </div>
+                    <p class="leading-relaxed text-[11px]">
+                        Chaque vêtement sélectionné reproduit fidèlement la coupe, le grammage du coton et les étiquettes originales.
+                    </p>
+                </div>
+
+            </aside>
+
+            <!-- ========================================================== -->
+            <!-- 4.2 RIGHT: SSENSE PRODUCT GRID                             -->
+            <!-- ========================================================== -->
+            <div class="flex-1 space-y-6">
+                
+                <!-- Grid Status Bar: Title, Count, and Column Switcher -->
+                <div class="flex items-center justify-between pb-3 border-b border-ssense-border text-xs">
+                    
+                    <div class="flex items-center gap-3">
+                        <span id="catalogCurrentTitle" class="font-bold uppercase tracking-wider text-white">
+                            TOUT LE CATALOGUE
+                        </span>
+                        <span class="text-zinc-600">|</span>
+                        <span id="catalogTotalCount" class="font-mono text-zinc-400 text-[11px]">
+                            0 pièces
+                        </span>
+                    </div>
+
+                    <!-- Column View Switcher (Like SSENSE desktop) -->
+                    <div class="hidden sm:flex items-center gap-2 text-zinc-500">
+                        <span class="text-[10px] uppercase font-bold">Affichage :</span>
+                        <button onclick="setGridColumns(3)" id="btnGrid3" class="px-2 py-0.5 border border-ssense-border hover:border-white text-zinc-400 hover:text-white text-[10px] font-mono transition">
+                            3 COL
+                        </button>
+                        <button onclick="setGridColumns(4)" id="btnGrid4" class="px-2 py-0.5 border border-white bg-white text-black text-[10px] font-mono transition">
+                            4 COL
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Products Grid -->
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="noProductsFound" class="hidden py-24 text-center space-y-4 border border-ssense-border bg-black/40">
+                    <div class="w-10 h-10 border border-zinc-800 rounded-none flex items-center justify-center mx-auto text-zinc-600">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-sm text-white uppercase tracking-wider" id="emptyTitle">
+                            Aucun article correspondant
+                        </h3>
+                        <p class="text-xs text-zinc-500 max-w-md mx-auto" id="emptySubtitle">
+                            Aucune pièce ne correspond à votre sélection. Essayez un autre designer ou réinitialisez les filtres.
+                        </p>
+                    </div>
+                    <button onclick="resetFilters()" class="px-4 py-2 bg-white text-black text-xs font-bold uppercase tracking-wider hover:bg-zinc-200 transition">
+                        Afficher tout le catalogue
+                    </button>
+                </div>
+
             </div>
 
-            <!-- Simple Sort -->
-            <div class="flex items-center gap-2 shrink-0">
-                <span class="text-xs text-zinc-500">Trier :</span>
-                <select 
-                    id="sortSelect" 
-                    onchange="handleSort(this.value)"
-                    class="bg-zinc-900 border border-els-border text-white text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-zinc-400 cursor-pointer"
-                >
-                    <option value="featured">✨ Pièces vedettes</option>
-                    <option value="price-asc">Prix croissant</option>
-                    <option value="price-desc">Prix décroissant</option>
-                    <option value="brand">Marque (A-Z)</option>
-                </select>
-            </div>
-
-        </div>
-
-        <!-- DYNAMIC BRANDS FILTER BAR -->
-        <div id="brandFilterSection" class="hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar text-xs">
-            <span class="text-[10px] font-extrabold uppercase text-zinc-500 tracking-wider shrink-0 flex items-center gap-1.5 bg-zinc-900/60 px-2 py-1 rounded-md border border-zinc-800">
-                <i data-lucide="tag" class="w-3 h-3 text-emerald-400"></i> Marques :
-            </span>
-            <div id="brandFilterChips" class="flex items-center gap-1.5 shrink-0">
-                <!-- Dynamically populated with unique brands -->
-            </div>
-        </div>
-
-        <!-- Products Grid -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Rendered dynamically -->
-        </div>
-
-        <!-- Empty State -->
-        <div id="noProductsFound" class="hidden py-16 text-center space-y-4">
-            <div class="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center mx-auto text-zinc-500">
-                <i data-lucide="package" class="w-6 h-6"></i>
-            </div>
-            <div class="space-y-1">
-                <h3 class="font-bold text-base text-white" id="emptyTitle">Aucune pièce disponible pour le moment</h3>
-                <p class="text-xs text-zinc-400" id="emptySubtitle">Le prochain drop Qualité 1:1 arrive très bientôt. Restez connectés !</p>
-            </div>
-            <button id="resetFilterBtn" onclick="resetFilters()" class="hidden text-xs font-bold text-emerald-400 underline hover:text-emerald-300">
-                Réinitialiser les filtres
-            </button>
         </div>
 
     </main>
 
-    <!-- SIMPLE FOOTER (DISCREET & CLEAN) -->
-    <footer class="border-t border-els-border bg-zinc-950 py-10 text-xs text-zinc-500 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="font-display font-extrabold text-lg text-white">ELS<span class="text-zinc-500">.</span>SHOP</span>
-                    <span class="text-zinc-600">— Boutique de vêtements streetwear de marque</span>
+    <!-- ============================================================== -->
+    <!-- 5. SSENSE MINIMALIST FOOTER                                    -->
+    <!-- ============================================================== -->
+    <footer class="border-t border-ssense-border bg-black text-zinc-400 py-16 text-xs mt-20">
+        <div class="max-w-[1560px] mx-auto px-4 sm:px-8 space-y-12">
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                
+                <!-- Col 1: Brand -->
+                <div class="space-y-3">
+                    <div class="font-display font-black text-xl text-white tracking-tighter">ELS.SHOP</div>
+                    <p class="text-[11px] text-zinc-500 leading-relaxed max-w-xs">
+                        Boutique streetwear de marque inspirée de l'esthétique éditoriale internationale. Reproductions fidèles en Qualité 1:1 Miroir.
+                    </p>
                 </div>
-                <div class="flex items-center gap-4 text-zinc-400">
-                    <span class="flex items-center gap-1"><i data-lucide="instagram" class="w-4 h-4"></i> @els.shop</span>
+
+                <!-- Col 2: Designers -->
+                <div class="space-y-2 text-[11px]">
+                    <div class="font-bold uppercase tracking-wider text-white text-[10px]">Designers Principaux</div>
+                    <ul class="space-y-1.5 text-zinc-400">
+                        <li><button onclick="setBrand('Canada Goose')" class="hover:text-white transition">Canada Goose</button></li>
+                        <li><button onclick="setBrand('Corteiz')" class="hover:text-white transition">Corteiz</button></li>
+                        <li><button onclick="setBrand('Arc\'teryx')" class="hover:text-white transition">Arc'teryx</button></li>
+                        <li><button onclick="setBrand('Jordan')" class="hover:text-white transition">Jordan</button></li>
+                        <li><button onclick="setBrand('Moncler')" class="hover:text-white transition">Moncler</button></li>
+                        <li><button onclick="setBrand('Stüssy')" class="hover:text-white transition">Stüssy</button></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Service -->
+                <div class="space-y-2 text-[11px]">
+                    <div class="font-bold uppercase tracking-wider text-white text-[10px]">Service Client</div>
+                    <ul class="space-y-1.5 text-zinc-400">
+                        <li>Expédition Colissimo 24/48h</li>
+                        <li>Livraison offerte dès 150 €</li>
+                        <li>Paiements 100% sécurisés Stripe</li>
+                        <li>Assistance : contact@els.shop</li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Back-Office -->
+                <div class="space-y-2 text-[11px]">
+                    <div class="font-bold uppercase tracking-wider text-white text-[10px]">Administration</div>
+                    <p class="text-zinc-500 text-[11px]">Espace réservé à la gestion des stocks et catalogues.</p>
+                    <a href="/admin.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-500 text-white font-bold transition">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                        <span>Accès Back-Office</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Bottom Line -->
+            <div class="border-t border-zinc-900 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-wider text-zinc-600">
+                <div>© 2026 ELS.SHOP — Tous droits réservés.</div>
+                <div class="flex items-center gap-4">
+                    <span>Authenticité 1:1 Miroir</span>
                     <span>•</span>
-                    <span class="flex items-center gap-1"><i data-lucide="mail" class="w-4 h-4"></i> contact@els.shop</span>
+                    <span>Stripe Checkout</span>
+                    <span>•</span>
+                    <span>Livraison 24/48h</span>
                 </div>
             </div>
 
-            <div class="border-t border-zinc-900 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-600">
-                <span>© 2026 ELS.SHOP — Tous droits réservés.</span>
-                <div class="flex items-center gap-3">
-                    <span>Paiements sécurisés Stripe</span>
-                    <span>•</span>
-                    <span>Livraison Colissimo</span>
-                    <span>•</span>
-                    <a href="/admin.html" class="hover:text-zinc-300 transition flex items-center gap-1">
-                        <i data-lucide="lock" class="w-3 h-3"></i> Administration
-                    </a>
-                </div>
-            </div>
         </div>
     </footer>
 
-    <!-- SLIDE-OVER INTERACTIVE CART DRAWER -->
-    <div id="cartDrawerBackdrop" onclick="closeCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-els-card border-l border-els-border z-50 translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <!-- ============================================================== -->
+    <!-- 6. SSENSE SLIDE-OVER CART DRAWER                               -->
+    <!-- ============================================================== -->
+    <div id="cartDrawerBackdrop" onclick="closeCart()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[440px] bg-black border-l border-ssense-border z-50 translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         
         <!-- Cart Header -->
-        <div class="p-5 border-b border-els-border flex items-center justify-between bg-zinc-950">
-            <div class="flex items-center gap-2 font-display font-bold text-base text-white">
-                <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-400"></i>
-                <span>Mon Panier (<span id="cartDrawerCount">0</span>)</span>
+        <div class="p-6 border-b border-ssense-border flex items-center justify-between">
+            <div class="font-display font-bold text-sm tracking-wider text-white uppercase flex items-center gap-2">
+                <span>Panier</span>
+                <span id="cartDrawerCount" class="font-mono text-zinc-500 text-xs">(0)</span>
             </div>
-            <button onclick="closeCart()" class="p-1.5 rounded-lg text-zinc-400 hover:text-white transition">
+            <button onclick="closeCart()" class="p-1 text-zinc-400 hover:text-white transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
 
-        <!-- Free Shipping Notice -->
-        <div class="px-5 py-3 bg-zinc-900/60 border-b border-zinc-800 text-[11px] text-zinc-400 flex items-center justify-between">
-            <span id="shippingNoticeText">Livraison offerte dès 150 € d'achat</span>
-            <span id="shippingBadge" class="font-bold text-emerald-400">4,90 €</span>
+        <!-- Free shipping indicator -->
+        <div class="px-6 py-2.5 bg-zinc-950 border-b border-ssense-border text-[11px] text-zinc-400 flex items-center justify-between">
+            <span id="shippingNoticeText">Livraison offerte dès 150 €</span>
+            <span id="shippingBadge" class="font-mono font-bold text-white">4,90 €</span>
         </div>
 
-        <!-- Items List -->
-        <div id="cartItemsList" class="flex-1 overflow-y-auto p-5 space-y-3">
-            <!-- Rendered by JS -->
+        <!-- Items list -->
+        <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Populated dynamically -->
         </div>
 
-        <!-- Cart Empty State -->
-        <div id="cartEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
-            <i data-lucide="shopping-bag" class="w-10 h-10 text-zinc-600"></i>
-            <h4 class="font-bold text-sm text-white">Votre panier est vide</h4>
-            <p class="text-xs text-zinc-500">Ajoutez des pièces du catalogue pour passer commande.</p>
+        <!-- Empty state -->
+        <div id="cartEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center space-y-3">
+            <i data-lucide="shopping-bag" class="w-8 h-8 text-zinc-700"></i>
+            <h4 class="font-bold text-xs uppercase tracking-wider text-white">Votre panier est vide</h4>
+            <p class="text-xs text-zinc-500">Ajoutez des articles du catalogue pour finaliser votre commande.</p>
         </div>
 
         <!-- Cart Footer -->
-        <div id="cartFooter" class="p-5 border-t border-els-border bg-zinc-950 space-y-3.5">
+        <div id="cartFooter" class="p-6 border-t border-ssense-border bg-zinc-950 space-y-4">
             
             <!-- Promo code input -->
             <div class="flex items-center gap-2">
                 <input 
                     type="text" 
                     id="cartPromoInput" 
-                    placeholder="Code promo (ex: ELS10)" 
-                    class="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white uppercase focus:outline-none focus:border-zinc-500 font-mono"
+                    placeholder="CODE PROMO (EX: ELS10)" 
+                    class="flex-1 bg-black border border-zinc-800 px-3 py-2 text-xs text-white uppercase focus:outline-none focus:border-white font-mono"
                 >
-                <button onclick="applyPromoCode()" class="bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <button onclick="applyPromoCode()" class="bg-zinc-900 hover:bg-white hover:text-black border border-zinc-700 text-white px-3.5 py-2 text-xs font-bold uppercase transition">
                     Appliquer
                 </button>
             </div>
             <div id="promoSuccessNotice" class="hidden text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
-                <i data-lucide="check" class="w-3.5 h-3.5"></i> Code appliqué (-10%)
+                <i data-lucide="check" class="w-3.5 h-3.5"></i> Code promo appliqué (-10%)
             </div>
 
             <!-- Price Breakdown -->
@@ -337,7 +469,7 @@
                     <span id="cartSubtotal" class="font-semibold text-white">0,00 €</span>
                 </div>
                 <div id="cartDiscountRow" class="hidden flex justify-between text-emerald-400">
-                    <span>Réduction code</span>
+                    <span>Réduction</span>
                     <span id="cartDiscountAmount">-0,00 €</span>
                 </div>
                 <div class="flex justify-between">
@@ -345,30 +477,32 @@
                     <span id="cartShippingCost" class="font-semibold text-white">4,90 €</span>
                 </div>
                 <div class="flex justify-between text-sm font-bold text-white pt-2 border-t border-zinc-800">
-                    <span>Total</span>
-                    <span id="cartTotal" class="font-black text-lg text-emerald-400">0,00 €</span>
+                    <span class="uppercase tracking-wider">Total</span>
+                    <span id="cartTotal" class="font-black text-base text-white">0,00 €</span>
                 </div>
             </div>
 
-            <!-- Checkout Button -->
+            <!-- Checkout Button (Stark SSENSE Black/White) -->
             <button 
                 onclick="proceedToStripeCheckout()" 
                 id="checkoutBtn"
-                class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 rounded-lg font-black text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-md"
+                class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer"
             >
                 <i data-lucide="lock" class="w-4 h-4"></i>
-                <span>Payer avec Stripe</span>
+                <span>Commander • Stripe</span>
             </button>
 
         </div>
 
     </aside>
 
-    <!-- QUICK VIEW MODAL (SIMPLE) -->
-    <div id="quickViewBackdrop" onclick="closeQuickView()" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-    <div id="quickViewModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[80%] max-w-2xl bg-els-card border border-els-border rounded-xl z-50 hidden max-h-[85vh] overflow-y-auto shadow-2xl p-6 sm:p-7">
-        <button onclick="closeQuickView()" class="absolute top-4 right-4 p-1.5 bg-zinc-900 rounded-lg text-zinc-400 hover:text-white">
-            <i data-lucide="x" class="w-4 h-4"></i>
+    <!-- ============================================================== -->
+    <!-- 7. SSENSE STUDIO PRODUCT DETAIL MODAL (QUICK VIEW)             -->
+    <!-- ============================================================== -->
+    <div id="quickViewBackdrop" onclick="closeQuickView()" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden transition-opacity"></div>
+    <div id="quickViewModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-4xl bg-black border border-ssense-border z-50 hidden max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-10">
+        <button onclick="closeQuickView()" class="absolute top-5 right-5 p-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
         </button>
         <div id="quickViewContent">
             <!-- Populated dynamically -->
@@ -376,11 +510,13 @@
     </div>
 
     <!-- TOAST -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-zinc-900 border border-els-border text-white px-4 py-2.5 rounded-lg z-50 text-xs font-bold shadow-xl translate-y-20 opacity-0 transition-all duration-300">
-        Article ajouté au panier !
+    <div id="toast" class="fixed bottom-6 right-6 bg-black border border-white text-white px-5 py-3 z-50 text-xs font-bold uppercase tracking-wider shadow-2xl translate-y-24 opacity-0 transition-all duration-300">
+        Article ajouté au panier
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- ============================================================== -->
+    <!-- 8. JAVASCRIPT LOGIC & STATE                                    -->
+    <!-- ============================================================== -->
     <script>
         let PRODUCTS = [];
         let cart = JSON.parse(localStorage.getItem('els_cart') || '[]');
@@ -389,6 +525,10 @@
         let searchQuery = '';
         let currentSort = 'featured';
         let appliedPromo = null;
+        let gridCols = 4; // Default 4 columns like SSENSE
+
+        let selectedColorModal = null;
+        let selectedSizeModal = null;
 
         function initIcons() {
             if (window.lucide) lucide.createIcons();
@@ -405,7 +545,7 @@
             if (n.includes('rouge') || n.includes('red') || n.includes('bordeaux')) return 'bg-rose-500';
             if (n.includes('jaune') || n.includes('yellow')) return 'bg-yellow-400';
             if (n.includes('orange')) return 'bg-orange-500';
-            return 'bg-emerald-400';
+            return 'bg-white';
         }
 
         async function fetchProducts() {
@@ -418,33 +558,28 @@
                     PRODUCTS = [];
                 }
             } catch (err) {
-                console.warn('API error:', err);
+                console.warn('API fetch error, using fallback:', err);
                 PRODUCTS = [];
             }
-            updateBrandFilters();
+            updateBrandSidebar();
             renderProducts();
-            document.getElementById('allCount').innerText = PRODUCTS.length;
         }
 
-        function updateBrandFilters() {
-            const section = document.getElementById('brandFilterSection');
-            const container = document.getElementById('brandFilterChips');
-            if (!container || !section) return;
+        // Populate Left Sidebar Brands (SSENSE A-Z Designers List)
+        function updateBrandSidebar() {
+            const container = document.getElementById('sidebarBrandList');
+            const countLabel = document.getElementById('sidebarBrandCount');
+            if (!container) return;
 
             const brands = [...new Set(PRODUCTS.map(p => (p.brand || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-
-            if (brands.length === 0) {
-                section.classList.add('hidden');
-                return;
-            }
-            section.classList.remove('hidden');
+            if (countLabel) countLabel.innerText = `(${brands.length})`;
 
             let html = `
                 <button 
                     onclick="setBrand('all')" 
-                    class="brand-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition ${activeBrand === 'all' ? 'bg-white text-black shadow-sm' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'}"
+                    class="sidebar-brand-btn block w-full text-left py-1 text-xs transition ${activeBrand === 'all' ? 'text-white font-bold' : 'text-zinc-400 hover:text-white'}"
                 >
-                    Toutes les marques
+                    Tous les designers
                 </button>
             `;
 
@@ -455,30 +590,119 @@
                 html += `
                     <button 
                         onclick="setBrand('${safeBrand}')" 
-                        class="brand-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1.5 ${isActive ? 'bg-emerald-500 text-black shadow-sm font-black' : 'bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'}"
+                        class="sidebar-brand-btn flex items-center justify-between w-full text-left py-1 text-xs transition ${isActive ? 'text-white font-black' : 'text-zinc-400 hover:text-white'}"
                     >
-                        <span>${b}</span>
-                        <span class="text-[9px] opacity-75 font-mono">(${count})</span>
+                        <span class="truncate">${b}</span>
+                        <span class="font-mono text-[10px] text-zinc-600">${count}</span>
                     </button>
                 `;
             });
 
             container.innerHTML = html;
-            initIcons();
+            updateActiveFilterSummary();
         }
 
         function setBrand(brand) {
             activeBrand = brand;
-            updateBrandFilters();
+            updateBrandSidebar();
             renderProducts();
         }
 
+        function setCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.sidebar-cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'sidebar-cat-btn block w-full text-left py-1 text-white font-bold transition';
+                } else {
+                    btn.className = 'sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition';
+                }
+            });
+            updateActiveFilterSummary();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim();
+            updateActiveFilterSummary();
+            renderProducts();
+        }
+
+        function handleSort(val) {
+            currentSort = val;
+            renderProducts();
+        }
+
+        function setGridColumns(n) {
+            gridCols = n;
+            const grid = document.getElementById('productsGrid');
+            const btn3 = document.getElementById('btnGrid3');
+            const btn4 = document.getElementById('btnGrid4');
+
+            if (n === 3) {
+                grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-8 gap-y-12';
+                btn3.className = 'px-2 py-0.5 border border-white bg-white text-black text-[10px] font-mono transition';
+                btn4.className = 'px-2 py-0.5 border border-ssense-border hover:border-white text-zinc-400 hover:text-white text-[10px] font-mono transition';
+            } else {
+                grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10';
+                btn4.className = 'px-2 py-0.5 border border-white bg-white text-black text-[10px] font-mono transition';
+                btn3.className = 'px-2 py-0.5 border border-ssense-border hover:border-white text-zinc-400 hover:text-white text-[10px] font-mono transition';
+            }
+        }
+
+        function updateActiveFilterSummary() {
+            const summary = document.getElementById('activeFilterSummary');
+            const container = document.getElementById('activeFilterBadgeContainer');
+            const titleLabel = document.getElementById('catalogCurrentTitle');
+
+            let badges = [];
+            if (activeBrand !== 'all') {
+                badges.push({ type: 'brand', label: `Designer : ${activeBrand}`, onclear: "setBrand('all')" });
+            }
+            if (activeCategory !== 'all') {
+                badges.push({ type: 'category', label: `Catégorie : ${activeCategory}`, onclear: "setCategory('all')" });
+            }
+            if (searchQuery) {
+                badges.push({ type: 'search', label: `"${searchQuery}"`, onclear: "clearSearch()" });
+            }
+
+            if (badges.length > 0) {
+                summary.classList.remove('hidden');
+                container.innerHTML = badges.map(b => `
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-zinc-900 border border-zinc-700 text-white text-[10px] uppercase font-bold tracking-wider">
+                        <span>${b.label}</span>
+                        <button onclick="${b.onclear}" class="hover:text-red-400 font-black">✕</button>
+                    </span>
+                `).join('');
+                titleLabel.innerText = activeBrand !== 'all' ? activeBrand.toUpperCase() : activeCategory.toUpperCase();
+            } else {
+                summary.classList.add('hidden');
+                titleLabel.innerText = "TOUT LE CATALOGUE";
+            }
+        }
+
+        function clearSearch() {
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            updateActiveFilterSummary();
+            renderProducts();
+        }
+
+        function resetFilters() {
+            activeCategory = 'all';
+            activeBrand = 'all';
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            setCategory('all');
+            setBrand('all');
+        }
+
+        // ==============================================================
+        // RENDER PRODUCTS (SSENSE EDITORIAL GRID)
+        // ==============================================================
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             const noProducts = document.getElementById('noProductsFound');
-            const emptyTitle = document.getElementById('emptyTitle');
-            const emptySub = document.getElementById('emptySubtitle');
-            const resetBtn = document.getElementById('resetFilterBtn');
+            const countLabel = document.getElementById('catalogTotalCount');
 
             let filtered = PRODUCTS.filter(p => {
                 let matchCat = activeCategory === 'all';
@@ -511,17 +735,10 @@
             else if (currentSort === 'brand') filtered.sort((a, b) => (a.brand || '').localeCompare(b.brand || ''));
             else filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
 
+            countLabel.innerText = `${filtered.length} pièce${filtered.length > 1 ? 's' : ''}`;
+
             if (filtered.length === 0) {
                 grid.innerHTML = '';
-                if (PRODUCTS.length === 0) {
-                    emptyTitle.innerText = "Aucune pièce disponible pour le moment";
-                    emptySub.innerText = "Le prochain drop Qualité 1:1 arrive très bientôt. Restez connectés !";
-                    resetBtn.classList.add('hidden');
-                } else {
-                    emptyTitle.innerText = "Aucun article ne correspond à votre recherche";
-                    emptySub.innerText = "Essayez d'autres critères ou réinitialisez les filtres.";
-                    resetBtn.classList.remove('hidden');
-                }
                 noProducts.classList.remove('hidden');
                 return;
             }
@@ -531,63 +748,61 @@
                 const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
 
                 return `
-                <div class="bg-els-card border border-els-border hover:border-zinc-600 rounded-xl overflow-hidden flex flex-col justify-between group transition">
+                <div class="group flex flex-col justify-between cursor-pointer" onclick="openQuickView('${p.id}')">
                     
-                    <div class="relative bg-zinc-950 aspect-square overflow-hidden cursor-pointer" onclick="openQuickView('${p.id}')">
-                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <!-- Product Studio Image -->
+                    <div class="relative bg-ssense-card aspect-[3/4] overflow-hidden mb-3 border border-ssense-border group-hover:border-zinc-500 transition duration-300">
+                        <img 
+                            src="${p.image}" 
+                            alt="${p.name}" 
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                            loading="lazy"
+                        >
                         
-                        <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
-                            <span class="badge-verified px-2 py-0.5 rounded text-[10px] font-bold">
-                                ${p.conditionGrade || '1:1 Miroir'}
+                        <!-- Discreet SSENSE-style badge -->
+                        <div class="absolute top-2.5 left-2.5">
+                            <span class="bg-black/80 backdrop-blur-sm border border-zinc-700/80 px-2 py-0.5 text-[9px] font-mono tracking-wider text-zinc-300 uppercase">
+                                ${p.conditionGrade || '1:1 MIROIR'}
                             </span>
                         </div>
 
-                        <div class="absolute bottom-2.5 left-2.5 bg-black/75 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-zinc-300 font-mono">
-                            ${p.badge || '1:1'}
-                        </div>
+                        ${p.badge ? `
+                            <div class="absolute bottom-2.5 left-2.5">
+                                <span class="bg-white text-black px-1.5 py-0.5 text-[9px] font-black tracking-widest uppercase">
+                                    ${p.badge}
+                                </span>
+                            </div>
+                        ` : ''}
                     </div>
 
-                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
-                                ${pColors.length > 1 ? `
-                                    <span class="text-[9px] text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">
-                                        ${pColors.length} coloris
-                                    </span>
-                                ` : ''}
-                            </div>
-
-                            <h3 class="font-bold text-sm text-white hover:text-zinc-300 cursor-pointer transition line-clamp-1" onclick="openQuickView('${p.id}')">
-                                ${p.name}
-                            </h3>
-
-                            <!-- Multi-color preview dots -->
-                            ${pColors.length > 0 ? `
-                                <div class="flex flex-wrap items-center gap-1 pt-0.5">
-                                    ${pColors.slice(0, 3).map(c => `
-                                        <span class="inline-flex items-center gap-1 text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full ${getColorDotClass(c)}"></span>
-                                            <span>${c}</span>
-                                        </span>
-                                    `).join('')}
-                                    ${pColors.length > 3 ? `<span class="text-[10px] text-zinc-500 font-mono">+${pColors.length - 3}</span>` : ''}
-                                </div>
-                            ` : ''}
-
-                            <div class="text-[11px] text-zinc-400">
-                                Tailles : ${p.sizes.join(', ')}
-                            </div>
+                    <!-- Product Meta (SSENSE Editorial Hierarchy) -->
+                    <div class="space-y-1">
+                        <!-- 1. DESIGNER BRAND NAME (BOLD UPPERCASE) -->
+                        <div class="ssense-brand-title text-xs text-white">
+                            ${p.brand}
                         </div>
 
-                        <div class="pt-2 border-t border-zinc-900 flex items-center justify-between">
-                            <div class="font-black text-base text-white">${p.price} €</div>
-                            <button 
-                                onclick="quickAddToCart('${p.id}')" 
-                                class="bg-white hover:bg-zinc-200 text-black px-3.5 py-1.5 rounded-lg text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm"
-                            >
-                                <span>${pColors.length > 1 ? 'Choisir coloris' : 'Ajouter'}</span>
-                            </button>
+                        <!-- 2. PRODUCT NAME -->
+                        <div class="text-xs text-zinc-400 group-hover:text-white transition line-clamp-1">
+                            ${p.name}
+                        </div>
+
+                        <!-- 3. MULTI-COLOR INDICATION -->
+                        ${pColors.length > 0 ? `
+                            <div class="flex items-center gap-1.5 pt-0.5 text-[11px] text-zinc-500">
+                                <div class="flex items-center gap-1">
+                                    ${pColors.slice(0, 3).map(c => `
+                                        <span class="w-2 h-2 rounded-full ${getColorDotClass(c)}" title="${c}"></span>
+                                    `).join('')}
+                                    ${pColors.length > 3 ? `<span class="text-[9px] font-mono text-zinc-500">+${pColors.length - 3}</span>` : ''}
+                                </div>
+                                <span>${pColors.length} coloris</span>
+                            </div>
+                        ` : ''}
+
+                        <!-- 4. PRICE -->
+                        <div class="text-xs font-semibold text-white pt-1">
+                            ${p.price} €
                         </div>
                     </div>
 
@@ -598,48 +813,153 @@
             initIcons();
         }
 
-        function setCategory(cat) {
-            activeCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.dataset.cat === cat) {
-                    btn.className = 'cat-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-black';
-                } else {
-                    btn.className = 'cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-els-border';
-                }
-            });
-            renderProducts();
-        }
-
-        function handleSearch(val) {
-            searchQuery = val.trim();
-            renderProducts();
-        }
-
-        function handleSort(val) {
-            currentSort = val;
-            renderProducts();
-        }
-
-        function resetFilters() {
-            activeCategory = 'all';
-            activeBrand = 'all';
-            searchQuery = '';
-            document.getElementById('searchInput').value = '';
-            setCategory('all');
-            setBrand('all');
-        }
-
-        function quickAddToCart(id) {
+        // ==============================================================
+        // SSENSE QUICK VIEW & PRODUCT DETAILS MODAL
+        // ==============================================================
+        function openQuickView(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
-            const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Noir']);
-            if (pColors.length > 1 || (p.sizes && p.sizes.length > 1)) {
-                openQuickView(id);
-            } else {
-                addToCart(p, p.sizes[0] || 'Unique', pColors[0] || 'Noir');
-            }
+
+            const colors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Unique']);
+            selectedColorModal = colors[0];
+            selectedSizeModal = p.sizes[0] || 'Unique';
+
+            const content = document.getElementById('quickViewContent');
+            content.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12">
+                    
+                    <!-- Left: Studio Image (SSENSE Lookbook) -->
+                    <div class="bg-ssense-card border border-ssense-border aspect-[3/4] overflow-hidden">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                    </div>
+
+                    <!-- Right: Designer & Technical Details -->
+                    <div class="space-y-6 flex flex-col justify-between">
+                        
+                        <div class="space-y-3">
+                            <div class="space-y-1">
+                                <div class="font-display font-black text-xl text-white uppercase tracking-wider">
+                                    ${p.brand}
+                                </div>
+                                <h2 class="text-sm font-medium text-zinc-300">
+                                    ${p.name}
+                                </h2>
+                                <div class="text-lg font-black text-white pt-1">
+                                    ${p.price} €
+                                </div>
+                            </div>
+
+                            <div class="inline-block px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                                Certifié ${p.conditionGrade || 'Qualité 1:1 Miroir'}
+                            </div>
+
+                            <!-- Editorial description -->
+                            <div class="text-xs text-zinc-400 leading-relaxed max-h-40 overflow-y-auto pr-2 border-t border-b border-ssense-border py-3 whitespace-pre-line">
+                                ${p.description}
+                            </div>
+                        </div>
+
+                        <!-- 1. COLOR SELECTION -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">1. Choisir un coloris :</label>
+                                <span id="modalSelectedColorText" class="font-bold text-white text-[11px]">${selectedColorModal}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                ${colors.map((c, idx) => `
+                                    <button 
+                                        type="button" 
+                                        onclick="selectModalColor('${c.replace(/'/g, "\\'")}', this)" 
+                                        class="modal-col-btn px-3 py-2 border text-xs font-medium transition flex items-center gap-2 ${idx === 0 ? 'border-white bg-white text-black font-bold' : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-500'}"
+                                        data-color="${c}"
+                                    >
+                                        <span class="w-2.5 h-2.5 rounded-full ${getColorDotClass(c)}"></span>
+                                        <span>${c}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- 2. SIZE SELECTION -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">2. Choisir une taille :</label>
+                                <span id="modalSelectedSizeText" class="font-mono font-bold text-white text-[11px]">${selectedSizeModal}</span>
+                            </div>
+                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+                                ${p.sizes.map((s, idx) => `
+                                    <button 
+                                        type="button" 
+                                        onclick="selectModalSize('${s}', this)" 
+                                        class="modal-sz-btn py-2 border text-center text-xs transition font-mono ${idx === 0 ? 'border-white bg-white text-black font-bold' : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-500 hover:text-white'}"
+                                        data-size="${s}"
+                                    >
+                                        ${s}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="space-y-2 pt-2">
+                            <button 
+                                onclick="addFromModal('${p.id}')" 
+                                class="w-full bg-white hover:bg-zinc-200 text-black py-4 font-black text-xs uppercase tracking-widest transition active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                            >
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                                <span>Ajouter au panier</span>
+                            </button>
+                            
+                            <div class="text-[10px] text-zinc-500 text-center uppercase tracking-wider pt-1">
+                                Expédition sous 24/48h • Retours sous 14 jours • Paiement Stripe
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+            document.getElementById('quickViewBackdrop').classList.remove('hidden');
+            document.getElementById('quickViewModal').classList.remove('hidden');
+            initIcons();
         }
 
+        function selectModalColor(color, btn) {
+            selectedColorModal = color;
+            document.querySelectorAll('.modal-col-btn').forEach(b => {
+                b.className = 'modal-col-btn px-3 py-2 border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-500 text-xs font-medium transition flex items-center gap-2';
+            });
+            btn.className = 'modal-col-btn px-3 py-2 border border-white bg-white text-black text-xs font-bold transition flex items-center gap-2';
+            document.getElementById('modalSelectedColorText').innerText = color;
+        }
+
+        function selectModalSize(size, btn) {
+            selectedSizeModal = size;
+            document.querySelectorAll('.modal-sz-btn').forEach(b => {
+                b.className = 'modal-sz-btn py-2 border border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-500 hover:text-white text-center text-xs transition font-mono';
+            });
+            btn.className = 'modal-sz-btn py-2 border border-white bg-white text-black font-bold text-center text-xs transition font-mono';
+            document.getElementById('modalSelectedSizeText').innerText = size;
+        }
+
+        function addFromModal(id) {
+            const p = PRODUCTS.find(it => it.id === id);
+            if (!p) return;
+            const size = selectedSizeModal || p.sizes[0] || 'Unique';
+            const color = selectedColorModal || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
+            addToCart(p, size, color);
+            closeQuickView();
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewBackdrop').classList.add('hidden');
+            document.getElementById('quickViewModal').classList.add('hidden');
+        }
+
+        // ==============================================================
+        // CART MANAGEMENT (PANIER SLIDE-OVER)
+        // ==============================================================
         function addToCart(p, size, color) {
             const chosenSize = size || (p.sizes && p.sizes[0]) || 'Unique';
             const chosenColor = color || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
@@ -660,7 +980,7 @@
                 });
             }
             saveCart();
-            showToast(`Ajouté au panier : ${p.name} - ${chosenColor} (${chosenSize})`);
+            showToast(`${p.brand} - ${p.name} (${chosenColor}, ${chosenSize}) ajouté au panier`);
             openCart();
         }
 
@@ -677,8 +997,8 @@
             const footer = document.getElementById('cartFooter');
 
             const totalQty = cart.reduce((acc, it) => acc + it.quantity, 0);
-            countBadge.innerText = totalQty;
-            drawerCount.innerText = totalQty;
+            countBadge.innerText = `(${totalQty})`;
+            drawerCount.innerText = `(${totalQty})`;
 
             if (cart.length === 0) {
                 list.innerHTML = '';
@@ -691,25 +1011,31 @@
             footer.classList.remove('hidden');
 
             list.innerHTML = cart.map((item, idx) => `
-                <div class="flex items-center gap-3 p-2.5 bg-zinc-900/70 border border-zinc-800 rounded-lg">
-                    <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded object-cover bg-zinc-950 shrink-0">
-                    <div class="flex-1 min-w-0">
+                <div class="flex items-start gap-4 p-3 bg-zinc-950 border border-zinc-900">
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-20 object-cover bg-black shrink-0 border border-zinc-800">
+                    
+                    <div class="flex-1 min-w-0 space-y-1">
                         <div class="flex items-start justify-between gap-1">
-                            <h4 class="font-bold text-xs text-white truncate">${item.name}</h4>
-                            <button onclick="removeFromCart(${idx})" class="text-zinc-500 hover:text-red-400 p-0.5">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-white">${item.brand}</span>
+                                <h4 class="text-xs text-zinc-400 truncate">${item.name}</h4>
+                            </div>
+                            <button onclick="removeFromCart(${idx})" class="text-zinc-600 hover:text-white p-1" title="Supprimer">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
-                        <div class="text-[11px] text-zinc-400 flex items-center gap-2 pt-0.5">
-                            <span>Taille : <strong class="text-white">${item.size}</strong></span>
-                            ${item.color ? `<span>• Coloris : <strong class="text-emerald-400">${item.color}</strong></span>` : ''}
+
+                        <div class="text-[11px] text-zinc-500 font-mono">
+                            Taille : <span class="text-white">${item.size}</span> • Coloris : <span class="text-white">${item.color || 'Unique'}</span>
                         </div>
-                        <div class="flex items-center justify-between pt-1">
-                            <span class="font-black text-xs text-white">${item.price * item.quantity} €</span>
-                            <div class="flex items-center border border-zinc-700 rounded bg-black">
-                                <button onclick="changeQty(${idx}, -1)" class="px-1.5 py-0.5 text-xs text-zinc-400 hover:text-white">-</button>
-                                <span class="px-1.5 text-xs font-bold text-white">${item.quantity}</span>
-                                <button onclick="changeQty(${idx}, 1)" class="px-1.5 py-0.5 text-xs text-zinc-400 hover:text-white">+</button>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="font-bold text-xs text-white">${item.price * item.quantity} €</span>
+                            
+                            <div class="flex items-center border border-zinc-800 bg-black">
+                                <button onclick="changeQty(${idx}, -1)" class="px-2 py-0.5 text-xs text-zinc-400 hover:text-white">-</button>
+                                <span class="px-2 text-xs font-mono font-bold text-white">${item.quantity}</span>
+                                <button onclick="changeQty(${idx}, 1)" class="px-2 py-0.5 text-xs text-zinc-400 hover:text-white">+</button>
                             </div>
                         </div>
                     </div>
@@ -770,7 +1096,7 @@
             if (code === 'ELS10') {
                 appliedPromo = 'ELS10';
                 document.getElementById('promoSuccessNotice').classList.remove('hidden');
-                showToast('Code promo -10% appliqué !');
+                showToast('Code promo -10% appliqué');
                 updateCartUI();
             } else {
                 alert('Code promo invalide. Utilisez ELS10');
@@ -781,7 +1107,7 @@
             if (cart.length === 0) return;
             const btn = document.getElementById('checkoutBtn');
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Redirection...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Redirection Stripe...`;
             initIcons();
 
             try {
@@ -801,130 +1127,13 @@
             }
         }
 
-        let selectedColorModal = null;
-        let selectedSizeModal = null;
-
-        function openQuickView(id) {
-            const p = PRODUCTS.find(it => it.id === id);
-            if (!p) return;
-
-            const colors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Unique']);
-            selectedColorModal = colors[0];
-            selectedSizeModal = p.sizes[0] || 'Unique';
-
-            const content = document.getElementById('quickViewContent');
-            content.innerHTML = `
-                <div class="grid sm:grid-cols-2 gap-6">
-                    <div class="rounded-xl overflow-hidden bg-zinc-950 aspect-square border border-zinc-800">
-                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="space-y-4 flex flex-col justify-between">
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-extrabold uppercase text-zinc-400 tracking-wider">${p.brand}</span>
-                                <span class="badge-verified px-2 py-0.5 rounded text-[10px] font-bold">${p.conditionGrade || '1:1 Miroir'}</span>
-                            </div>
-                            <h2 class="font-bold text-xl text-white">${p.name}</h2>
-                            <div class="text-2xl font-black text-white">${p.price} €</div>
-                            <div class="text-xs text-zinc-400 leading-relaxed max-h-28 overflow-y-auto pr-1 whitespace-pre-line">${p.description}</div>
-                        </div>
-
-                        <!-- 1. Color Selection -->
-                        <div class="space-y-2 pt-2 border-t border-zinc-900">
-                            <div class="flex items-center justify-between text-xs">
-                                <label class="font-bold text-zinc-300">1. Coloris disponible(s) :</label>
-                                <span id="modalSelectedColorText" class="font-bold text-emerald-400 font-mono">${selectedColorModal}</span>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                ${colors.map((c, idx) => `
-                                    <button 
-                                        type="button" 
-                                        onclick="selectModalColor('${c.replace(/'/g, "\\'")}', this)" 
-                                        class="modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition flex items-center gap-1.5 ${idx === 0 ? 'border-emerald-400 bg-emerald-500/10 text-emerald-300' : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600'}"
-                                        data-color="${c}"
-                                    >
-                                        <span class="w-2 h-2 rounded-full ${getColorDotClass(c)}"></span>
-                                        <span>${c}</span>
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- 2. Size Selection -->
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <label class="font-bold text-zinc-300">2. Choisir une taille :</label>
-                                <span id="modalSelectedSizeText" class="font-bold text-white font-mono">${selectedSizeModal}</span>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                ${p.sizes.map((s, idx) => `
-                                    <button 
-                                        type="button" 
-                                        onclick="selectModalSize('${s}', this)" 
-                                        class="modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition ${idx === 0 ? 'border-white bg-white text-black' : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600'}"
-                                        data-size="${s}"
-                                    >
-                                        ${s}
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <button 
-                            onclick="addFromModal('${p.id}')" 
-                            class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 rounded-xl font-black text-xs transition active:scale-95 flex items-center justify-center gap-2 shadow-lg"
-                        >
-                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                            <span>Ajouter au panier</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('quickViewBackdrop').classList.remove('hidden');
-            document.getElementById('quickViewModal').classList.remove('hidden');
-            initIcons();
-        }
-
-        function selectModalColor(color, btn) {
-            selectedColorModal = color;
-            document.querySelectorAll('.modal-col-btn').forEach(b => {
-                b.className = 'modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600 flex items-center gap-1.5';
-            });
-            btn.className = 'modal-col-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-emerald-400 bg-emerald-500/10 text-emerald-300 flex items-center gap-1.5';
-            document.getElementById('modalSelectedColorText').innerText = color;
-        }
-
-        function selectModalSize(size, btn) {
-            selectedSizeModal = size;
-            document.querySelectorAll('.modal-sz-btn').forEach(b => {
-                b.className = 'modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-600';
-            });
-            btn.className = 'modal-sz-btn px-3 py-1.5 rounded-lg border text-xs font-bold transition border-white bg-white text-black';
-            document.getElementById('modalSelectedSizeText').innerText = size;
-        }
-
-        function addFromModal(id) {
-            const p = PRODUCTS.find(it => it.id === id);
-            if (!p) return;
-            const size = selectedSizeModal || p.sizes[0] || 'Unique';
-            const color = selectedColorModal || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
-            addToCart(p, size, color);
-            closeQuickView();
-        }
-
-        function closeQuickView() {
-            document.getElementById('quickViewBackdrop').classList.add('hidden');
-            document.getElementById('quickViewModal').classList.add('hidden');
-        }
-
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.classList.remove('translate-y-20', 'opacity-0');
+            t.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => {
-                t.classList.add('translate-y-20', 'opacity-0');
-            }, 2500);
+                t.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
