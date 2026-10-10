@@ -1,31 +1,5 @@
 [
   {
-    "id": "ELS-CMD-1083",
-    "customerName": "Adrien R.",
-    "customerPhone": "07 55 18 22 90",
-    "customerAddress": "Main propre (Marseille)",
-    "items": [
-      {
-        "id": "els-001",
-        "name": "Wyndham Parka Black Label",
-        "brand": "Canada Goose",
-        "color": "Noir Mat",
-        "size": "M",
-        "price": 320,
-        "quantity": 1
-      }
-    ],
-    "total": 320,
-    "paymentMethod": "Espèces (Vente directe)",
-    "status": "livre",
-    "statusLabel": "Livrée",
-    "trackingNumber": "",
-    "carrier": "Main propre",
-    "notes": "Paiement cash remis à Ilies.",
-    "createdAt": "2026-10-10T11:30:00.000Z",
-    "createdBy": "Ilies"
-  },
-  {
     "id": "ELS-CMD-1081",
     "customerName": "Karim B.",
     "customerPhone": "07 82 11 94 05",
