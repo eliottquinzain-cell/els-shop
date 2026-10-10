@@ -1,43 +1,5 @@
 [
   {
-    "id": "els-002",
-    "name": "Alcatraz Pullover Hoodie",
-    "brand": "Corteiz",
-    "category": "sweats",
-    "price": 110,
-    "costPrice": 38,
-    "condition": "Neuf (1:1)",
-    "conditionGrade": "1:1 Miroir",
-    "color": "Triple Black",
-    "colors": [
-      "Triple Black",
-      "Gris Chiné",
-      "Baby Blue"
-    ],
-    "sizes": [
-      "XS",
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    "stock": {
-      "XS": 2,
-      "S": 4,
-      "M": 8,
-      "L": 6,
-      "XL": 3,
-      "XXL": 2
-    },
-    "badge": "NOUVEAU 1:1",
-    "featured": false,
-    "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
-    "description": "Qualité 1:1 haute fidélité. Coton lourd 450 GSM avec broderie relief Alcatraz identique. Étiquettes intérieures, wash tags et sachet zippé officiel fournis.",
-    "createdAt": "2026-10-09T22:31:02.005Z",
-    "createdBy": "Ilies"
-  },
-  {
     "id": "els-001",
     "name": "Wyndham Parka Black Label",
     "brand": "Canada Goose",
