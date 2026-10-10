@@ -1,32 +1,5 @@
 [
   {
-    "id": "ELS-CMD-1081",
-    "customerName": "Karim B.",
-    "customerEmail": "karim.b@gmail.com",
-    "customerPhone": "07 82 11 94 05",
-    "customerAddress": "Remise en main propre (Lyon)",
-    "items": [
-      {
-        "id": "els-002",
-        "name": "Alcatraz Pullover Hoodie",
-        "brand": "Corteiz",
-        "color": "Triple Black",
-        "size": "L",
-        "price": 110,
-        "quantity": 1
-      }
-    ],
-    "total": 110,
-    "paymentMethod": "Espèces (Vente directe)",
-    "status": "en_preparation",
-    "statusLabel": "En préparation",
-    "trackingNumber": "",
-    "carrier": "Main propre",
-    "notes": "Vente directe confirmée via Insta.",
-    "createdAt": "2026-10-10T10:15:00.000Z",
-    "createdBy": "Eliott"
-  },
-  {
     "id": "ELS-CMD-1082",
     "customerName": "Lucas M.",
     "customerEmail": "lucas.m@gmail.com",
