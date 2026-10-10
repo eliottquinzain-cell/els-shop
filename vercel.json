@@ -18,6 +18,10 @@
     {
       "source": "/api/products",
       "destination": "/api/products.js"
+    },
+    {
+      "source": "/api/orders",
+      "destination": "/api/orders.js"
     }
   ],
   "headers": [
