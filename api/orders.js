@@ -5,6 +5,7 @@
 
 const { getOrders, saveOrders, getProducts, saveProducts } = require('./lib/storage');
 const { requireAdmin } = require('./lib/auth');
+const { sendEmailNotification, generateShippingEmailHtml } = require('./lib/notifications');
 
 function extractId(req, body) {
   if (body && body.id) return String(body.id).trim();
@@ -154,6 +155,7 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const {
         customerName,
+        customerEmail,
         customerPhone,
         customerAddress,
         items,
@@ -186,6 +188,7 @@ module.exports = async (req, res) => {
       const newOrder = {
         id: orderId,
         customerName: (customerName || 'Client').trim(),
+        customerEmail: (customerEmail || '').trim().toLowerCase(),
         customerPhone: (customerPhone || '').trim(),
         customerAddress: (customerAddress || 'Remise directe').trim(),
         items: items.map(it => ({
@@ -266,7 +269,9 @@ module.exports = async (req, res) => {
       const order = orders[orderIndex];
 
       // Mise à jour de tous les champs modifiables
+      const oldStatus = order.status;
       if (body.customerName !== undefined) order.customerName = String(body.customerName).trim();
+      if (body.customerEmail !== undefined) order.customerEmail = String(body.customerEmail).trim().toLowerCase();
       if (body.customerPhone !== undefined) order.customerPhone = String(body.customerPhone).trim();
       if (body.customerAddress !== undefined) order.customerAddress = String(body.customerAddress).trim();
       if (body.total !== undefined) order.total = parseFloat(body.total) || order.total;
@@ -278,6 +283,21 @@ module.exports = async (req, res) => {
       if (body.status !== undefined) {
         order.status = body.status;
         order.statusLabel = statusLabels[body.status] || body.status;
+      }
+
+      // Notification automatique lors du passage à l'état expédié
+      if (order.status === 'expedie' && oldStatus !== 'expedie' && order.trackingNumber && order.customerEmail) {
+        try {
+          const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+          const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
+          const origin = `${proto}://${host}`;
+          const emailHtml = generateShippingEmailHtml(order, origin);
+          sendEmailNotification({
+            to: order.customerEmail,
+            subject: `Votre commande ${order.id} a été expédiée ! (${order.carrier || 'Colissimo'})`,
+            html: emailHtml
+          }).catch(e => console.warn('Email expédition non envoyé:', e));
+        } catch (e) {}
       }
 
       // Si les articles de la commande ont été modifiés
