@@ -122,17 +122,42 @@
     <div id="authScreen" class="fixed inset-0 bg-[#0a0a0d] z-50 flex items-center justify-center p-4">
         <div class="w-full max-w-md bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
             
+            <!-- Header Icon & Titles -->
             <div class="text-center space-y-2">
-                <div class="w-14 h-14 bg-zinc-900 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-500/10">
-                    <i data-lucide="shield-check" class="w-7 h-7"></i>
+                <div id="authHeaderIconContainer" class="w-14 h-14 bg-zinc-900 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-500/10">
+                    <i id="authHeaderIcon" data-lucide="shield-check" class="w-7 h-7"></i>
                 </div>
-                <h1 class="font-display font-black text-2xl text-white tracking-tight">ELS<span class="text-emerald-500">.</span>ADMIN</h1>
-                <p class="text-xs text-zinc-400">Application mobile réservée à Eliott & Ilies</p>
+                <h1 id="authTitle" class="font-display font-black text-2xl text-white tracking-tight">ELS<span class="text-emerald-500">.</span>ADMIN</h1>
+                <p id="authSubtitle" class="text-xs text-zinc-400">Application mobile réservée à Eliott & Ilies</p>
             </div>
 
-            <!-- Account Selector -->
-            <div class="space-y-2">
-                <label class="block text-[11px] font-bold text-zinc-400 uppercase">Sélectionnez votre compte :</label>
+            <!-- Active Admin Card (Mode Reconnexion Verrouillée) -->
+            <div id="activeProfileCard" class="hidden p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div id="lockedAvatar" class="w-10 h-10 rounded-xl bg-emerald-500 text-black font-black text-sm flex items-center justify-center shadow">
+                            E
+                        </div>
+                        <div>
+                            <div id="lockedAdminName" class="font-bold text-sm text-white">Eliott</div>
+                            <div class="text-[10px] text-emerald-400 font-mono flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>Session Verrouillée • Super Admin</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="toggleAccountSelector()" class="text-[11px] font-bold text-zinc-400 hover:text-white px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition">
+                        Changer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Account Selector (Eliott / Ilies) -->
+            <div id="accountSelectorContainer" class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase">Sélectionnez votre compte :</label>
+                    <span class="text-[10px] text-zinc-500">Droits identiques</span>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <button 
                         type="button" 
@@ -164,26 +189,28 @@
 
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Mot de passe secret</label>
-                    <input 
-                        type="password" 
-                        id="loginPasswordInput" 
-                        placeholder="Entrez votre mot de passe..." 
-                        required
-                        autocomplete="current-password"
-                        class="w-full bg-zinc-950 border border-els-border focus:border-emerald-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition"
-                    >
+                    <div class="flex items-center justify-between mb-1">
+                        <label id="passwordInputLabel" class="block text-[11px] font-bold text-zinc-400 uppercase">Mot de passe secret (Eliott)</label>
+                        <button type="button" onclick="togglePasswordVisibility()" class="text-[10px] text-zinc-400 hover:text-zinc-200 transition flex items-center gap-1">
+                            <i id="togglePassIcon" data-lucide="eye" class="w-3.5 h-3.5"></i>
+                            <span id="togglePassText">Afficher</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="loginPasswordInput" 
+                            placeholder="Entrez votre mot de passe..." 
+                            required
+                            autocomplete="current-password"
+                            class="w-full bg-zinc-950 border border-els-border focus:border-emerald-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition pr-10"
+                        >
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-2 pt-1">
-                    <input type="checkbox" id="rememberMeCheck" checked class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
-                    <label for="rememberMeCheck" class="text-xs text-zinc-400 select-none cursor-pointer">
-                        Rester connecté sur cet iPhone (Auto-connexion)
-                    </label>
-                </div>
-
-                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-semibold p-2.5 rounded-lg bg-red-500/10 border border-red-500/30">
-                    Mot de passe incorrect.
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 font-semibold p-2.5 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+                    <span id="loginErrorText">Mot de passe incorrect.</span>
                 </div>
 
                 <button 
@@ -191,13 +218,14 @@
                     id="loginBtn"
                     class="w-full bg-white hover:bg-zinc-200 text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
-                    <i data-lucide="lock" class="w-4 h-4"></i>
-                    <span>Ouvrir l'application ELS Admin</span>
+                    <i id="loginBtnIcon" data-lucide="unlock" class="w-4 h-4"></i>
+                    <span id="loginBtnText">Déverrouiller l'accès</span>
                 </button>
             </form>
 
-            <div class="text-[11px] text-zinc-500 text-center border-t border-zinc-900 pt-4 leading-relaxed">
-                Accès crypté par token de sécurité persistant. Conçu pour une utilisation plein écran sur iPhone.
+            <div class="text-[11px] text-zinc-500 text-center border-t border-zinc-900 pt-4 leading-relaxed flex items-center justify-center gap-1.5">
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-500/70"></i>
+                <span>Verrouillage automatique dès que vous quittez ou réduisez l'application.</span>
             </div>
 
         </div>
@@ -263,6 +291,11 @@
 
             <!-- Header Quick Actions -->
             <div class="flex items-center gap-2">
+                <button onclick="lockAdminSession(true)" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:text-amber-300 hover:bg-zinc-800 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 cursor-pointer" title="Verrouiller l'accès immédiatement">
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Verrouiller</span>
+                </button>
+
                 <a href="/" target="_blank" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition" title="Voir la boutique en direct">
                     <i data-lucide="external-link" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Boutique</span>
@@ -274,7 +307,7 @@
                     <span class="sm:hidden">Ajouter</span>
                 </button>
 
-                <button onclick="handleLogout()" class="p-2 text-zinc-500 hover:text-red-400 transition" title="Se déconnecter">
+                <button onclick="handleLogout()" class="p-2 text-zinc-500 hover:text-red-400 transition" title="Se déconnecter complètement">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -665,6 +698,10 @@
                     </div>
 
                     <div class="pt-4 border-t border-zinc-800 flex flex-wrap gap-3">
+                        <button onclick="lockAdminSession(true)" class="px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-black text-xs font-bold flex items-center gap-2 transition cursor-pointer">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                            <span>Verrouiller la Session</span>
+                        </button>
                         <a href="/" target="_blank" class="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-white text-xs font-bold flex items-center gap-2 transition">
                             <i data-lucide="external-link" class="w-4 h-4"></i>
                             <span>Ouvrir la Boutique ELS.SHOP</span>
@@ -1548,26 +1585,230 @@
         }
 
         // ==========================================
-        // AUTHENTICATION & SESSION PERSISTENCE
+        // AUTHENTICATION, AUTO-LOCK & RE-CONNECTION
         // ==========================================
-        function selectAccount(username) {
-            selectedLoginUsername = username;
-            const btnEliott = document.getElementById('btnAccountEliott');
-            const btnIlies = document.getElementById('btnAccountIlies');
+        let isSessionUnlocked = false;
+        let isPasswordVisible = false;
+        let isSelectorExpanded = false;
+        let idleTimer = null;
+        const IDLE_TIMEOUT_MS = 5 * 60 * 1000; // 5 min d'inactivité -> auto-verrouillage
 
-            if (username === 'eliott') {
-                btnEliott.className = 'p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition cursor-pointer';
-                btnIlies.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
-            } else {
-                btnIlies.className = 'p-3 rounded-xl border border-sky-500/60 bg-sky-500/10 text-white flex items-center gap-3 transition cursor-pointer';
-                btnEliott.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
+        function resetIdleTimer() {
+            if (idleTimer) clearTimeout(idleTimer);
+            if (isSessionUnlocked) {
+                idleTimer = setTimeout(() => {
+                    lockAdminSession(true);
+                }, IDLE_TIMEOUT_MS);
             }
         }
 
+        ['touchstart', 'mousedown', 'keydown', 'scroll'].forEach(evt => {
+            window.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+
+        // Détection quand l'admin quitte l'app (multitâche iPhone, écran verrouillé, changement d'onglet)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                // Verrouillage instantané dès que l'app est en arrière-plan
+                lockAdminSession(false);
+            } else if (document.visibilityState === 'visible') {
+                // Dès que l'admin revient, on invite au déverrouillage
+                if (!isSessionUnlocked) {
+                    promptSessionUnlock();
+                }
+            }
+        });
+
+        // Verrouillage lors de la fermeture de page ou navigation
+        window.addEventListener('pagehide', () => {
+            lockAdminSession(false);
+        });
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('loginPasswordInput');
+            const icon = document.getElementById('togglePassIcon');
+            const txt = document.getElementById('togglePassText');
+            if (!input) return;
+
+            isPasswordVisible = !isPasswordVisible;
+            input.type = isPasswordVisible ? 'text' : 'password';
+            if (txt) txt.innerText = isPasswordVisible ? 'Masquer' : 'Afficher';
+            if (icon) {
+                icon.setAttribute('data-lucide', isPasswordVisible ? 'eye-off' : 'eye');
+                initIcons();
+            }
+        }
+
+        function toggleAccountSelector() {
+            isSelectorExpanded = !isSelectorExpanded;
+            const container = document.getElementById('accountSelectorContainer');
+            if (container) {
+                if (isSelectorExpanded) {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
+                }
+            }
+        }
+
+        function selectAccount(username) {
+            selectedLoginUsername = username;
+            localStorage.setItem('els_admin_last_user', username);
+
+            const btnEliott = document.getElementById('btnAccountEliott');
+            const btnIlies = document.getElementById('btnAccountIlies');
+            const label = document.getElementById('passwordInputLabel');
+            const lockedName = document.getElementById('lockedAdminName');
+            const lockedAvatar = document.getElementById('lockedAvatar');
+            const input = document.getElementById('loginPasswordInput');
+
+            const isEliott = (username === 'eliott');
+            const displayName = isEliott ? 'Eliott' : 'Ilies';
+
+            if (label) label.innerText = `Mot de passe secret (${displayName})`;
+            if (lockedName) lockedName.innerText = displayName;
+            if (input) input.placeholder = `Mot de passe de ${displayName}...`;
+
+            if (lockedAvatar) {
+                lockedAvatar.innerText = isEliott ? 'E' : 'I';
+                lockedAvatar.className = isEliott ? 
+                    'w-10 h-10 rounded-xl bg-emerald-500 text-black font-black text-sm flex items-center justify-center shadow' :
+                    'w-10 h-10 rounded-xl bg-sky-500 text-black font-black text-sm flex items-center justify-center shadow';
+            }
+
+            if (btnEliott && btnIlies) {
+                if (isEliott) {
+                    btnEliott.className = 'p-3 rounded-xl border border-emerald-500/60 bg-emerald-500/10 text-white flex items-center gap-3 transition cursor-pointer';
+                    btnIlies.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
+                } else {
+                    btnIlies.className = 'p-3 rounded-xl border border-sky-500/60 bg-sky-500/10 text-white flex items-center gap-3 transition cursor-pointer';
+                    btnEliott.className = 'p-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white flex items-center gap-3 transition cursor-pointer';
+                }
+            }
+        }
+
+        function lockAdminSession(showNotice = false) {
+            isSessionUnlocked = false;
+            sessionStorage.removeItem('els_session_unlocked');
+
+            // Masquer immédiatement les données sensibles pour le multitâche
+            const adminContent = document.getElementById('adminContent');
+            if (adminContent) adminContent.classList.add('hidden');
+
+            promptSessionUnlock();
+
+            if (showNotice) {
+                showToast('🔒 Session verrouillée.');
+            }
+        }
+
+        function promptSessionUnlock() {
+            const authScreen = document.getElementById('authScreen');
+            if (authScreen) authScreen.classList.remove('hidden');
+
+            const lastUser = localStorage.getItem('els_admin_last_user') || (currentAdmin && currentAdmin.username) || 'eliott';
+            selectAccount(lastUser);
+
+            const authHeaderIcon = document.getElementById('authHeaderIcon');
+            const authHeaderContainer = document.getElementById('authHeaderIconContainer');
+            const authTitle = document.getElementById('authTitle');
+            const authSubtitle = document.getElementById('authSubtitle');
+            const activeProfileCard = document.getElementById('activeProfileCard');
+            const accountSelector = document.getElementById('accountSelectorContainer');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginBtnIcon = document.getElementById('loginBtnIcon');
+            const passInput = document.getElementById('loginPasswordInput');
+            const errorMsg = document.getElementById('loginErrorMsg');
+
+            if (errorMsg) errorMsg.classList.add('hidden');
+            if (passInput) passInput.value = '';
+
+            if (authHeaderContainer) {
+                authHeaderContainer.className = 'w-14 h-14 bg-zinc-900 border border-amber-500/40 rounded-2xl flex items-center justify-center mx-auto text-amber-400 shadow-lg shadow-amber-500/10';
+            }
+            if (authHeaderIcon) {
+                authHeaderIcon.setAttribute('data-lucide', 'lock');
+            }
+            if (authTitle) {
+                authTitle.innerHTML = 'Session Verrouillée';
+            }
+            if (authSubtitle) {
+                authSubtitle.innerText = 'Entrez votre mot de passe pour reprendre vos stocks et commandes.';
+            }
+            if (activeProfileCard) {
+                activeProfileCard.classList.remove('hidden');
+            }
+            if (accountSelector) {
+                accountSelector.classList.add('hidden');
+            }
+            if (loginBtnText) {
+                loginBtnText.innerText = 'Déverrouiller l\'accès';
+            }
+            if (loginBtnIcon) {
+                loginBtnIcon.setAttribute('data-lucide', 'unlock');
+            }
+
+            initIcons();
+
+            setTimeout(() => {
+                if (passInput) passInput.focus();
+            }, 100);
+        }
+
+        function showInitialLoginScreen() {
+            const authScreen = document.getElementById('authScreen');
+            if (authScreen) authScreen.classList.remove('hidden');
+            const adminContent = document.getElementById('adminContent');
+            if (adminContent) adminContent.classList.add('hidden');
+
+            const authHeaderIcon = document.getElementById('authHeaderIcon');
+            const authHeaderContainer = document.getElementById('authHeaderIconContainer');
+            const authTitle = document.getElementById('authTitle');
+            const authSubtitle = document.getElementById('authSubtitle');
+            const activeProfileCard = document.getElementById('activeProfileCard');
+            const accountSelector = document.getElementById('accountSelectorContainer');
+            const loginBtnText = document.getElementById('loginBtnText');
+
+            if (authHeaderContainer) {
+                authHeaderContainer.className = 'w-14 h-14 bg-zinc-900 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-500/10';
+            }
+            if (authHeaderIcon) {
+                authHeaderIcon.setAttribute('data-lucide', 'shield-check');
+            }
+            if (authTitle) {
+                authTitle.innerHTML = 'ELS<span class="text-emerald-500">.</span>ADMIN';
+            }
+            if (authSubtitle) {
+                authSubtitle.innerText = 'Application mobile réservée à Eliott & Ilies';
+            }
+            if (activeProfileCard) {
+                activeProfileCard.classList.add('hidden');
+            }
+            if (accountSelector) {
+                accountSelector.classList.remove('hidden');
+            }
+            if (loginBtnText) {
+                loginBtnText.innerText = 'Ouvrir l\'application ELS Admin';
+            }
+
+            initIcons();
+        }
+
         async function checkAdminAuth() {
+            const lastUser = localStorage.getItem('els_admin_last_user') || 'eliott';
+            selectedLoginUsername = lastUser;
+
+            // Au retour ou nouveau lancement : TOUJOURS demander le mot de passe !
+            const isUnlockedInSession = sessionStorage.getItem('els_session_unlocked') === 'true';
+
+            if (!isUnlockedInSession) {
+                promptSessionUnlock();
+                return;
+            }
+
             const token = localStorage.getItem('els_admin_jwt');
             if (!token) {
-                showLoginScreen();
+                promptSessionUnlock();
                 return;
             }
 
@@ -1578,24 +1819,21 @@
                 const data = await res.json();
                 if (data.success && data.user) {
                     currentAdmin = data.user;
+                    isSessionUnlocked = true;
                     showDashboard();
                 } else {
-                    showLoginScreen();
+                    promptSessionUnlock();
                 }
             } catch (err) {
                 const localUser = JSON.parse(localStorage.getItem('els_admin_user') || 'null');
                 if (localUser) {
                     currentAdmin = localUser;
+                    isSessionUnlocked = true;
                     showDashboard();
                 } else {
-                    showLoginScreen();
+                    promptSessionUnlock();
                 }
             }
-        }
-
-        function showLoginScreen() {
-            document.getElementById('authScreen').classList.remove('hidden');
-            document.getElementById('adminContent').classList.add('hidden');
         }
 
         function showDashboard() {
@@ -1624,14 +1862,23 @@
             checkiOSBanner();
             loadProducts();
             loadOrders();
+            resetIdleTimer();
             initIcons();
         }
 
         async function handleLoginSubmit(e) {
             e.preventDefault();
-            const password = document.getElementById('loginPasswordInput').value;
+            const passwordInput = document.getElementById('loginPasswordInput');
+            const password = passwordInput.value;
             const errorMsg = document.getElementById('loginErrorMsg');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+
             errorMsg.classList.add('hidden');
+
+            const origBtnText = loginBtnText ? loginBtnText.innerText : 'Déverrouiller';
+            if (loginBtnText) loginBtnText.innerText = 'Vérification...';
+            if (loginBtn) loginBtn.disabled = true;
 
             try {
                 const res = await fetch('/api/admin/auth', {
@@ -1645,15 +1892,22 @@
 
                 const data = await res.json();
                 if (data.success && data.token) {
+                    isSessionUnlocked = true;
+                    sessionStorage.setItem('els_session_unlocked', 'true');
                     localStorage.setItem('els_admin_jwt', data.token);
                     localStorage.setItem('els_admin_user', JSON.stringify(data.user));
+                    localStorage.setItem('els_admin_last_user', data.user.username);
                     currentAdmin = data.user;
+                    
                     showDashboard();
+                    switchTab(currentTab);
+                    showToast(`Accès déverrouillé. Bon retour ${data.user.displayName} !`);
+                    passwordInput.value = '';
                 } else {
-                    errorMsg.innerText = data.error || 'Mot de passe incorrect.';
-                    errorMsg.classList.remove('hidden');
+                    showLoginError(data.error || `Mot de passe incorrect pour ${selectedLoginUsername === 'ilies' ? 'Ilies' : 'Eliott'}.`);
                 }
             } catch (err) {
+                // Fallback de secours local / hors-ligne
                 if ((selectedLoginUsername === 'eliott' && password === 'eliott2026') || 
                     (selectedLoginUsername === 'ilies' && password === 'ilies2026')) {
                     const fallbackUser = {
@@ -1661,22 +1915,54 @@
                         displayName: selectedLoginUsername === 'eliott' ? 'Eliott' : 'Ilies',
                         role: 'Super Admin'
                     };
+                    isSessionUnlocked = true;
+                    sessionStorage.setItem('els_session_unlocked', 'true');
                     localStorage.setItem('els_admin_jwt', 'local-token-2026');
                     localStorage.setItem('els_admin_user', JSON.stringify(fallbackUser));
+                    localStorage.setItem('els_admin_last_user', selectedLoginUsername);
                     currentAdmin = fallbackUser;
+
                     showDashboard();
+                    switchTab(currentTab);
+                    showToast(`Accès déverrouillé. Bon retour ${fallbackUser.displayName} !`);
+                    passwordInput.value = '';
                 } else {
-                    errorMsg.innerText = 'Mot de passe incorrect.';
-                    errorMsg.classList.remove('hidden');
+                    showLoginError(`Mot de passe incorrect pour ${selectedLoginUsername === 'ilies' ? 'Ilies' : 'Eliott'}.`);
                 }
+            } finally {
+                if (loginBtnText) loginBtnText.innerText = origBtnText;
+                if (loginBtn) loginBtn.disabled = false;
+                initIcons();
+            }
+        }
+
+        function showLoginError(msg) {
+            const errorMsg = document.getElementById('loginErrorMsg');
+            const errorText = document.getElementById('loginErrorText');
+            const passInput = document.getElementById('loginPasswordInput');
+
+            if (errorText) errorText.innerText = msg;
+            if (errorMsg) errorMsg.classList.remove('hidden');
+
+            if (passInput) {
+                passInput.classList.add('border-red-500', 'bg-red-500/10');
+                passInput.focus();
+                passInput.select();
+                setTimeout(() => {
+                    passInput.classList.remove('border-red-500', 'bg-red-500/10');
+                }, 1500);
             }
         }
 
         function handleLogout() {
+            if (!confirm('Voulez-vous vous déconnecter complètement de l\'application ?')) return;
+            isSessionUnlocked = false;
+            sessionStorage.removeItem('els_session_unlocked');
             localStorage.removeItem('els_admin_jwt');
             localStorage.removeItem('els_admin_user');
             currentAdmin = null;
-            showLoginScreen();
+            showInitialLoginScreen();
+            showToast('Déconnecté.');
         }
 
         function checkiOSBanner() {
