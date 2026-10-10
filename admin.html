@@ -1158,9 +1158,15 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Adresse ou Lieu</label>
-                <input type="text" id="editOrderCustAddress" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Email Client (pour envoi auto)</label>
+                    <input type="email" id="editOrderCustEmail" placeholder="client@gmail.com" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Adresse ou Lieu</label>
+                    <input type="text" id="editOrderCustAddress" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -1286,6 +1292,134 @@
             <button onclick="closeReceiptModal()" class="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl text-xs font-bold transition">
                 Fermer
             </button>
+        </div>
+
+    <!-- ============================================================== -->
+    <!-- 8b. MODAL: NOTIFICATION CLIENT & SUIVI (EMAIL, WHATSAPP, SMS)   -->
+    <!-- ============================================================== -->
+    <div id="notifyModalBackdrop" onclick="closeNotifyModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="notifyModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-lg bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-7 shadow-2xl space-y-5">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-base text-white">Notifier le Client</h3>
+                    <p class="text-[11px] text-zinc-400">Envoyer confirmation, suivi colis ou récapitulatif</p>
+                </div>
+            </div>
+            <button onclick="closeNotifyModal()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Recipient Overview -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 space-y-2 text-xs">
+            <div class="flex justify-between">
+                <span class="text-zinc-500">Commande :</span>
+                <span id="notifOrderId" class="font-mono font-bold text-white">ELS-CMD-1084</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-zinc-500">Client :</span>
+                <span id="notifCustName" class="font-bold text-white">Client</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-zinc-500">Téléphone :</span>
+                <span id="notifCustPhone" class="font-mono text-zinc-300">06...</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-zinc-500">Transporteur :</span>
+                <span id="notifCarrier" class="font-bold text-sky-400">Colissimo 24/48h</span>
+            </div>
+            <div id="notifTrackingRow" class="flex justify-between">
+                <span class="text-zinc-500">N° Suivi :</span>
+                <span id="notifTrackingNum" class="font-mono font-bold text-emerald-400">Non renseigné</span>
+            </div>
+        </div>
+
+        <!-- Dispatch Channels -->
+        <div class="space-y-3">
+            
+            <!-- Channel 1: Email Confirmation / Expédition -->
+            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-white">
+                        <i data-lucide="mail" class="w-4 h-4 text-sky-400"></i>
+                        <span>Email Automatique</span>
+                    </div>
+                    <span class="text-[10px] text-zinc-500">Modèle HTML ELS.SHOP</span>
+                </div>
+                <div class="flex gap-2">
+                    <input 
+                        type="email" 
+                        id="notifTargetEmail" 
+                        placeholder="email.client@gmail.com" 
+                        class="flex-1 bg-black border border-zinc-800 px-3 py-2 text-xs text-white rounded-lg focus:outline-none focus:border-sky-400"
+                    >
+                    <button 
+                        type="button" 
+                        onclick="sendOrderEmail()" 
+                        id="btnSendEmail"
+                        class="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-black font-black text-xs rounded-lg transition active:scale-95 shrink-0 flex items-center gap-1.5"
+                    >
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                        <span>Envoyer</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Channel 2: WhatsApp (1-Clic) -->
+            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-white">
+                        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                        <span>WhatsApp (Message Pré-rempli)</span>
+                    </div>
+                    <span class="text-[10px] text-emerald-400 font-bold">1-Clic</span>
+                </div>
+                <p class="text-[11px] text-zinc-400">Ouvre WhatsApp avec le récapitulatif complet et le lien de suivi direct.</p>
+                <a 
+                    id="btnNotifWhatsApp" 
+                    href="#" 
+                    target="_blank" 
+                    class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition active:scale-95"
+                >
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Ouvrir WhatsApp Client</span>
+                </a>
+            </div>
+
+            <!-- Channel 3: SMS (1-Clic) -->
+            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-white">
+                        <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
+                        <span>SMS Mobile</span>
+                    </div>
+                </div>
+                <a 
+                    id="btnNotifSms" 
+                    href="#" 
+                    class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition"
+                >
+                    <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
+                    <span>Ouvrir dans l'app Messages (SMS)</span>
+                </a>
+            </div>
+
+            <!-- Channel 4: Copy Direct Tracking Link -->
+            <div class="p-3 bg-black/60 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs">
+                <div>
+                    <span class="text-zinc-500 block text-[10px]">LIEN DE SUIVI PUBLIC :</span>
+                    <span id="notifPublicUrlText" class="font-mono text-zinc-300 text-[11px] truncate max-w-[220px] block">https://els-shop.vercel.app/suivi?order=...</span>
+                </div>
+                <button onclick="copyPublicTrackingUrl()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-bold text-xs border border-zinc-700 transition">
+                    Copier
+                </button>
+            </div>
+
         </div>
 
     </div>
@@ -2487,6 +2621,11 @@
                                 <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
                                 <span>Reçu Client</span>
                             </button>
+
+                            <button onclick="openNotifyModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-sky-400 hover:text-sky-300 border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer" title="Notifier le client (Email, WhatsApp, Suivi)">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Notifier</span>
+                            </button>
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -2536,6 +2675,7 @@
             document.getElementById('editOrderIdVal').value = o.id;
             document.getElementById('editOrderModalTitle').innerText = `Modifier la Commande : ${o.id}`;
             document.getElementById('editOrderCustName').value = o.customerName || '';
+            document.getElementById('editOrderCustEmail').value = o.customerEmail || '';
             document.getElementById('editOrderCustPhone').value = o.customerPhone || '';
             document.getElementById('editOrderCustAddress').value = o.customerAddress || '';
             document.getElementById('editOrderTotal').value = o.total || 0;
@@ -2558,6 +2698,7 @@
             e.preventDefault();
             const id = document.getElementById('editOrderIdVal').value;
             const customerName = document.getElementById('editOrderCustName').value;
+            const customerEmail = document.getElementById('editOrderCustEmail').value;
             const customerPhone = document.getElementById('editOrderCustPhone').value;
             const customerAddress = document.getElementById('editOrderCustAddress').value;
             const total = parseFloat(document.getElementById('editOrderTotal').value);
@@ -2579,6 +2720,7 @@
                     body: JSON.stringify({
                         id,
                         customerName,
+                        customerEmail,
                         customerPhone,
                         customerAddress,
                         total,
@@ -2696,6 +2838,113 @@
                 showToast('Reçu copié dans le presse-papiers !');
             }).catch(() => {
                 showToast('Texte prêt à être partagé.');
+            });
+        }
+
+        // ==========================================
+        // NOTIFICATIONS CLIENTS & SUIVI (EMAIL, WHATSAPP, SMS)
+        // ==========================================
+        let currentNotifyOrder = null;
+
+        function openNotifyModal(orderId) {
+            const o = adminOrders.find(it => it.id === orderId);
+            if (!o) return;
+
+            currentNotifyOrder = o;
+            document.getElementById('notifOrderId').innerText = o.id;
+            document.getElementById('notifCustName').innerText = o.customerName || 'Client';
+            document.getElementById('notifCustPhone').innerText = o.customerPhone || 'Non renseigné';
+            document.getElementById('notifCarrier').innerText = o.carrier || 'Colissimo 24/48h';
+            
+            const trackingNumElem = document.getElementById('notifTrackingNum');
+            if (o.trackingNumber) {
+                trackingNumElem.innerText = o.trackingNumber;
+                trackingNumElem.className = 'font-mono font-bold text-emerald-400';
+            } else {
+                trackingNumElem.innerText = 'Non renseigné';
+                trackingNumElem.className = 'font-mono font-bold text-zinc-500';
+            }
+
+            // Pré-remplissage email client
+            const emailInput = document.getElementById('notifTargetEmail');
+            emailInput.value = o.customerEmail || (o.customerName && o.customerName.includes('@') ? o.customerName : '');
+
+            // Formuler message WhatsApp & URL de suivi
+            const host = window.location.origin;
+            const trackingUrl = `${host}/suivi?order=${encodeURIComponent(o.id)}`;
+            document.getElementById('notifPublicUrlText').innerText = trackingUrl;
+
+            const itemsStr = (o.items || []).map(it => `• ${it.brand} ${it.name} (${it.size}${it.color ? ' - ' + it.color : ''}) x${it.quantity}`).join('\n');
+            let waMsg = `Bonjour ${o.customerName} !\n\n` +
+                        `Votre commande *${o.id}* chez ELS.SHOP (${o.total}€) est bien enregistrée.\n\n` +
+                        `🛒 *Vos articles :*\n${itemsStr}\n\n`;
+
+            if (o.trackingNumber) {
+                waMsg += `🚚 *Numéro de Suivi Colissimo :* ${o.trackingNumber}\n`;
+            }
+            waMsg += `🔗 *Suivre votre livraison en direct :*\n${trackingUrl}\n\n` +
+                     `Merci pour votre confiance sur ELS.SHOP !`;
+
+            let cleanPhone = (o.customerPhone || '').replace(/[\s.-]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '33' + cleanPhone.substring(1);
+
+            document.getElementById('btnNotifWhatsApp').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
+            document.getElementById('btnNotifSms').href = `sms:${cleanPhone}?body=${encodeURIComponent(`ELS.SHOP : Commande ${o.id} confirmée. Suivez votre colis ici : ${trackingUrl}`)}`;
+
+            document.getElementById('notifyModalBackdrop').classList.remove('hidden');
+            document.getElementById('notifyModal').classList.remove('hidden');
+        }
+
+        function closeNotifyModal() {
+            document.getElementById('notifyModalBackdrop').classList.add('hidden');
+            document.getElementById('notifyModal').classList.add('hidden');
+        }
+
+        async function sendOrderEmail() {
+            if (!currentNotifyOrder) return;
+            const email = (document.getElementById('notifTargetEmail').value || '').trim();
+            if (!email || !email.includes('@')) {
+                alert('Veuillez renseigner une adresse email valide.');
+                return;
+            }
+
+            const btn = document.getElementById('btnSendEmail');
+            btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i>`;
+            initIcons();
+
+            try {
+                const res = await fetch('/api/notify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: currentNotifyOrder.id,
+                        type: currentNotifyOrder.trackingNumber ? 'shipping' : 'confirmation',
+                        targetEmail: email
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Email envoyé à ${email} !`);
+                } else {
+                    alert(data.error || 'Erreur lors de l\'envoi de l\'email.');
+                }
+            } catch (err) {
+                showToast('Email de confirmation préparé.');
+            } finally {
+                btn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i> Envoyer`;
+                initIcons();
+            }
+        }
+
+        function copyPublicTrackingUrl() {
+            if (!currentNotifyOrder) return;
+            const host = window.location.origin;
+            const trackingUrl = `${host}/suivi?order=${encodeURIComponent(currentNotifyOrder.id)}`;
+            navigator.clipboard.writeText(trackingUrl).then(() => {
+                showToast('Lien de suivi copié dans le presse-papiers !');
+            }).catch(() => {
+                showToast(trackingUrl);
             });
         }
 
