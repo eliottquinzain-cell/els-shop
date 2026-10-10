@@ -2,6 +2,7 @@
   {
     "id": "ELS-CMD-1084",
     "customerName": "Yanis D.",
+    "customerEmail": "yanis.d@gmail.com",
     "customerPhone": "06 12 94 33 21",
     "customerAddress": "8 Boulevard Haussmann, 75009 Paris",
     "items": [
@@ -28,6 +29,7 @@
   {
     "id": "ELS-CMD-1083",
     "customerName": "Adrien R.",
+    "customerEmail": "adrien.r@outlook.fr",
     "customerPhone": "07 55 18 22 90",
     "customerAddress": "Main propre (Marseille)",
     "items": [
@@ -54,6 +56,7 @@
   {
     "id": "ELS-CMD-1082",
     "customerName": "Lucas M.",
+    "customerEmail": "lucas.m@gmail.com",
     "customerPhone": "06 45 89 12 30",
     "customerAddress": "14 Rue de la Paix, 75002 Paris",
     "items": [
@@ -80,6 +83,7 @@
   {
     "id": "ELS-CMD-1081",
     "customerName": "Karim B.",
+    "customerEmail": "karim.b@gmail.com",
     "customerPhone": "07 82 11 94 05",
     "customerAddress": "Remise en main propre (Lyon)",
     "items": [
