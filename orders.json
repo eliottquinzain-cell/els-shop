@@ -1,5 +1,32 @@
 [
   {
+    "id": "ELS-CMD-4252",
+    "customerName": "QUINZAIN",
+    "customerEmail": "equinzain@gmail.com",
+    "customerPhone": "",
+    "customerAddress": "Remise en main propre (Paris/IDF)",
+    "items": [
+      {
+        "id": "els-002",
+        "name": "Alcatraz Pullover Hoodie",
+        "brand": "Corteiz",
+        "color": "Gris Chiné",
+        "size": "L",
+        "price": 99,
+        "quantity": 1
+      }
+    ],
+    "total": 99,
+    "paymentMethod": "Commande Web Démo",
+    "status": "en_preparation",
+    "statusLabel": "En préparation",
+    "trackingNumber": "",
+    "carrier": "Main propre",
+    "notes": "Code promo ELS10 appliqué (-10%)",
+    "createdAt": "2026-10-10T12:33:08.308Z",
+    "createdBy": "Boutique Web"
+  },
+  {
     "id": "ELS-CMD-1084",
     "customerName": "Yanis D.",
     "customerEmail": "yanis.d@gmail.com",
