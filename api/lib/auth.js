@@ -87,6 +87,9 @@ function requireAdmin(req) {
     token = authHeader.substring(7).trim();
   } else if (req.headers['x-admin-token']) {
     token = req.headers['x-admin-token'];
+  } else if (req.headers.cookie) {
+    const match = req.headers.cookie.match(/els_admin_token=([^;]+)/);
+    if (match) token = match[1].trim();
   }
 
   const user = verifyToken(token);
