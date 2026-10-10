@@ -2,7 +2,7 @@
   {
     "id": "ELS-CMD-1084",
     "customerName": "Yanis D.",
-    "customerPhone": "06 12 94 33 21",
+    "customerPhone": "06 99 88 77 66",
     "customerAddress": "8 Boulevard Haussmann, 75009 Paris",
     "items": [
       {
@@ -21,9 +21,11 @@
     "statusLabel": "En préparation",
     "trackingNumber": "",
     "carrier": "Colissimo 24/48h",
-    "notes": "Commande passée sur le site web.",
+    "notes": "Modification test admin réussie",
     "createdAt": "2026-10-10T12:05:00.000Z",
-    "createdBy": "Stripe Web"
+    "createdBy": "Stripe Web",
+    "updatedAt": "2026-10-10T11:31:09.469Z",
+    "updatedBy": "Eliott"
   },
   {
     "id": "ELS-CMD-1083",
@@ -52,32 +54,6 @@
     "createdBy": "Ilies"
   },
   {
-    "id": "ELS-CMD-1082",
-    "customerName": "Lucas M.",
-    "customerPhone": "06 45 89 12 30",
-    "customerAddress": "14 Rue de la Paix, 75002 Paris",
-    "items": [
-      {
-        "id": "els-001",
-        "name": "Wyndham Parka Black Label",
-        "brand": "Canada Goose",
-        "color": "Noir Mat",
-        "size": "M",
-        "price": 320,
-        "quantity": 1
-      }
-    ],
-    "total": 320,
-    "paymentMethod": "Stripe (CB)",
-    "status": "expedie",
-    "statusLabel": "Expédiée",
-    "trackingNumber": "6A18492049281",
-    "carrier": "Colissimo",
-    "notes": "Colis déposé en bureau de poste le 09/10.",
-    "createdAt": "2026-10-09T18:40:00.000Z",
-    "createdBy": "Stripe Web"
-  },
-  {
     "id": "ELS-CMD-1081",
     "customerName": "Karim B.",
     "customerPhone": "07 82 11 94 05",
@@ -102,5 +78,31 @@
     "notes": "Vente directe confirmée via Insta.",
     "createdAt": "2026-10-10T10:15:00.000Z",
     "createdBy": "Eliott"
+  },
+  {
+    "id": "ELS-CMD-1082",
+    "customerName": "Lucas M.",
+    "customerPhone": "06 45 89 12 30",
+    "customerAddress": "14 Rue de la Paix, 75002 Paris",
+    "items": [
+      {
+        "id": "els-001",
+        "name": "Wyndham Parka Black Label",
+        "brand": "Canada Goose",
+        "color": "Noir Mat",
+        "size": "M",
+        "price": 320,
+        "quantity": 1
+      }
+    ],
+    "total": 320,
+    "paymentMethod": "Stripe (CB)",
+    "status": "expedie",
+    "statusLabel": "Expédiée",
+    "trackingNumber": "6A18492049281",
+    "carrier": "Colissimo",
+    "notes": "Colis déposé en bureau de poste le 09/10.",
+    "createdAt": "2026-10-09T18:40:00.000Z",
+    "createdBy": "Stripe Web"
   }
 ]
