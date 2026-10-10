@@ -4,6 +4,8 @@
  */
 
 const { getOrders, saveOrders, getProducts, saveProducts } = require('./lib/storage');
+const { sanitizeString, validateEmail } = require('./lib/security');
+const { sendEmailNotification, generateOrderConfirmationEmail } = require('./lib/notifications');
 
 module.exports = async (req, res) => {
   // CORS configuration
@@ -47,6 +49,16 @@ module.exports = async (req, res) => {
       discountPercent = 0.10; // 10% de réduction
     }
 
+    // Assainissement sécurisé des entrées clients
+    const safeCustName = sanitizeString(customer?.name || 'Client Web ELS', 80);
+    const safeCustEmail = (customer?.email && validateEmail(customer.email)) ? customer.email.trim().toLowerCase() : '';
+    const safeCustPhone = sanitizeString(customer?.phone || '', 30);
+    const isMainPropre = customer?.deliveryMethod === 'main_propre';
+    const safeCarrier = isMainPropre ? 'Main propre' : (sanitizeString(customer?.carrier || 'Colissimo 24/48h', 50));
+    const safeAddress = isMainPropre ? 
+      (sanitizeString(customer?.address || 'Remise en main propre (Paris/IDF)', 150)) : 
+      (sanitizeString(customer?.address || 'Adresse à confirmer', 150));
+
     // Helper: Enregistrer la commande dans orders.json et déduire le stock
     const recordOrderAndDeductStock = async (paymentType = 'Stripe (CB)') => {
       try {
@@ -55,15 +67,16 @@ module.exports = async (req, res) => {
 
         const newOrder = {
           id: orderNumber,
-          customerName: customer?.name || customer?.email || 'Client Web ELS',
-          customerPhone: customer?.phone || '',
-          customerAddress: customer?.address || 'Commande en ligne',
+          customerName: safeCustName,
+          customerEmail: safeCustEmail,
+          customerPhone: safeCustPhone,
+          customerAddress: safeAddress,
           items: items.map(it => ({
-            id: it.id || '',
-            name: it.name || 'Article',
-            brand: it.brand || '',
-            color: it.color || '',
-            size: it.size || 'Unique',
+            id: sanitizeString(it.id || '', 40),
+            name: sanitizeString(it.name || 'Article', 100),
+            brand: sanitizeString(it.brand || 'ELS', 50),
+            color: sanitizeString(it.color || 'Standard', 40),
+            size: sanitizeString(it.size || 'M', 20),
             price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
             quantity: parseInt(it.quantity, 10) || 1
           })),
@@ -72,7 +85,7 @@ module.exports = async (req, res) => {
           status: 'en_preparation',
           statusLabel: 'En préparation',
           trackingNumber: '',
-          carrier: 'Colissimo 24/48h',
+          carrier: safeCarrier,
           notes: promoCode ? `Code promo ${promoCode.toUpperCase()} appliqué (-${discountPercent * 100}%)` : '',
           createdAt: new Date().toISOString(),
           createdBy: 'Boutique Web'
@@ -95,6 +108,17 @@ module.exports = async (req, res) => {
         if (stockChanged) {
           await saveProducts(products, `Vente Web (${orderNumber})`);
         }
+
+        // Déclenchement automatique de l'email de confirmation si l'email a été renseigné
+        if (safeCustEmail) {
+          const emailHtml = generateOrderConfirmationEmail(newOrder, origin);
+          await sendEmailNotification({
+            to: safeCustEmail,
+            subject: `Confirmation de votre commande ${newOrder.id} — ELS.SHOP`,
+            html: emailHtml
+          });
+        }
+
       } catch (err) {
         console.error('Erreur enregistrement commande auto:', err);
       }
