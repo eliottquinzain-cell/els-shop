@@ -2,14 +2,26 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/suivi",
       "destination": "/suivi.html"
     },
     {
-      "source": "/admin",
-      "destination": "/admin.html"
+      "source": "/els-hq-vault",
+      "destination": "/els-hq-vault.html"
     },
     {
       "source": "/api/track",
