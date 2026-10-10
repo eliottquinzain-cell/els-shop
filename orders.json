@@ -1,31 +1,5 @@
 [
   {
-    "id": "ELS-CMD-2957",
-    "customerName": "Test Delete",
-    "customerPhone": "0600000000",
-    "customerAddress": "Remise directe",
-    "items": [
-      {
-        "id": "els-001",
-        "name": "Test",
-        "brand": "Test",
-        "color": "Standard",
-        "size": "M",
-        "price": 10,
-        "quantity": 1
-      }
-    ],
-    "total": 10,
-    "paymentMethod": "Espèces",
-    "status": "en_preparation",
-    "statusLabel": "En préparation",
-    "trackingNumber": "",
-    "carrier": "Main propre",
-    "notes": "",
-    "createdAt": "2026-10-10T11:31:23.180Z",
-    "createdBy": "Eliott"
-  },
-  {
     "id": "ELS-CMD-1084",
     "customerName": "Yanis D.",
     "customerPhone": "06 99 88 77 66",
