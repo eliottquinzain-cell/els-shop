@@ -1,33 +1,5 @@
 [
   {
-    "id": "ELS-CMD-1084",
-    "customerName": "Yanis D.",
-    "customerPhone": "06 99 88 77 66",
-    "customerAddress": "8 Boulevard Haussmann, 75009 Paris",
-    "items": [
-      {
-        "id": "els-002",
-        "name": "Alcatraz Pullover Hoodie",
-        "brand": "Corteiz",
-        "color": "Gris Chiné",
-        "size": "M",
-        "price": 110,
-        "quantity": 1
-      }
-    ],
-    "total": 110,
-    "paymentMethod": "Stripe (CB)",
-    "status": "en_preparation",
-    "statusLabel": "En préparation",
-    "trackingNumber": "",
-    "carrier": "Colissimo 24/48h",
-    "notes": "Modification test admin réussie",
-    "createdAt": "2026-10-10T12:05:00.000Z",
-    "createdBy": "Stripe Web",
-    "updatedAt": "2026-10-10T11:31:09.469Z",
-    "updatedBy": "Eliott"
-  },
-  {
     "id": "ELS-CMD-1083",
     "customerName": "Adrien R.",
     "customerPhone": "07 55 18 22 90",
