@@ -1,0 +1,54 @@
+[
+  {
+    "id": "ELS-CMD-1082",
+    "customerName": "Lucas M.",
+    "customerPhone": "06 45 89 12 30",
+    "customerAddress": "14 Rue de la Paix, 75002 Paris",
+    "items": [
+      {
+        "id": "els-001",
+        "name": "Wyndham Parka Black Label",
+        "brand": "Canada Goose",
+        "color": "Noir Mat",
+        "size": "M",
+        "price": 320,
+        "quantity": 1
+      }
+    ],
+    "total": 320,
+    "paymentMethod": "Stripe (CB)",
+    "status": "expedie",
+    "statusLabel": "Expédiée",
+    "trackingNumber": "6A18492049281",
+    "carrier": "Colissimo",
+    "notes": "Colis déposé en bureau de poste le 09/10.",
+    "createdAt": "2026-10-09T18:40:00.000Z",
+    "createdBy": "Stripe Web"
+  },
+  {
+    "id": "ELS-CMD-1081",
+    "customerName": "Karim B.",
+    "customerPhone": "07 82 11 94 05",
+    "customerAddress": "Remise en main propre (Lyon)",
+    "items": [
+      {
+        "id": "els-002",
+        "name": "Alcatraz Pullover Hoodie",
+        "brand": "Corteiz",
+        "color": "Triple Black",
+        "size": "L",
+        "price": 110,
+        "quantity": 1
+      }
+    ],
+    "total": 110,
+    "paymentMethod": "Espèces (Vente directe)",
+    "status": "en_preparation",
+    "statusLabel": "En préparation",
+    "trackingNumber": "",
+    "carrier": "Main propre",
+    "notes": "Vente directe confirmée via Insta.",
+    "createdAt": "2026-10-10T10:15:00.000Z",
+    "createdBy": "Eliott"
+  }
+]
