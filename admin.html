@@ -68,7 +68,6 @@
             overscroll-behavior-y: none;
         }
 
-        /* Prevent auto zoom in iOS Safari on focus */
         @media screen and (max-width: 768px) {
             input, select, textarea {
                 font-size: 16px !important;
@@ -105,7 +104,6 @@
             background-size: 33.33% 33.33%;
         }
 
-        /* Active Tab styles */
         .tab-btn.active {
             color: #ffffff;
             border-color: #22c55e;
@@ -224,37 +222,41 @@
         <!-- Header -->
         <header class="bg-zinc-950/95 backdrop-blur-md border-b border-els-border sticky top-0 z-30 px-4 sm:px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2">
+                <button onclick="switchTab('account')" class="flex items-center gap-2 group text-left" title="Mon Compte">
                     <span class="font-display font-black text-xl text-white">ELS<span class="text-emerald-500">.</span>ADMIN</span>
                     <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">1:1 APP</span>
-                </div>
+                </button>
                 
                 <span class="text-zinc-700 hidden sm:inline">|</span>
 
                 <!-- Active Admin Badge -->
-                <div class="hidden sm:flex items-center gap-2 text-xs">
+                <button onclick="switchTab('account')" class="hidden sm:flex items-center gap-2 text-xs hover:opacity-80 transition">
                     <div id="currentAdminAvatar" class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-[11px] flex items-center justify-center">E</div>
                     <span class="text-zinc-400"><strong id="currentAdminName" class="text-white">Eliott</strong></span>
-                </div>
+                </button>
             </div>
 
             <!-- Desktop Tabs Switcher -->
             <nav class="hidden md:flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 text-xs font-bold">
-                <button onclick="switchTab('articles')" id="tabBtn-articles" class="tab-btn active px-3.5 py-1.5 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                <button onclick="switchTab('articles')" id="tabBtn-articles" class="tab-btn active px-3 py-1.5 rounded-lg border border-transparent transition flex items-center gap-1.5">
                     <i data-lucide="package" class="w-3.5 h-3.5"></i>
                     <span>Articles</span>
                 </button>
-                <button onclick="switchTab('stocks')" id="tabBtn-stocks" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('stocks')" id="tabBtn-stocks" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
                     <i data-lucide="layers" class="w-3.5 h-3.5"></i>
                     <span>Stocks</span>
                 </button>
-                <button onclick="switchTab('orders')" id="tabBtn-orders" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('orders')" id="tabBtn-orders" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
                     <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
                     <span>Commandes</span>
                     <span id="tabOrderCountBadgeDesktop" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-black font-black hidden">0</span>
                 </button>
-                <button onclick="switchTab('profit')" id="tabBtn-profit" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
-                    <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                <button onclick="switchTab('stats')" id="tabBtn-stats" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-purple-400"></i>
+                    <span>Statistiques</span>
+                </button>
+                <button onclick="switchTab('profit')" id="tabBtn-profit" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400"></i>
                     <span>Bénéfices</span>
                 </button>
             </nav>
@@ -315,17 +317,15 @@
                     </div>
 
                     <div class="flex items-center justify-between sm:justify-end gap-2 text-xs">
-                        <span id="articleCountBadge" class="font-mono text-zinc-400 text-[11px]">0 articles</span>
+                        <span id="articleCountBadge" class="font-mono text-zinc-400 text-[11px]">0 pièces</span>
                         <button onclick="loadProducts()" class="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white" title="Actualiser le catalogue">
                             <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Mobile Cards Grid (Responsive for iPhone) -->
-                <div id="mobileProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-4">
-                    <!-- Populated dynamically -->
-                </div>
+                <!-- Mobile Cards Grid -->
+                <div id="mobileProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-4"></div>
 
                 <!-- Desktop Table View -->
                 <div class="hidden lg:block bg-els-card border border-els-border rounded-2xl overflow-hidden shadow-xl">
@@ -342,9 +342,7 @@
                                 <th class="py-3.5 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="adminProductsTableBody" class="divide-y divide-zinc-900">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="adminProductsTableBody" class="divide-y divide-zinc-900"></tbody>
                     </table>
                 </div>
 
@@ -387,25 +385,23 @@
                 </div>
 
                 <!-- Tactile Stocks Cards List -->
-                <div id="tactileStocksContainer" class="space-y-4">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="tactileStocksContainer" class="space-y-4"></div>
 
             </section>
 
             <!-- ============================================================== -->
-            <!-- TAB 3: COMMANDES (SUIVI STRIPE & VENTES DIRECTES IRL)          -->
+            <!-- TAB 3: COMMANDES (SUIVI, MODIFICATION & VENTES DIRECTES)       -->
             <!-- ============================================================== -->
             <section id="viewOrders" class="hidden space-y-6">
                 
-                <!-- Orders Stats & Action -->
+                <!-- Orders Header & Action -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-950 p-4 rounded-2xl border border-els-border">
                     <div class="space-y-1">
                         <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
                             <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
                             <span>Commandes & Ventes Directes</span>
                         </h2>
-                        <p class="text-xs text-zinc-400">Suivi des commandes en ligne Stripe et enregistrement des ventes en main propre.</p>
+                        <p class="text-xs text-zinc-400">Modifiez, supprimez, suivez les colis ou enregistrez vos ventes en main propre.</p>
                     </div>
 
                     <div class="flex items-center gap-3">
@@ -416,33 +412,45 @@
                     </div>
                 </div>
 
-                <!-- Orders Filter Tabs -->
-                <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
-                    <button onclick="filterOrdersByStatus('all')" id="btnOrderTabAll" class="px-3.5 py-1.5 rounded-xl bg-white text-black transition">
-                        Toutes (<span id="countOrderAll">0</span>)
-                    </button>
-                    <button onclick="filterOrdersByStatus('pending')" id="btnOrderTabPending" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:text-white transition">
-                        En préparation (<span id="countOrderPending">0</span>)
-                    </button>
-                    <button onclick="filterOrdersByStatus('expedie')" id="btnOrderTabExpedie" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sky-400 hover:text-white transition">
-                        Expédiées (<span id="countOrderExpedie">0</span>)
-                    </button>
-                    <button onclick="filterOrdersByStatus('livre')" id="btnOrderTabLivre" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-emerald-400 hover:text-white transition">
-                        Livrées (<span id="countOrderLivre">0</span>)
-                    </button>
+                <!-- Orders Search & Filter Bar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-950 p-3 rounded-2xl border border-zinc-800">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        <input 
+                            type="text" 
+                            id="orderSearchInput" 
+                            oninput="handleOrderSearch(this.value)"
+                            placeholder="Rechercher client, commande (ex: ELS-CMD-1082)..." 
+                            class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2 pl-9 pr-3 text-xs text-white focus:outline-none focus:border-zinc-500 transition"
+                        >
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+                        <button onclick="filterOrdersByStatus('all')" id="btnOrderTabAll" class="px-3 py-1.5 rounded-xl bg-white text-black transition">
+                            Toutes (<span id="countOrderAll">0</span>)
+                        </button>
+                        <button onclick="filterOrdersByStatus('pending')" id="btnOrderTabPending" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:text-white transition">
+                            En cours (<span id="countOrderPending">0</span>)
+                        </button>
+                        <button onclick="filterOrdersByStatus('expedie')" id="btnOrderTabExpedie" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sky-400 hover:text-white transition">
+                            Expédiées (<span id="countOrderExpedie">0</span>)
+                        </button>
+                        <button onclick="filterOrdersByStatus('livre')" id="btnOrderTabLivre" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-emerald-400 hover:text-white transition">
+                            Livrées (<span id="countOrderLivre">0</span>)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Orders List -->
-                <div id="ordersCardsContainer" class="space-y-4">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="ordersCardsContainer" class="space-y-4"></div>
 
                 <!-- Orders Empty State -->
                 <div id="ordersEmptyState" class="hidden py-16 text-center space-y-4 bg-els-card border border-els-border rounded-2xl">
                     <i data-lucide="inbox" class="w-12 h-12 text-zinc-600 mx-auto"></i>
                     <div class="space-y-1">
-                        <h3 class="font-bold text-base text-white">Aucune commande enregistrée</h3>
-                        <p class="text-xs text-zinc-400">Les commandes passées sur la boutique Stripe apparaîtront ici, et vous pouvez ajouter des ventes directes.</p>
+                        <h3 class="font-bold text-base text-white">Aucune commande trouvée</h3>
+                        <p class="text-xs text-zinc-400">Modifiez votre recherche ou enregistrez une nouvelle vente.</p>
                     </div>
                     <button onclick="openNewOrderModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 text-black font-black text-xs hover:bg-emerald-400 transition">
                         + Enregistrer une vente directe
@@ -452,7 +460,131 @@
             </section>
 
             <!-- ============================================================== -->
-            <!-- TAB 4: BÉNÉFICES (KPIs & RENTABILITÉ FINANCIÈRE)                -->
+            <!-- TAB 4: STATISTIQUES (BEST-SELLERS, TAILLES & ANALYSE)          -->
+            <!-- ============================================================== -->
+            <section id="viewStats" class="hidden space-y-6">
+                
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-950 p-4 rounded-2xl border border-els-border">
+                    <div>
+                        <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-purple-400"></i>
+                            <span>Statistiques des Ventes & Tendances</span>
+                        </h2>
+                        <p class="text-xs text-zinc-400">Découvrez vos pièces phares, tailles les plus demandées et canaux d'acquisition.</p>
+                    </div>
+
+                    <button onclick="loadOrders()" class="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-xs flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                        <span>Actualiser Stats</span>
+                    </button>
+                </div>
+
+                <!-- Stats KPI Highlights -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <div class="bg-els-card border border-purple-500/30 p-4 rounded-2xl space-y-1 bg-gradient-to-br from-purple-950/20 to-els-card">
+                        <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="crown" class="w-3.5 h-3.5"></i> Top Produit N°1
+                        </span>
+                        <div id="statTopProductText" class="font-black text-base sm:text-lg text-white truncate">-</div>
+                        <span id="statTopProductSub" class="text-[10px] text-zinc-400">0 ventes</span>
+                    </div>
+
+                    <div class="bg-els-card border border-emerald-500/30 p-4 rounded-2xl space-y-1 bg-gradient-to-br from-emerald-950/20 to-els-card">
+                        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="tag" class="w-3.5 h-3.5"></i> Taille la + Vendue
+                        </span>
+                        <div id="statTopSizeText" class="font-black text-2xl text-emerald-400">-</div>
+                        <span id="statTopSizeSub" class="text-[10px] text-zinc-400">Taille la plus demandée</span>
+                    </div>
+
+                    <div class="bg-els-card border border-els-border p-4 rounded-2xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Panier Moyen</span>
+                        <div id="statAvgCartText" class="font-black text-2xl text-white">0 €</div>
+                        <span class="text-[10px] text-zinc-500">Par commande payée</span>
+                    </div>
+
+                    <div class="bg-els-card border border-els-border p-4 rounded-2xl space-y-1">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Pièces Écoulées</span>
+                        <div id="statTotalSoldUnits" class="font-black text-2xl text-sky-400">0 pcs</div>
+                        <span class="text-[10px] text-zinc-500">Toutes commandes confondues</span>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Top Produits (Best-Sellers Ranking) -->
+                    <div class="bg-els-card border border-els-border rounded-2xl p-5 space-y-4 shadow-xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i>
+                                <span>Classement des Best-Sellers</span>
+                            </h3>
+                            <span class="text-[10px] text-zinc-500 uppercase font-mono">Volume Ventes</span>
+                        </div>
+
+                        <div id="statsTopProductsList" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Top Tailles (Visual Bar Chart) -->
+                    <div class="bg-els-card border border-els-border rounded-2xl p-5 space-y-4 shadow-xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="scissors" class="w-4 h-4 text-emerald-400"></i>
+                                <span>Répartition des Tailles Vendues</span>
+                            </h3>
+                            <span class="text-[10px] text-zinc-500 uppercase font-mono">Pourcentage</span>
+                        </div>
+
+                        <div id="statsTopSizesList" class="space-y-3"></div>
+
+                        <!-- Supply Advice -->
+                        <div class="p-3.5 bg-emerald-950/20 border border-emerald-500/30 rounded-xl flex items-start gap-2.5 text-xs">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                            <div class="text-zinc-300 leading-relaxed text-[11px]" id="statsReassortAdvice">
+                                Conseil Réassort : Les tailles <strong>M</strong> et <strong>L</strong> dominent vos commandes. Privilégiez ces tailles lors de vos approvisionnements.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Top Coloris -->
+                    <div class="bg-els-card border border-els-border rounded-2xl p-5 space-y-3 shadow-xl">
+                        <h4 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="palette" class="w-4 h-4 text-sky-400"></i>
+                            <span>Coloris Favoris</span>
+                        </h4>
+                        <div id="statsTopColorsList" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Top Marques -->
+                    <div class="bg-els-card border border-els-border rounded-2xl p-5 space-y-3 shadow-xl">
+                        <h4 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                            <span>Marques Phares</span>
+                        </h4>
+                        <div id="statsTopBrandsList" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Canaux de vente -->
+                    <div class="bg-els-card border border-els-border rounded-2xl p-5 space-y-3 shadow-xl">
+                        <h4 class="font-bold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="radio" class="w-4 h-4 text-rose-400"></i>
+                            <span>Canaux de Vente</span>
+                        </h4>
+                        <div id="statsChannelsList" class="space-y-2"></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- TAB 5: BÉNÉFICES (KPIs & RENTABILITÉ FINANCIÈRE)                -->
             <!-- ============================================================== -->
             <section id="viewProfit" class="hidden space-y-6">
                 
@@ -495,7 +627,6 @@
 
                 </div>
 
-                <!-- Secondary KPIs -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-zinc-950 border border-zinc-800 p-4 rounded-xl flex items-center justify-between">
                         <div>
@@ -517,11 +648,10 @@
             </section>
 
             <!-- ============================================================== -->
-            <!-- TAB 5: COMPTE & GUIDE APP IPHONE                               -->
+            <!-- TAB 6: COMPTE & GUIDE APP IPHONE                               -->
             <!-- ============================================================== -->
             <section id="viewAccount" class="hidden space-y-6">
                 
-                <!-- Account Card -->
                 <div class="bg-els-card border border-els-border p-6 rounded-2xl space-y-4">
                     <div class="flex items-center gap-4">
                         <div id="accountProfileAvatar" class="w-14 h-14 rounded-2xl bg-emerald-500 text-black font-black text-2xl flex items-center justify-center shadow-lg">
@@ -546,7 +676,7 @@
                     </div>
                 </div>
 
-                <!-- iPhone App Installation Tutorial -->
+                <!-- iPhone Tutorial -->
                 <div class="bg-zinc-950 border border-emerald-500/30 p-6 rounded-2xl space-y-4">
                     <div class="flex items-center gap-2 text-white font-bold text-base">
                         <span class="text-xl">📲</span>
@@ -562,7 +692,7 @@
                             <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">1</div>
                             <div>
                                 <div class="font-bold text-white">Ouvrez Safari sur votre iPhone</div>
-                                <div class="text-zinc-400 text-[11px]">Accédez à <strong>https://els-shop.vercel.app/admin.html</strong></div>
+                                <div class="text-zinc-400 text-[11px]">Accédez à <strong>https://els-shop.vercel.app/admin</strong></div>
                             </div>
                         </div>
 
@@ -570,7 +700,7 @@
                             <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">2</div>
                             <div>
                                 <div class="font-bold text-white">Appuyez sur le bouton de Partage</div>
-                                <div class="text-zinc-400 text-[11px]">C'est l'icône carrée avec la flèche vers le haut <i data-lucide="share" class="w-3 h-3 inline"></i> située en bas au centre de Safari.</div>
+                                <div class="text-zinc-400 text-[11px]">Icône carrée avec flèche vers le haut <i data-lucide="share" class="w-3 h-3 inline"></i> en bas de Safari.</div>
                             </div>
                         </div>
 
@@ -578,7 +708,7 @@
                             <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">3</div>
                             <div>
                                 <div class="font-bold text-white">Sélectionnez « Sur l'écran d'accueil »</div>
-                                <div class="text-zinc-400 text-[11px]">Faites défiler le menu vers le bas jusqu'à voir l'option avec l'icône « + ».</div>
+                                <div class="text-zinc-400 text-[11px]">Faites défiler le menu et touchez l'option avec l'icône « + ».</div>
                             </div>
                         </div>
 
@@ -586,7 +716,7 @@
                             <div class="w-6 h-6 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center shrink-0">4</div>
                             <div>
                                 <div class="font-bold text-white">Validez « Ajouter » en haut à droite</div>
-                                <div class="text-zinc-400 text-[11px]">L'icône noire <strong>ELS ADMIN</strong> apparaît instantanément sur votre écran d'iPhone et s'ouvre en 1 tap en vrai plein écran natif !</div>
+                                <div class="text-zinc-400 text-[11px]">L'icône noire <strong>ELS ADMIN</strong> apparaît sur votre écran d'iPhone et s'ouvre en 1 tap en vrai plein écran !</div>
                             </div>
                         </div>
                     </div>
@@ -597,34 +727,34 @@
         </main>
 
         <!-- ============================================================== -->
-        <!-- 4. IPHONE BOTTOM NAVIGATION TAB BAR (ERGONOMIE MOBILE 1 MAIN)   -->
+        <!-- 4. IPHONE BOTTOM NAVIGATION TAB BAR                            -->
         <!-- ============================================================== -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 px-2 py-2 flex items-center justify-around text-center">
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 px-1.5 py-2 flex items-center justify-around text-center">
             
             <button onclick="switchTab('articles')" id="bottomTab-articles" class="bottom-tab-btn active flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="package" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Articles</span>
+                <span class="text-[9px] font-bold">Articles</span>
             </button>
 
             <button onclick="switchTab('stocks')" id="bottomTab-stocks" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="layers" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Stocks</span>
+                <span class="text-[9px] font-bold">Stocks</span>
             </button>
 
             <button onclick="switchTab('orders')" id="bottomTab-orders" class="bottom-tab-btn relative flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Commandes</span>
+                <span class="text-[9px] font-bold">Commandes</span>
                 <span id="tabOrderCountBadgeMobile" class="absolute top-0 right-3 w-4 h-4 rounded-full bg-emerald-500 text-black font-black text-[9px] flex items-center justify-center hidden">0</span>
+            </button>
+
+            <button onclick="switchTab('stats')" id="bottomTab-stats" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold">Stats</span>
             </button>
 
             <button onclick="switchTab('profit')" id="bottomTab-profit" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="trending-up" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Bénéfices</span>
-            </button>
-
-            <button onclick="switchTab('account')" id="bottomTab-account" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
-                <i data-lucide="user" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Compte</span>
+                <span class="text-[9px] font-bold">Bénéfices</span>
             </button>
 
         </nav>
@@ -692,8 +822,8 @@
                 </div>
             </div>
 
-            <!-- Category & Quality -->
-            <div class="grid sm:grid-cols-2 gap-3">
+            <!-- Category & Locked 1:1 Badge (Standard Automatique) -->
+            <div class="grid sm:grid-cols-2 gap-3 items-center">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Catégorie *</label>
                     <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
@@ -706,8 +836,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Grade Qualité</label>
-                    <input type="text" id="newProdGrade" value="1:1 Miroir" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Norme de Fabrication</label>
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                        <span>Qualité 1:1 Miroir (Standard Garanti)</span>
+                    </div>
                 </div>
             </div>
 
@@ -851,7 +984,7 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 6. MODAL: NOUVELLE VENTE DIRECTE / COMMANDE                    -->
+    <!-- 6. MODAL: NOUVELLE VENTE DIRECTE                              -->
     <!-- ============================================================== -->
     <div id="newOrderBackdrop" onclick="closeNewOrderModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
     <div id="newOrderModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-lg bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-7 shadow-2xl">
@@ -959,7 +1092,169 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 7. MODAL: RECADRAGE IMAGE 1:1 CARRÉ                             -->
+    <!-- 7. MODAL: MODIFIER UNE COMMANDE EXISTANTE                     -->
+    <!-- ============================================================== -->
+    <div id="editOrderBackdrop" onclick="closeEditOrderModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="editOrderModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-lg bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-7 shadow-2xl">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="edit-3" class="w-5 h-5 text-sky-400"></i>
+                <h3 id="editOrderModalTitle" class="font-display font-bold text-base sm:text-lg text-white">Modifier la Commande</h3>
+            </div>
+            <button onclick="closeEditOrderModal()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="editOrderForm" onsubmit="handleEditOrderSubmit(event)" class="space-y-4">
+            <input type="hidden" id="editOrderIdVal" value="">
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom du client</label>
+                    <input type="text" id="editOrderCustName" required class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Téléphone / Contact</label>
+                    <input type="text" id="editOrderCustPhone" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Adresse ou Lieu</label>
+                <input type="text" id="editOrderCustAddress" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Montant Total (€)</label>
+                    <input type="number" id="editOrderTotal" step="0.5" required class="w-full bg-zinc-950 border border-emerald-500/40 rounded-xl px-3 py-2 text-xs text-emerald-400 font-black focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Moyen de Règlement</label>
+                    <select id="editOrderPayment" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="Espèces (Vente directe)">Espèces (Vente directe)</option>
+                        <option value="Lydia / Paylib">Lydia / Paylib</option>
+                        <option value="Virement Instantané">Virement Instantané</option>
+                        <option value="Stripe (CB)">Stripe (CB)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Statut Livraison</label>
+                    <select id="editOrderStatusVal" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <option value="en_attente">En attente</option>
+                        <option value="en_preparation">En préparation</option>
+                        <option value="expedie">Expédiée</option>
+                        <option value="livre">Livrée</option>
+                        <option value="annule">Annulée</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Transporteur</label>
+                    <input type="text" id="editOrderCarrier" placeholder="Colissimo, Main propre..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Numéro de Suivi Colissimo</label>
+                <input type="text" id="editOrderTracking" placeholder="Ex: 6A18492049281..." class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-mono text-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Notes internes</label>
+                <textarea id="editOrderNotes" rows="2" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none"></textarea>
+            </div>
+
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeEditOrderModal()" class="px-4 py-2 text-xs font-bold text-zinc-400 hover:text-white">Annuler</button>
+                <button type="submit" class="bg-sky-400 hover:bg-sky-300 text-black px-5 py-2 rounded-xl font-black text-xs flex items-center gap-1.5 transition">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Enregistrer modifications</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 8. MODAL: REÇU / FACTURE DIGITALE CLIENT LUXE                 -->
+    <!-- ============================================================== -->
+    <div id="receiptBackdrop" onclick="closeReceiptModal()" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden transition-opacity"></div>
+    <div id="receiptModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-md bg-black border border-zinc-700 rounded-3xl z-50 hidden max-h-[92vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-5">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-400">TICKET DE CAISSE OFFICIEL</span>
+            <button onclick="closeReceiptModal()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Printable Receipt Content -->
+        <div id="receiptPrintArea" class="bg-zinc-950 p-6 rounded-2xl border border-zinc-800 space-y-5 text-xs font-mono">
+            <div class="text-center space-y-1 pb-4 border-b border-dashed border-zinc-800">
+                <h2 class="font-display font-black text-2xl text-white tracking-tighter">ELS.SHOP</h2>
+                <p class="text-[10px] text-zinc-400 tracking-widest uppercase">CURATION STREETWEAR & LUXE</p>
+                <span class="inline-block text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-bold uppercase mt-1">CERTIFIÉ 1:1 MIROIR</span>
+            </div>
+
+            <div class="space-y-1 text-[11px] text-zinc-300">
+                <div class="flex justify-between">
+                    <span class="text-zinc-500">COMMANDE :</span>
+                    <strong id="recOrderId" class="text-white">ELS-CMD-0000</strong>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-zinc-500">DATE :</span>
+                    <span id="recOrderDate">10/10/2026</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-zinc-500">CLIENT :</span>
+                    <strong id="recOrderCustomer" class="text-white">Client</strong>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-zinc-500">STATUT :</span>
+                    <span id="recOrderStatus" class="text-emerald-400 font-bold">Livrée</span>
+                </div>
+            </div>
+
+            <!-- Items -->
+            <div class="py-3 border-t border-b border-dashed border-zinc-800 space-y-2.5" id="recItemsList"></div>
+
+            <div class="space-y-1 text-xs">
+                <div class="flex justify-between text-zinc-400">
+                    <span>MODE DE RÈGLEMENT :</span>
+                    <span id="recPaymentMethod" class="text-white">Espèces</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-white pt-2 border-t border-zinc-900">
+                    <span>TOTAL TTC :</span>
+                    <span id="recTotalAmount">0 €</span>
+                </div>
+            </div>
+
+            <div class="text-center text-[10px] text-zinc-500 pt-3 border-t border-dashed border-zinc-800 leading-relaxed">
+                Pièce garantie confection conforme 1:1.<br>
+                Merci de votre commande sur ELS.SHOP.
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-2 pt-2">
+            <button onclick="copyReceiptText()" class="flex-1 bg-white hover:bg-zinc-200 text-black py-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+                <span>Copier le texte (Insta/Snap)</span>
+            </button>
+            <button onclick="closeReceiptModal()" class="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl text-xs font-bold transition">
+                Fermer
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 9. MODAL: RECADRAGE IMAGE 1:1 CARRÉ                             -->
     <!-- ============================================================== -->
     <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-5 shadow-2xl space-y-3">
@@ -1021,20 +1316,22 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 8. JAVASCRIPT STATE & APPLICATION ENGINE                        -->
+    <!-- 10. JAVASCRIPT STATE & APPLICATION ENGINE                       -->
     <!-- ============================================================== -->
     <script>
-        // Global State
         let adminProducts = [];
         let adminOrders = [];
         let currentAdmin = null;
         let selectedLoginUsername = 'eliott';
         let currentTab = 'articles';
-        let stockFilterMode = 'all'; // 'all' or 'low'
+        let stockFilterMode = 'all';
         let orderFilterStatus = 'all';
+        let orderSearchQuery = '';
 
         let adminSearch = '';
         let adminCat = 'all';
+
+        let currentReceiptOrder = null;
 
         // Cropper state
         let rawImage = null;
@@ -1051,7 +1348,6 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // Show Toast
         function showToast(msg) {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toastMessage');
@@ -1064,26 +1360,24 @@
         }
 
         // ==========================================
-        // TAB SWITCHING (ARTICLES, STOCKS, ORDERS, PROFIT, ACCOUNT)
+        // TAB SWITCHING (ARTICLES, STOCKS, ORDERS, STATS, PROFIT, ACCOUNT)
         // ==========================================
         function switchTab(tabName) {
             currentTab = tabName;
             
-            // Hide all tab views
-            ['viewArticles', 'viewStocks', 'viewOrders', 'viewProfit', 'viewAccount'].forEach(id => {
+            ['viewArticles', 'viewStocks', 'viewOrders', 'viewStats', 'viewProfit', 'viewAccount'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
 
-            // Deactivate all buttons
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.bottom-tab-btn').forEach(b => b.classList.remove('active'));
 
-            // Show selected view
             const viewMap = {
                 'articles': 'viewArticles',
                 'stocks': 'viewStocks',
                 'orders': 'viewOrders',
+                'stats': 'viewStats',
                 'profit': 'viewProfit',
                 'account': 'viewAccount'
             };
@@ -1091,16 +1385,15 @@
             const targetView = document.getElementById(viewMap[tabName]);
             if (targetView) targetView.classList.remove('hidden');
 
-            // Activate buttons
             const desktopBtn = document.getElementById(`tabBtn-${tabName}`);
             if (desktopBtn) desktopBtn.classList.add('active');
 
             const bottomBtn = document.getElementById(`bottomTab-${tabName}`);
             if (bottomBtn) bottomBtn.classList.add('active');
 
-            // Trigger specific renders
             if (tabName === 'stocks') renderTactileStocks();
             if (tabName === 'orders') loadOrders();
+            if (tabName === 'stats') renderStatsTab();
             if (tabName === 'profit') calculateKPIs();
             if (tabName === 'articles') renderProductsList();
 
@@ -1328,9 +1621,7 @@
                 accAvatar.className = 'w-14 h-14 rounded-2xl bg-emerald-500 text-black font-black text-2xl flex items-center justify-center shadow-lg';
             }
 
-            // Check iOS banner
             checkiOSBanner();
-
             loadProducts();
             loadOrders();
             initIcons();
@@ -1548,7 +1839,7 @@
                                     <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
                                     <div class="font-bold text-white">${p.name}</div>
                                     <div class="flex flex-wrap items-center gap-1 mt-1">
-                                        <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">${p.conditionGrade || '1:1 Miroir'}</span>
+                                        <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">1:1 Miroir</span>
                                         ${pColors.map(c => `
                                             <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
                                         `).join('')}
@@ -1602,7 +1893,7 @@
         }
 
         // ==========================================
-        // TAB 2: TACTILE STOCKS CONTROLLER (POUR IPHONE)
+        // TAB 2: TACTILE STOCKS CONTROLLER
         // ==========================================
         function filterStocksMode(mode) {
             stockFilterMode = mode;
@@ -1660,7 +1951,6 @@
                         </span>
                     </div>
 
-                    <!-- Tactile Sizes Stepper Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
                         ${(p.sizes || []).map(sz => {
                             const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
@@ -1712,7 +2002,6 @@
             renderTactileStocks();
             showToast(`${p.name} (${size}) : ${p.stock[size]} pcs`);
 
-            // Persist to backend
             const token = localStorage.getItem('els_admin_jwt');
             try {
                 await fetch('/api/products', {
@@ -1727,7 +2016,7 @@
         }
 
         // ==========================================
-        // TAB 3: COMMANDES & VENTES DIRECTES (ORDERS)
+        // TAB 3: COMMANDES (LIVRAISON, MODIFICATION, SUPPRESSION)
         // ==========================================
         async function loadOrders() {
             const token = localStorage.getItem('els_admin_jwt');
@@ -1747,6 +2036,14 @@
 
             renderOrdersCards();
             updateOrderBadges();
+            if (currentTab === 'stats') {
+                renderStatsTab();
+            }
+        }
+
+        function handleOrderSearch(val) {
+            orderSearchQuery = (val || '').toLowerCase().trim();
+            renderOrdersCards();
         }
 
         function updateOrderBadges() {
@@ -1788,9 +2085,9 @@
                 const btn = document.getElementById(`btnOrderTab${st}`);
                 if (btn) {
                     if (st.toLowerCase() === status.toLowerCase()) {
-                        btn.className = 'px-3.5 py-1.5 rounded-xl bg-white text-black font-bold transition';
+                        btn.className = 'px-3 py-1.5 rounded-xl bg-white text-black font-bold transition';
                     } else {
-                        btn.className = 'px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold transition';
+                        btn.className = 'px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold transition';
                     }
                 }
             });
@@ -1807,6 +2104,16 @@
                 filtered = filtered.filter(o => o.status === 'en_attente' || o.status === 'en_preparation');
             } else if (orderFilterStatus !== 'all') {
                 filtered = filtered.filter(o => o.status === orderFilterStatus);
+            }
+
+            if (orderSearchQuery) {
+                filtered = filtered.filter(o => {
+                    const matchId = (o.id || '').toLowerCase().includes(orderSearchQuery);
+                    const matchCust = (o.customerName || '').toLowerCase().includes(orderSearchQuery);
+                    const matchPhone = (o.customerPhone || '').toLowerCase().includes(orderSearchQuery);
+                    const matchItem = (o.items || []).some(it => (it.name || '').toLowerCase().includes(orderSearchQuery) || (it.brand || '').toLowerCase().includes(orderSearchQuery));
+                    return matchId || matchCust || matchPhone || matchItem;
+                });
             }
 
             if (filtered.length === 0) {
@@ -1836,7 +2143,7 @@
                         <div class="flex items-center gap-3">
                             <span class="font-mono font-black text-xs text-white bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">${o.id}</span>
                             <span class="text-xs text-zinc-400 font-medium">${dateStr}</span>
-                            <span class="text-[10px] text-zinc-500">• Vendeur: ${o.createdBy || 'Web'}</span>
+                            <span class="text-[10px] text-zinc-500">• Vendeur : ${o.createdBy || 'Web'}</span>
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -1846,7 +2153,7 @@
                         </div>
                     </div>
 
-                    <!-- Client & Items -->
+                    <!-- Client & Total -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div class="space-y-1">
                             <div class="text-xs font-bold text-white flex items-center gap-2">
@@ -1863,14 +2170,14 @@
                         </div>
                     </div>
 
-                    <!-- Articles ordered list -->
+                    <!-- Items list -->
                     <div class="p-3 bg-black/60 rounded-xl border border-zinc-800 space-y-2">
                         ${(o.items || []).map(it => `
                             <div class="flex items-center justify-between text-xs">
                                 <div class="flex items-center gap-2">
                                     <span class="font-black text-white">${it.quantity}x</span>
                                     <span class="font-bold text-zinc-300">${it.brand} ${it.name}</span>
-                                    <span class="font-mono text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded">${it.size}</span>
+                                    <span class="font-mono text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded font-bold">${it.size}</span>
                                     ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
                                 </div>
                                 <span class="font-mono font-bold text-zinc-300">${it.price * (it.quantity || 1)} €</span>
@@ -1878,8 +2185,9 @@
                         `).join('')}
                     </div>
 
-                    <!-- Actions Bar (Change Status, Colissimo, Delete) -->
-                    <div class="pt-2 border-t border-zinc-900 flex flex-wrap items-center justify-between gap-2">
+                    <!-- Order Action Bar: Receipt, Edit, Status, Delete -->
+                    <div class="pt-2 border-t border-zinc-900 flex flex-wrap items-center justify-between gap-2.5">
+                        
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] text-zinc-500 font-bold uppercase">Statut :</span>
                             <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-zinc-900 border border-zinc-700 text-white rounded-lg text-xs px-2.5 py-1 focus:outline-none">
@@ -1888,24 +2196,24 @@
                                 <option value="livre" ${o.status === 'livre' ? 'selected' : ''}>Livrée</option>
                                 <option value="annule" ${o.status === 'annule' ? 'selected' : ''}>Annulée</option>
                             </select>
+
+                            <button onclick="openReceiptModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition" title="Générer un ticket client">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                <span>Reçu Client</span>
+                            </button>
                         </div>
 
                         <div class="flex items-center gap-2">
-                            ${o.trackingNumber ? `
-                                <span class="text-[11px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/30 px-2 py-0.5 rounded">
-                                    Colissimo : ${o.trackingNumber}
-                                </span>
-                            ` : `
-                                <button onclick="promptTrackingNumber('${o.id}')" class="text-xs text-sky-400 hover:text-white flex items-center gap-1">
-                                    <i data-lucide="truck" class="w-3.5 h-3.5"></i>
-                                    <span>+ Suivi Colissimo</span>
-                                </button>
-                            `}
+                            <button onclick="openEditOrderModal('${o.id}')" class="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold flex items-center gap-1.5 transition">
+                                <i data-lucide="edit-3" class="w-3.5 h-3.5 text-sky-400"></i>
+                                <span>Modifier</span>
+                            </button>
 
-                            <button onclick="deleteOrder('${o.id}')" class="p-1 text-zinc-500 hover:text-red-400" title="Supprimer la commande">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <button onclick="deleteOrder('${o.id}')" class="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-500/20 text-zinc-500 hover:text-red-400 border border-zinc-800 transition" title="Supprimer la commande">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
+
                     </div>
                 </div>
                 `;
@@ -1932,43 +2240,182 @@
             }
         }
 
-        async function promptTrackingNumber(orderId) {
-            const num = prompt('Entrez le numéro de suivi Colissimo (ex: 6A18492049281) :');
-            if (num === null) return;
+        // ==========================================
+        // EDIT ORDER (MODIFICATION COMPLÈTE)
+        // ==========================================
+        function openEditOrderModal(orderId) {
+            const o = adminOrders.find(it => it.id === orderId);
+            if (!o) return;
+
+            document.getElementById('editOrderIdVal').value = o.id;
+            document.getElementById('editOrderModalTitle').innerText = `Modifier la Commande : ${o.id}`;
+            document.getElementById('editOrderCustName').value = o.customerName || '';
+            document.getElementById('editOrderCustPhone').value = o.customerPhone || '';
+            document.getElementById('editOrderCustAddress').value = o.customerAddress || '';
+            document.getElementById('editOrderTotal').value = o.total || 0;
+            document.getElementById('editOrderPayment').value = o.paymentMethod || 'Espèces (Vente directe)';
+            document.getElementById('editOrderStatusVal').value = o.status || 'en_preparation';
+            document.getElementById('editOrderCarrier').value = o.carrier || 'Colissimo 24/48h';
+            document.getElementById('editOrderTracking').value = o.trackingNumber || '';
+            document.getElementById('editOrderNotes').value = o.notes || '';
+
+            document.getElementById('editOrderBackdrop').classList.remove('hidden');
+            document.getElementById('editOrderModal').classList.remove('hidden');
+        }
+
+        function closeEditOrderModal() {
+            document.getElementById('editOrderBackdrop').classList.add('hidden');
+            document.getElementById('editOrderModal').classList.add('hidden');
+        }
+
+        async function handleEditOrderSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('editOrderIdVal').value;
+            const customerName = document.getElementById('editOrderCustName').value;
+            const customerPhone = document.getElementById('editOrderCustPhone').value;
+            const customerAddress = document.getElementById('editOrderCustAddress').value;
+            const total = parseFloat(document.getElementById('editOrderTotal').value);
+            const paymentMethod = document.getElementById('editOrderPayment').value;
+            const status = document.getElementById('editOrderStatusVal').value;
+            const carrier = document.getElementById('editOrderCarrier').value;
+            const trackingNumber = document.getElementById('editOrderTracking').value;
+            const notes = document.getElementById('editOrderNotes').value;
+
             const token = localStorage.getItem('els_admin_jwt');
+
             try {
-                await fetch('/api/orders', {
+                const res = await fetch('/api/orders', {
                     method: 'PUT',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ 
-                        id: orderId, 
-                        trackingNumber: num, 
-                        status: 'expedie',
-                        carrier: 'Colissimo 24/48h'
+                    body: JSON.stringify({
+                        id,
+                        customerName,
+                        customerPhone,
+                        customerAddress,
+                        total,
+                        paymentMethod,
+                        status,
+                        carrier,
+                        trackingNumber,
+                        notes
                     })
                 });
-                showToast('Numéro de suivi enregistré.');
-                loadOrders();
-            } catch (err) {}
+
+                const data = await res.json();
+                if (data.success) {
+                    closeEditOrderModal();
+                    showToast(`Commande ${id} modifiée avec succès`);
+                    loadOrders();
+                } else {
+                    alert(data.error || 'Erreur lors de la modification');
+                }
+            } catch (err) {
+                alert('Erreur réseau lors de la modification');
+            }
         }
 
+        // ==========================================
+        // DELETE ORDER (SUPPRESSION ROBUSTE SÉCURISÉE)
+        // ==========================================
         async function deleteOrder(orderId) {
-            if (!confirm(`Supprimer définitivement la commande ${orderId} ?`)) return;
+            if (!confirm(`Supprimer définitivement la commande ${orderId} ? Cette action est irréversible.`)) return;
+
+            // Instant optimistic update on UI
+            adminOrders = adminOrders.filter(o => o.id !== orderId);
+            renderOrdersCards();
+            updateOrderBadges();
+            showToast(`Commande ${orderId} supprimée`);
+
             const token = localStorage.getItem('els_admin_jwt');
             try {
-                await fetch(`/api/orders?id=${orderId}`, {
+                const res = await fetch(`/api/orders?id=${encodeURIComponent(orderId)}`, {
                     method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ id: orderId })
                 });
-                showToast('Commande supprimée.');
+                const data = await res.json();
+                if (!data.success) {
+                    console.error('Delete error:', data.error);
+                }
                 loadOrders();
-            } catch (e) {}
+            } catch (e) {
+                console.error('Delete network exception:', e);
+            }
         }
 
-        // Vente directe Modal
+        // ==========================================
+        // REÇU / TICKET DE CAISSE CLIENT DIGITALE
+        // ==========================================
+        function openReceiptModal(orderId) {
+            const o = adminOrders.find(it => it.id === orderId);
+            if (!o) return;
+
+            currentReceiptOrder = o;
+            document.getElementById('recOrderId').innerText = o.id;
+            document.getElementById('recOrderDate').innerText = new Date(o.createdAt).toLocaleDateString('fr-FR', {
+                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+            document.getElementById('recOrderCustomer').innerText = o.customerName || 'Client';
+            document.getElementById('recOrderStatus').innerText = o.statusLabel || o.status;
+            document.getElementById('recPaymentMethod').innerText = o.paymentMethod || 'Espèces';
+            document.getElementById('recTotalAmount').innerText = `${o.total} €`;
+
+            const container = document.getElementById('recItemsList');
+            container.innerHTML = (o.items || []).map(it => `
+                <div class="flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-white">${it.brand} ${it.name}</div>
+                        <div class="text-[10px] text-zinc-400">Taille : ${it.size}${it.color ? ` • ${it.color}` : ''} • Qte : ${it.quantity}</div>
+                    </div>
+                    <span class="font-bold text-white">${it.price * (it.quantity || 1)} €</span>
+                </div>
+            `).join('');
+
+            document.getElementById('receiptBackdrop').classList.remove('hidden');
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptBackdrop').classList.add('hidden');
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+
+        function copyReceiptText() {
+            if (!currentReceiptOrder) return;
+            const o = currentReceiptOrder;
+            const itemsStr = (o.items || []).map(it => `• ${it.brand} ${it.name} (${it.size}${it.color ? ` - ${it.color}` : ''}) x${it.quantity} : ${it.price * it.quantity} €`).join('\n');
+            const dateStr = new Date(o.createdAt).toLocaleDateString('fr-FR');
+
+            const text = `━━━━━━━━━━━━━━━━━━━━\n` +
+                         `🧾 REÇU CLIENT — ELS.SHOP\n` +
+                         `━━━━━━━━━━━━━━━━━━━━\n` +
+                         `N° Commande : ${o.id}\n` +
+                         `Date : ${dateStr}\n` +
+                         `Client : ${o.customerName}\n\n` +
+                         `ARTICLES :\n${itemsStr}\n\n` +
+                         `TOTAL RÉGLÉ : ${o.total} €\n` +
+                         `RÈGLEMENT : ${o.paymentMethod || 'Espèces'}\n` +
+                         `STATUT : ${o.statusLabel || o.status}\n` +
+                         `QUALITÉ : 1:1 Miroir Certifiée\n` +
+                         `━━━━━━━━━━━━━━━━━━━━\n` +
+                         `Merci pour votre confiance sur ELS.SHOP !`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Reçu copié dans le presse-papiers !');
+            }).catch(() => {
+                showToast('Texte prêt à être partagé.');
+            });
+        }
+
+        // ==========================================
+        // VENTE DIRECTE MODAL
+        // ==========================================
         function openNewOrderModal() {
             populateOrderProductSelect();
             document.getElementById('newOrderBackdrop').classList.remove('hidden');
@@ -1993,11 +2440,9 @@
 
             document.getElementById('orderTotalPrice').value = p.price;
 
-            // Sizes select
             const sizeSelect = document.getElementById('orderSizeSelect');
             sizeSelect.innerHTML = (p.sizes || []).map(sz => `<option value="${sz}">${sz}</option>`).join('');
 
-            // Colors select
             const colorSelect = document.getElementById('orderColorSelect');
             const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : ['Standard']);
             colorSelect.innerHTML = pColors.map(c => `<option value="${c}">${c}</option>`).join('');
@@ -2058,7 +2503,7 @@
                     closeNewOrderModal();
                     showToast('Vente enregistrée avec succès !');
                     loadOrders();
-                    loadProducts(); // Refresh stock
+                    loadProducts();
                 } else {
                     alert(data.error || 'Erreur lors de l\'enregistrement de la commande.');
                 }
@@ -2068,7 +2513,175 @@
         }
 
         // ==========================================
-        // TAB 4: CALCUL DES BÉNÉFICES & MARGES (KPIS)
+        // TAB 4: STATISTIQUES & ANALYSE AVANCÉE
+        // ==========================================
+        function renderStatsTab() {
+            // Aggregate from adminOrders
+            const validOrders = adminOrders.filter(o => o.status !== 'annule');
+            
+            let totalSoldUnits = 0;
+            let totalRev = 0;
+            const prodStats = {};
+            const sizeStats = {};
+            const colorStats = {};
+            const brandStats = {};
+            const channelStats = { 'Web (Stripe)': 0, 'Vente Directe (IRL)': 0 };
+
+            validOrders.forEach(o => {
+                totalRev += (parseFloat(o.total) || 0);
+                const isStripe = (o.paymentMethod || '').toLowerCase().includes('stripe');
+                if (isStripe) {
+                    channelStats['Web (Stripe)']++;
+                } else {
+                    channelStats['Vente Directe (IRL)']++;
+                }
+
+                (o.items || []).forEach(it => {
+                    const qty = parseInt(it.quantity, 10) || 1;
+                    totalSoldUnits += qty;
+
+                    // Products
+                    const pKey = `${it.brand || 'ELS'} - ${it.name}`;
+                    if (!prodStats[pKey]) {
+                        prodStats[pKey] = {
+                            name: it.name,
+                            brand: it.brand || 'ELS',
+                            units: 0,
+                            revenue: 0
+                        };
+                    }
+                    prodStats[pKey].units += qty;
+                    prodStats[pKey].revenue += (parseFloat(it.price || 0) * qty);
+
+                    // Sizes
+                    const sz = (it.size || 'M').toUpperCase();
+                    sizeStats[sz] = (sizeStats[sz] || 0) + qty;
+
+                    // Colors
+                    if (it.color) {
+                        colorStats[it.color] = (colorStats[it.color] || 0) + qty;
+                    }
+
+                    // Brands
+                    const br = (it.brand || 'ELS');
+                    brandStats[br] = (brandStats[br] || 0) + qty;
+                });
+            });
+
+            // Highlights
+            const sortedProds = Object.values(prodStats).sort((a, b) => b.units - a.units);
+            const topProd = sortedProds[0] || null;
+
+            const sortedSizes = Object.entries(sizeStats).sort((a, b) => b[1] - a[1]);
+            const topSize = sortedSizes[0] || null;
+
+            const avgCart = validOrders.length > 0 ? Math.round(totalRev / validOrders.length) : 0;
+
+            document.getElementById('statTopProductText').innerText = topProd ? `${topProd.brand} ${topProd.name}` : 'Aucune vente';
+            document.getElementById('statTopProductSub').innerText = topProd ? `${topProd.units} pièces (${topProd.revenue} €)` : '0 ventes';
+
+            document.getElementById('statTopSizeText').innerText = topSize ? topSize[0] : '-';
+            const topSizePct = (topSize && totalSoldUnits > 0) ? Math.round((topSize[1] / totalSoldUnits) * 100) : 0;
+            document.getElementById('statTopSizeSub').innerText = topSize ? `${topSize[1]} ventes (${topSizePct}% du total)` : 'Taille la + vendue';
+
+            document.getElementById('statAvgCartText').innerText = `${avgCart} €`;
+            document.getElementById('statTotalSoldUnits').innerText = `${totalSoldUnits} pcs`;
+
+            // Top Products Ranking
+            const topProdContainer = document.getElementById('statsTopProductsList');
+            if (sortedProds.length === 0) {
+                topProdContainer.innerHTML = `<div class="text-xs text-zinc-500 py-6 text-center">Aucune vente enregistrée pour le moment.</div>`;
+            } else {
+                const maxUnits = sortedProds[0].units || 1;
+                topProdContainer.innerHTML = sortedProds.map((p, idx) => {
+                    const pct = Math.round((p.units / maxUnits) * 100);
+                    const rankMedal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`;
+                    return `
+                    <div class="space-y-1.5 p-2 rounded-xl hover:bg-zinc-900/60 transition">
+                        <div class="flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-sm w-6 text-center">${rankMedal}</span>
+                                <div>
+                                    <span class="font-bold text-white">${p.brand} ${p.name}</span>
+                                    <span class="text-[10px] text-zinc-500 block">${p.revenue} € générés</span>
+                                </div>
+                            </div>
+                            <span class="font-mono font-black text-emerald-400 text-sm">${p.units} pcs</span>
+                        </div>
+                        <div class="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-emerald-500 to-sky-400 h-full rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // Top Sizes
+            const topSizesContainer = document.getElementById('statsTopSizesList');
+            if (sortedSizes.length === 0) {
+                topSizesContainer.innerHTML = `<div class="text-xs text-zinc-500 py-6 text-center">Aucune donnée de taille.</div>`;
+            } else {
+                topSizesContainer.innerHTML = sortedSizes.map(([sz, count]) => {
+                    const pct = totalSoldUnits > 0 ? Math.round((count / totalSoldUnits) * 100) : 0;
+                    return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-bold text-white uppercase">${sz}</span>
+                            <span class="font-mono text-zinc-400">${count} pcs (${pct}%)</span>
+                        </div>
+                        <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
+                            <div class="bg-emerald-400 h-full rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // Top Colors
+            const topColorsContainer = document.getElementById('statsTopColorsList');
+            const sortedColors = Object.entries(colorStats).sort((a, b) => b[1] - a[1]);
+            if (sortedColors.length === 0) {
+                topColorsContainer.innerHTML = `<div class="text-xs text-zinc-500 py-4 text-center">Aucun coloris.</div>`;
+            } else {
+                topColorsContainer.innerHTML = sortedColors.map(([clr, count]) => `
+                    <div class="flex items-center justify-between text-xs p-1.5 rounded-lg bg-black/40">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full ${getColorDotClass(clr)}"></span>
+                            <span class="font-bold text-zinc-300">${clr}</span>
+                        </div>
+                        <span class="font-mono font-bold text-white">${count} pcs</span>
+                    </div>
+                `).join('');
+            }
+
+            // Top Brands
+            const topBrandsContainer = document.getElementById('statsTopBrandsList');
+            const sortedBrands = Object.entries(brandStats).sort((a, b) => b[1] - a[1]);
+            if (sortedBrands.length === 0) {
+                topBrandsContainer.innerHTML = `<div class="text-xs text-zinc-500 py-4 text-center">Aucune marque.</div>`;
+            } else {
+                topBrandsContainer.innerHTML = sortedBrands.map(([br, count]) => `
+                    <div class="flex items-center justify-between text-xs p-1.5 rounded-lg bg-black/40">
+                        <span class="font-bold text-white uppercase">${br}</span>
+                        <span class="font-mono font-black text-purple-400">${count} ventes</span>
+                    </div>
+                `).join('');
+            }
+
+            // Channels
+            const channelsContainer = document.getElementById('statsChannelsList');
+            channelsContainer.innerHTML = Object.entries(channelStats).map(([ch, count]) => `
+                <div class="flex items-center justify-between text-xs p-1.5 rounded-lg bg-black/40">
+                    <span class="font-bold text-zinc-300">${ch}</span>
+                    <span class="font-mono font-black text-sky-400">${count} commandes</span>
+                </div>
+            `).join('');
+
+            initIcons();
+        }
+
+        // ==========================================
+        // TAB 5: BÉNÉFICES (KPIS)
         // ==========================================
         function calculateKPIs() {
             let totalRev = 0;
@@ -2097,7 +2710,7 @@
         }
 
         // ==========================================
-        // MODAL: PUBLIER & ÉDITER UN ARTICLE
+        // PRODUITS: CREATION & ÉDITION
         // ==========================================
         function openNewProductModal() {
             document.getElementById('newProductForm').reset();
@@ -2133,16 +2746,13 @@
             document.getElementById('newProdName').value = p.name;
             setBrandValue(p.brand);
             document.getElementById('newProdCategory').value = p.category;
-            document.getElementById('newProdGrade').value = p.conditionGrade || '1:1 Miroir';
             document.getElementById('newProdPrice').value = p.price;
             document.getElementById('newProdCost').value = p.costPrice || Math.round(p.price * 0.35);
             document.getElementById('newProdDescription').value = p.description || '';
 
-            // Colors
             activeColors = Array.isArray(p.colors) && p.colors.length > 0 ? [...p.colors] : (p.color ? [p.color] : ['Noir']);
             renderColorTags();
 
-            // Photo
             if (p.image) {
                 finalCroppedDataUrl = p.image;
                 document.getElementById('newProdImageUrl').value = p.image;
@@ -2150,7 +2760,6 @@
                 document.getElementById('photoPreviewContainer').classList.remove('hidden');
             }
 
-            // Sizes
             switchSizesByCategory(p.category);
             const stockObj = p.stock || {};
             (p.sizes || []).forEach(sz => {
@@ -2217,14 +2826,13 @@
             }
         }
 
-        // Form Submit
         async function handleProductFormSubmit(e) {
             e.preventDefault();
             const editId = document.getElementById('editProductId').value;
             const name = document.getElementById('newProdName').value;
             const brand = document.getElementById('newProdBrand').value || document.getElementById('brandSelect').value;
             const category = document.getElementById('newProdCategory').value;
-            const conditionGrade = document.getElementById('newProdGrade').value || '1:1 Miroir';
+            const conditionGrade = '1:1 Miroir'; // Toujours 1:1 Miroir
             const price = parseFloat(document.getElementById('newProdPrice').value);
             const costPrice = parseFloat(document.getElementById('newProdCost').value) || Math.round(price * 0.35);
             const description = document.getElementById('newProdDescription').value;
@@ -2235,7 +2843,6 @@
                 return;
             }
 
-            // Extract stocks
             const stock = {};
             const sizes = [];
             document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
