@@ -54,6 +54,9 @@ module.exports = async (req, res) => {
 
     const token = generateToken(admin);
 
+    // Cookie de session haute sécurité (HttpOnly, Secure, SameSite=Strict)
+    res.setHeader('Set-Cookie', `els_admin_token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=1209600`);
+
     return res.status(200).json({
       success: true,
       token,
