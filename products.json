@@ -64,7 +64,7 @@
       "XS": 1,
       "S": 3,
       "M": 2,
-      "L": 8,
+      "L": 7,
       "XL": 6,
       "XXL": 50
     },
@@ -80,7 +80,7 @@
           "XS": 0,
           "S": 0,
           "M": 0,
-          "L": 4,
+          "L": 3,
           "XL": 4,
           "XXL": 50
         }
@@ -103,7 +103,7 @@
     "description": "Version 1:1 Miroir de la parka Wyndham. Tissu Arctic Tech® déperlant et coupe-vent, garnissage au choix (Plume de canard haute isolation thermique ou Coton thermique standard). Écusson Black Label brodé au millimètre sur le bras gauche, zips métalliques YKK® étanches double sens, fourrure de capuche amovible et hologramme d'authenticité intérieur 1:1.",
     "createdAt": "2026-10-09T22:29:58.449Z",
     "createdBy": "Eliott",
-    "updatedAt": "2026-10-11T12:06:51.929Z",
+    "updatedAt": "2026-10-11T12:06:53.173Z",
     "updatedBy": "Eliott"
   }
 ]
