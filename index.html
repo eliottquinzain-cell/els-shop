@@ -951,31 +951,11 @@
                             </div>
                         </div>
 
-                        <!-- 2. SIZE SELECTION -->
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">2. Choisir une taille :</label>
-                                <span id="modalSelectedSizeText" class="font-mono font-bold text-white text-[11px]">${selectedSizeModal}</span>
-                            </div>
-                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
-                                ${p.sizes.map((s, idx) => `
-                                    <button 
-                                        type="button" 
-                                        onclick="selectModalSize('${s}', this)" 
-                                        class="modal-sz-btn py-2 border text-center text-xs transition font-mono ${idx === 0 ? 'border-white bg-white text-black font-bold' : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-500 hover:text-white'}"
-                                        data-size="${s}"
-                                    >
-                                        ${s}
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- 3. MATERIAL / FILLING / OPTION SELECTION -->
+                        <!-- 2. MATERIAL / FILLING / OPTION SELECTION -->
                         ${hasOptions ? `
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-xs">
-                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">3. ${p.optionsTitle || 'Garnissage / Matière'} :</label>
+                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">2. ${p.optionsTitle || 'Garnissage / Matière'} :</label>
                                 <span id="modalSelectedOptionText" class="font-bold text-white text-[11px]">${selectedOptionModal.name} (${selectedOptionModal.price} €)</span>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -994,14 +974,24 @@
                         </div>
                         ` : ''}
 
+                        <!-- 3. SIZE SELECTION (DYNAMIQUE SELON LA MATIÈRE CHOISIE) -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <label class="font-bold text-zinc-300 uppercase text-[10px] tracking-wider">${hasOptions ? '3.' : '2.'} Choisir une taille :</label>
+                                <span id="modalSelectedSizeText" class="font-mono font-bold text-white text-[11px]">${selectedSizeModal}</span>
+                            </div>
+                            <div id="modalSizesContainer" class="grid grid-cols-4 sm:grid-cols-6 gap-1.5"></div>
+                        </div>
+
                         <!-- Actions -->
                         <div class="space-y-2 pt-2">
                             <button 
+                                id="modalAddToCartBtn"
                                 onclick="addFromModal('${p.id}')" 
                                 class="w-full bg-white hover:bg-zinc-200 text-black py-4 font-black text-xs uppercase tracking-widest transition active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer shadow-xl"
                             >
                                 <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                                <span>Ajouter au panier</span>
+                                <span id="modalAddToCartText">Ajouter au panier</span>
                             </button>
                             
                             <div class="text-[10px] text-zinc-500 text-center uppercase tracking-wider pt-1">
@@ -1014,9 +1004,74 @@
                 </div>
             `;
 
+            renderModalSizes(p);
             document.getElementById('quickViewBackdrop').classList.remove('hidden');
             document.getElementById('quickViewModal').classList.remove('hidden');
             initIcons();
+        }
+
+        function renderModalSizes(p) {
+            const container = document.getElementById('modalSizesContainer');
+            if (!container) return;
+
+            const stockMap = (selectedOptionModal && selectedOptionModal.stock) ? selectedOptionModal.stock : (p.stock || {});
+            
+            // Si la taille actuelle est épuisée dans cette matière, basculer sur la 1ère dispo
+            if (!selectedSizeModal || stockMap[selectedSizeModal] === 0 || stockMap[selectedSizeModal] === undefined) {
+                const firstAvailable = (p.sizes || []).find(s => (stockMap[s] || 0) > 0);
+                if (firstAvailable) {
+                    selectedSizeModal = firstAvailable;
+                }
+            }
+
+            const curStock = stockMap[selectedSizeModal] !== undefined ? stockMap[selectedSizeModal] : 0;
+            const sizeText = document.getElementById('modalSelectedSizeText');
+            if (sizeText) {
+                sizeText.innerHTML = `${selectedSizeModal} ${curStock > 0 ? `<span class="text-emerald-400 font-normal">(${curStock} en stock)</span>` : '<span class="text-red-400 font-normal">(Épuisé)</span>'}`;
+            }
+
+            // Bouton Panier disable si taille épuisée
+            const addBtn = document.getElementById('modalAddToCartBtn');
+            const addText = document.getElementById('modalAddToCartText');
+            if (addBtn && addText) {
+                if (curStock <= 0) {
+                    addBtn.disabled = true;
+                    addBtn.className = 'w-full bg-zinc-800 text-zinc-500 py-4 font-bold text-xs uppercase tracking-widest cursor-not-allowed flex items-center justify-center gap-2';
+                    addText.innerText = 'Taille Épuisée dans cette matière';
+                } else {
+                    addBtn.disabled = false;
+                    addBtn.className = 'w-full bg-white hover:bg-zinc-200 text-black py-4 font-black text-xs uppercase tracking-widest transition active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer shadow-xl';
+                    addText.innerText = 'Ajouter au panier';
+                }
+            }
+
+            container.innerHTML = (p.sizes || []).map(s => {
+                const qty = stockMap[s] !== undefined ? stockMap[s] : 0;
+                const isOutOfStock = qty <= 0;
+                const isSelected = selectedSizeModal === s && !isOutOfStock;
+
+                let btnClass = 'modal-sz-btn py-2 border text-center text-xs transition font-mono ';
+                if (isOutOfStock) {
+                    btnClass += 'border-zinc-900 bg-zinc-950/60 text-zinc-600 opacity-40 cursor-not-allowed line-through';
+                } else if (isSelected) {
+                    btnClass += 'border-white bg-white text-black font-bold cursor-pointer';
+                } else {
+                    btnClass += 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-500 hover:text-white cursor-pointer';
+                }
+
+                return `
+                    <button 
+                        type="button" 
+                        ${isOutOfStock ? 'disabled' : `onclick="selectModalSize('${s}', this)"`}
+                        class="${btnClass}"
+                        data-size="${s}"
+                        title="${isOutOfStock ? 'Épuisé' : `${qty} pièces disponibles`}"
+                    >
+                        <span>${s}</span>
+                        ${isOutOfStock ? '<span class="block text-[8px] no-underline uppercase text-zinc-600 font-sans">0 dispo</span>' : ''}
+                    </button>
+                `;
+            }).join('');
         }
 
         function selectModalColor(color, btn) {
@@ -1030,11 +1085,10 @@
 
         function selectModalSize(size, btn) {
             selectedSizeModal = size;
-            document.querySelectorAll('.modal-sz-btn').forEach(b => {
-                b.className = 'modal-sz-btn py-2 border border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-500 hover:text-white text-center text-xs transition font-mono';
-            });
-            btn.className = 'modal-sz-btn py-2 border border-white bg-white text-black font-bold text-center text-xs transition font-mono';
-            document.getElementById('modalSelectedSizeText').innerText = size;
+            const p = PRODUCTS.find(it => it.id === currentQuickViewProductId);
+            if (p) {
+                renderModalSizes(p);
+            }
         }
 
         function selectModalOption(idx, btn) {
@@ -1051,16 +1105,23 @@
             if (priceEl) {
                 priceEl.innerText = `${selectedOptionModal.price} €`;
             }
+            renderModalSizes(p);
         }
 
         function addFromModal(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
+            const stockMap = (selectedOptionModal && selectedOptionModal.stock) ? selectedOptionModal.stock : (p.stock || {});
             const size = selectedSizeModal || p.sizes[0] || 'Unique';
+            if (stockMap[size] !== undefined && stockMap[size] <= 0) {
+                showToast(`La taille ${size} est actuellement épuisée dans cette matière.`);
+                return;
+            }
             const color = selectedColorModal || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
             const opt = selectedOptionModal ? selectedOptionModal.name : null;
             const price = selectedOptionModal ? selectedOptionModal.price : p.price;
-            addToCart(p, size, color, opt, price);
+            const costPrice = selectedOptionModal ? selectedOptionModal.costPrice : p.costPrice;
+            addToCart(p, size, color, opt, price, costPrice);
             closeQuickView();
         }
 
@@ -1072,11 +1133,13 @@
         // ==============================================================
         // CART MANAGEMENT (PANIER SLIDE-OVER)
         // ==============================================================
-        function addToCart(p, size, color, option = null, customPrice = null) {
+        function addToCart(p, size, color, option = null, customPrice = null, customCost = null) {
             const chosenSize = size || (p.sizes && p.sizes[0]) || 'Unique';
             const chosenColor = color || (Array.isArray(p.colors) && p.colors.length > 0 ? p.colors[0] : (p.color || 'Noir'));
             const chosenOption = option || (p.options && p.options.length > 0 ? p.options[0].name : null);
-            const chosenPrice = customPrice !== null ? customPrice : (chosenOption && p.options ? (p.options.find(o => o.name === chosenOption)?.price || p.price) : p.price);
+            const matchedOpt = (chosenOption && p.options) ? p.options.find(o => o.name === chosenOption) : null;
+            const chosenPrice = customPrice !== null ? customPrice : (matchedOpt ? matchedOpt.price : p.price);
+            const chosenCost = customCost !== null ? customCost : (matchedOpt ? matchedOpt.costPrice : (p.costPrice || Math.round(chosenPrice * 0.35)));
 
             const existing = cart.find(it => it.id === p.id && it.size === chosenSize && it.color === chosenColor && it.option === chosenOption);
             if (existing) {
@@ -1087,6 +1150,7 @@
                     name: p.name,
                     brand: p.brand,
                     price: chosenPrice,
+                    costPrice: chosenCost,
                     image: p.image,
                     size: chosenSize,
                     color: chosenColor,
