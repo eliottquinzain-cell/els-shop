@@ -41,8 +41,13 @@ const DEMO_PRODUCTS = [
     stock: { "XS": 2, "S": 3, "M": 6, "L": 5, "XL": 3, "XXL": 2 },
     badge: "1:1 BEST-SELLER",
     featured: true,
+    optionsTitle: "Garnissage & Matière",
+    options: [
+      { name: "Plume de canard (Duvet naturel 1:1)", price: 320, costPrice: 110 },
+      { name: "Coton (Rembourrage thermique standard)", price: 210, costPrice: 70 }
+    ],
     image: "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
-    description: "Version 1:1 Miroir de la parka Wyndham. Tissu Arctic Tech® déperlant et coupe-vent, garnissage duvet d'oie thermique haute isolation. Écusson Black Label brodé au millimètre sur le bras gauche, zips métalliques YKK® étanches double sens, fourrure de capuche amovible et hologramme d'authenticité intérieur 1:1."
+    description: "Version 1:1 Miroir de la parka Wyndham. Tissu Arctic Tech® déperlant et coupe-vent, garnissage au choix (Plume de canard haute isolation thermique ou Coton thermique standard). Écusson Black Label brodé au millimètre sur le bras gauche, zips métalliques YKK® étanches double sens, fourrure de capuche amovible et hologramme d'authenticité intérieur 1:1."
   },
   {
     id: "els-003",
@@ -187,7 +192,7 @@ module.exports = async (req, res) => {
       let body = req.body;
       if (typeof body === 'string') body = JSON.parse(body || '{}');
 
-      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors } = body;
+      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors, options, optionsTitle } = body;
 
       if (!name || !price) {
         return res.status(400).json({ success: false, error: 'Nom et prix de vente obligatoires' });
@@ -207,6 +212,12 @@ module.exports = async (req, res) => {
         : (color ? [color] : ['Noir']);
       const defaultColor = color || colorsArr[0] || 'Noir';
 
+      const optionsArr = Array.isArray(options) ? options.map(opt => ({
+        name: String(opt.name || '').trim(),
+        price: Number(opt.price || price),
+        costPrice: opt.costPrice !== undefined ? Number(opt.costPrice) : undefined
+      })).filter(opt => opt.name) : [];
+
       const newProduct = {
         id: newId,
         name,
@@ -220,6 +231,8 @@ module.exports = async (req, res) => {
         colors: colorsArr,
         sizes: sizeArr,
         stock: stockObj,
+        options: optionsArr,
+        optionsTitle: (optionsTitle || 'Garnissage & Matière').trim(),
         badge: badge || 'NOUVEAU 1:1',
         featured: body.featured === true,
         image: image || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
