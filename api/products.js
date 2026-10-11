@@ -212,11 +212,30 @@ module.exports = async (req, res) => {
         : (color ? [color] : ['Noir']);
       const defaultColor = color || colorsArr[0] || 'Noir';
 
-      const optionsArr = Array.isArray(options) ? options.map(opt => ({
-        name: String(opt.name || '').trim(),
-        price: Number(opt.price || price),
-        costPrice: opt.costPrice !== undefined ? Number(opt.costPrice) : undefined
-      })).filter(opt => opt.name) : [];
+      const optionsArr = Array.isArray(options) ? options.map(opt => {
+        const optSizes = Array.isArray(opt.sizes) ? opt.sizes : sizeArr;
+        const optStock = opt.stock && typeof opt.stock === 'object' ? opt.stock : {};
+        optSizes.forEach(s => {
+          if (optStock[s] === undefined) {
+            optStock[s] = (stockObj && stockObj[s] !== undefined) ? stockObj[s] : 3;
+          } else {
+            optStock[s] = Number(optStock[s]) || 0;
+          }
+        });
+        return {
+          name: String(opt.name || '').trim(),
+          price: Number(opt.price || price),
+          costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : (costPrice || Math.round(Number(opt.price || price) * 0.35))),
+          stock: optStock
+        };
+      }).filter(opt => opt.name) : [];
+
+      // Si l'article possède des options, synchroniser le stock global avec la somme des options
+      if (optionsArr.length > 0) {
+        sizeArr.forEach(s => {
+          stockObj[s] = optionsArr.reduce((sum, o) => sum + (o.stock[s] || 0), 0);
+        });
+      }
 
       const newProduct = {
         id: newId,
@@ -269,6 +288,39 @@ module.exports = async (req, res) => {
       const idx = allProducts.findIndex(p => p.id === prodId);
       if (idx === -1) {
         return res.status(404).json({ success: false, error: 'Article introuvable' });
+      }
+
+      if (Array.isArray(body.options)) {
+        const sizeArr = Array.isArray(body.sizes) ? body.sizes : (allProducts[idx].sizes || ["S", "M", "L", "XL"]);
+        const basePrice = Number(body.price !== undefined ? body.price : allProducts[idx].price);
+        const baseCost = Number(body.costPrice !== undefined ? body.costPrice : (allProducts[idx].costPrice || Math.round(basePrice * 0.35)));
+
+        const optionsArr = body.options.map(opt => {
+          const optSizes = Array.isArray(opt.sizes) ? opt.sizes : sizeArr;
+          const optStock = opt.stock && typeof opt.stock === 'object' ? opt.stock : {};
+          optSizes.forEach(s => {
+            if (optStock[s] === undefined) {
+              optStock[s] = (body.stock && body.stock[s] !== undefined) ? body.stock[s] : 3;
+            } else {
+              optStock[s] = Number(optStock[s]) || 0;
+            }
+          });
+          return {
+            name: String(opt.name || '').trim(),
+            price: Number(opt.price !== undefined ? opt.price : basePrice),
+            costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : (baseCost || Math.round(Number(opt.price || basePrice) * 0.35))),
+            stock: optStock
+          };
+        }).filter(opt => opt.name);
+
+        body.options = optionsArr;
+        if (optionsArr.length > 0) {
+          const newStock = {};
+          sizeArr.forEach(s => {
+            newStock[s] = optionsArr.reduce((sum, o) => sum + (o.stock[s] || 0), 0);
+          });
+          body.stock = newStock;
+        }
       }
 
       allProducts[idx] = {
