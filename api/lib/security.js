@@ -51,6 +51,7 @@ function sanitizePublicOrder(order) {
       brand: it.brand,
       size: it.size,
       color: it.color,
+      option: it.option || undefined,
       quantity: it.quantity,
       price: it.price
     })),
