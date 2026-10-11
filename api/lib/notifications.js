@@ -18,7 +18,7 @@ function generateOrderConfirmationEmail(order, origin = 'https://els-shop.vercel
     <tr>
       <td style="padding: 12px 0; border-bottom: 1px solid #23232c;">
         <div style="font-weight: 700; color: #ffffff; font-size: 14px;">${it.brand || 'ELS'} — ${it.name}</div>
-        <div style="color: #94a3b8; font-size: 12px; margin-top: 2px;">Taille : <strong>${it.size || 'M'}</strong> • Coloris : ${it.color || 'Standard'} • Qte : ${it.quantity || 1}</div>
+        <div style="color: #94a3b8; font-size: 12px; margin-top: 2px;">Taille : <strong>${it.size || 'M'}</strong> • Coloris : ${it.color || 'Standard'}${it.option ? ` • Option : <strong>${it.option}</strong>` : ''} • Qte : ${it.quantity || 1}</div>
       </td>
       <td style="padding: 12px 0; border-bottom: 1px solid #23232c; text-align: right; color: #ffffff; font-weight: 700; font-size: 14px; white-space: nowrap;">
         ${(parseFloat(it.price || 0) * (it.quantity || 1)).toFixed(2)} €
@@ -231,7 +231,7 @@ async function sendEmailNotification({ to, subject, html, text }) {
  */
 function generateWhatsAppMessage(order, origin = 'https://els-shop.vercel.app') {
   const trackingUrl = `${origin}/suivi?order=${encodeURIComponent(order.id)}`;
-  const itemsText = (order.items || []).map(it => `• ${it.brand} ${it.name} (${it.size}${it.color ? ' - ' + it.color : ''}) x${it.quantity} : ${it.price * it.quantity}€`).join('\n');
+  const itemsText = (order.items || []).map(it => `• ${it.brand} ${it.name} (${it.size}${it.color ? ' - ' + it.color : ''}${it.option ? ' - ' + it.option : ''}) x${it.quantity} : ${it.price * it.quantity}€`).join('\n');
 
   let text = `Bonjour ${order.customerName || 'Client'} !\n\n` +
              `Merci pour votre commande sur *ELS.SHOP* (Qualité 1:1 Miroir Certifiée) !\n\n` +
