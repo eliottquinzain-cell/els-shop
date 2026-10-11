@@ -1,5 +1,48 @@
 [
   {
+    "id": "els-003",
+    "name": "Maya Down Jacket Test",
+    "brand": "Moncler",
+    "category": "vestes",
+    "price": 280,
+    "costPrice": 98,
+    "condition": "Neuf (1:1)",
+    "conditionGrade": "1:1 Miroir",
+    "color": "Noir",
+    "colors": [
+      "Noir"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "stock": {
+      "S": 3,
+      "M": 3,
+      "L": 3,
+      "XL": 3
+    },
+    "options": [
+      {
+        "name": "Duvet d'oie 1:1",
+        "price": 280
+      },
+      {
+        "name": "Ouate thermique standard",
+        "price": 170
+      }
+    ],
+    "optionsTitle": "Garnissage & Matière",
+    "badge": "NOUVEAU 1:1",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+    "description": "Qualité 1:1 supérieure avec finitions et étiquettes identiques.",
+    "createdAt": "2026-10-11T11:47:09.211Z",
+    "createdBy": "Eliott"
+  },
+  {
     "id": "els-002",
     "name": "Alcatraz Pullover Hoodie",
     "brand": "Corteiz",
