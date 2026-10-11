@@ -75,12 +75,28 @@
       {
         "name": "Plume de canard (Duvet naturel 1:1)",
         "price": 320,
-        "costPrice": 110
+        "costPrice": 110,
+        "stock": {
+          "XS": 2,
+          "S": 4,
+          "M": 5,
+          "L": 4,
+          "XL": 2,
+          "XXL": 1
+        }
       },
       {
         "name": "Coton (Rembourrage thermique standard)",
         "price": 210,
-        "costPrice": 70
+        "costPrice": 70,
+        "stock": {
+          "XS": 1,
+          "S": 3,
+          "M": 2,
+          "L": 4,
+          "XL": 2,
+          "XXL": 0
+        }
       }
     ],
     "image": "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
