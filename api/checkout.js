@@ -79,6 +79,7 @@ module.exports = async (req, res) => {
             size: sanitizeString(it.size || 'M', 20),
             option: it.option ? sanitizeString(it.option, 80) : undefined,
             price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
+            costPrice: it.costPrice !== undefined ? Number(it.costPrice) : undefined,
             quantity: parseInt(it.quantity, 10) || 1
           })),
           total: Math.round(totalAmount * 100) / 100,
@@ -100,10 +101,23 @@ module.exports = async (req, res) => {
         let stockChanged = false;
         for (const item of items) {
           const prod = products.find(p => p.id === item.id || (p.name.toLowerCase() === item.name.toLowerCase() && p.brand.toLowerCase() === item.brand.toLowerCase()));
-          if (prod && prod.stock && prod.stock[item.size] !== undefined) {
-            const currentStock = parseInt(prod.stock[item.size], 10) || 0;
-            prod.stock[item.size] = Math.max(0, currentStock - (parseInt(item.quantity, 10) || 1));
-            stockChanged = true;
+          if (prod) {
+            const qty = parseInt(item.quantity, 10) || 1;
+            // 1. Déduction dans l'option spécifique si commandée (ex: Plume de canard en M)
+            if (Array.isArray(prod.options) && prod.options.length > 0 && item.option) {
+              const opt = prod.options.find(o => o.name === item.option || item.option.includes(o.name) || o.name.includes(item.option));
+              if (opt && opt.stock && opt.stock[item.size] !== undefined) {
+                const optCur = parseInt(opt.stock[item.size], 10) || 0;
+                opt.stock[item.size] = Math.max(0, optCur - qty);
+                stockChanged = true;
+              }
+            }
+            // 2. Déduction dans le stock global de l'article
+            if (prod.stock && prod.stock[item.size] !== undefined) {
+              const currentStock = parseInt(prod.stock[item.size], 10) || 0;
+              prod.stock[item.size] = Math.max(0, currentStock - qty);
+              stockChanged = true;
+            }
           }
         }
         if (stockChanged) {
