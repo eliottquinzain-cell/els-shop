@@ -924,107 +924,6 @@
                 </div>
             </div>
 
-            <!-- Prices & Live Margin -->
-            <div class="grid sm:grid-cols-3 gap-2.5 p-3 bg-zinc-950 rounded-xl border border-zinc-800">
-                <div>
-                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente (€) *</label>
-                    <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateMargin()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût achat (€)</label>
-                    <input type="number" id="newProdCost" placeholder="40" oninput="calculateMargin()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire</label>
-                    <div id="newProdMarginDisplay" class="text-xs font-black text-emerald-400 py-1.5">+0 € (0% marge)</div>
-                </div>
-            </div>
-
-            <!-- OPTIONS & MATIÈRES AVEC PRIX PERSONNALISÉS (ex: Plume de canard vs Coton) -->
-            <div class="space-y-3 p-3.5 bg-zinc-950 rounded-xl border border-zinc-800">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <label class="text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
-                            <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i>
-                            Options & Matières (Prix spécifiques au choix)
-                        </label>
-                        <p class="text-[10px] text-zinc-500 mt-0.5">
-                            Ex: Doudoune en plume de canard (320 €) ou en coton (210 €), avec ou sans fourrure, etc.
-                        </p>
-                    </div>
-                    <span id="optionsCountBadge" class="text-[10px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/30 px-2 py-0.5 rounded font-bold">
-                        0 option
-                    </span>
-                </div>
-
-                <!-- Input for Option Group Title -->
-                <div class="flex items-center gap-2">
-                    <label class="text-[10px] text-zinc-400 font-bold uppercase shrink-0">Titre affiché :</label>
-                    <input 
-                        type="text" 
-                        id="newProdOptionsTitle" 
-                        placeholder="Ex: Garnissage & Matière, Finition, Capuche..." 
-                        value="Garnissage & Matière"
-                        class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-sky-400"
-                    >
-                </div>
-
-                <!-- Active Options List Container -->
-                <div id="productOptionsContainer" class="space-y-1.5 min-h-[36px] p-2 bg-black/80 border border-zinc-800 rounded-lg"></div>
-
-                <!-- Add New Option Inputs -->
-                <div class="p-2.5 bg-zinc-900/60 border border-zinc-800 rounded-xl space-y-2">
-                    <div class="text-[10px] font-bold text-zinc-400 uppercase">Ajouter une option de matière / garnissage :</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
-                        <div class="sm:col-span-6">
-                            <input 
-                                type="text" 
-                                id="newOptionName" 
-                                placeholder="Nom (ex: Plume de canard / Duvet 1:1, Coton)..." 
-                                onkeydown="if(event.key==='Enter'){event.preventDefault();addProductOptionFromInputs();}"
-                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
-                            >
-                        </div>
-                        <div class="sm:col-span-3">
-                            <div class="relative flex items-center">
-                                <input 
-                                    type="number" 
-                                    id="newOptionPrice" 
-                                    placeholder="Prix vente (€)" 
-                                    onkeydown="if(event.key==='Enter'){event.preventDefault();addProductOptionFromInputs();}"
-                                    class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400 pr-6"
-                                >
-                                <span class="absolute right-2 text-xs text-zinc-500 font-bold pointer-events-none">€</span>
-                            </div>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <button 
-                                type="button" 
-                                onclick="addProductOptionFromInputs()" 
-                                class="w-full py-1.5 px-3 bg-sky-400 hover:bg-sky-300 text-black font-black text-xs rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
-                            >
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                <span>Ajouter</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Quick 1-click Presets -->
-                    <div class="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-zinc-800 text-[11px]">
-                        <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis matières :</span>
-                        <button type="button" onclick="applyOptionPreset('doudoune_duvet')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
-                            🧥 Plume de canard (320€) / Coton (210€)
-                        </button>
-                        <button type="button" onclick="applyOptionPreset('fourrure')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
-                            🦊 Fourrure coyote (340€) / Sans fourrure (290€)
-                        </button>
-                        <button type="button" onclick="applyOptionPreset('cuir')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
-                            👜 Cuir véritable 1:1 (260€) / Simili standard (180€)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Photo Import with Camera / Gallery -->
             <div class="space-y-2">
                 <label class="block text-[11px] font-bold text-zinc-400 uppercase">
@@ -1060,13 +959,136 @@
                 </div>
             </div>
 
-            <!-- Sizes & Stocks -->
-            <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase">Stocks par Taille (XS à 3XL)</label>
-                    <span class="text-[10px] text-zinc-500">Quantité par taille</span>
+            <!-- DÉCLINAISONS, PRIX & GESTION DES STOCKS (STANDARD VS MULTI-MATIÈRES) -->
+            <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-3.5">
+                <!-- Mode Switcher Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-zinc-900">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-sky-400"></i>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">Déclinaisons, Prix & Stocks</span>
+                            <span id="productModeBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-mono">Standard</span>
+                        </div>
+                        <p class="text-[10px] text-zinc-500 mt-0.5">
+                            Gérez un prix et stock unique, ou personnalisez les prix, coûts d'achat et stocks par matière (ex: Plume de canard vs Coton).
+                        </p>
+                    </div>
+
+                    <!-- Mode Toggle Buttons -->
+                    <div class="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800 self-start sm:self-auto shrink-0">
+                        <button 
+                            type="button" 
+                            id="btnModeStandard" 
+                            onclick="setProductMode('standard')" 
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition bg-white text-black shadow"
+                        >
+                            Article Standard
+                        </button>
+                        <button 
+                            type="button" 
+                            id="btnModeMulti" 
+                            onclick="setProductMode('multi')" 
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition text-zinc-400 hover:text-white"
+                        >
+                            Multi-Matières (Canada Goose, Cuir...)
+                        </button>
+                    </div>
                 </div>
-                <div id="sizesStockGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-2"></div>
+
+                <!-- 1. SECTION STANDARD: Prix Unique & Grille Simple -->
+                <div id="standardConfigSection" class="space-y-3">
+                    <div class="grid sm:grid-cols-3 gap-2.5 p-3 bg-zinc-900/60 rounded-xl border border-zinc-800/80">
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente public (€) *</label>
+                            <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût d'achat fournisseur (€)</label>
+                            <input type="number" id="newProdCost" placeholder="40" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire Réel</label>
+                            <div id="newProdMarginDisplay" class="text-xs font-black text-emerald-400 py-1.5">+0 € (0% marge)</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-[11px] font-bold text-zinc-400 uppercase">Stocks par Taille</label>
+                            <span id="standardTotalPiecesLabel" class="text-[10px] text-zinc-500 font-mono">Quantité par taille</span>
+                        </div>
+                        <div id="sizesStockGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-2"></div>
+                    </div>
+                </div>
+
+                <!-- 2. SECTION MULTI-MATIÈRES: Déclinaisons Indépendantes (Prix, Coût Achat & Stock par taille) -->
+                <div id="multiMaterialConfigSection" class="hidden space-y-3.5">
+                    <!-- Option Group Title & Presets -->
+                    <div class="space-y-2 p-3 bg-zinc-900/40 rounded-xl border border-zinc-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <label class="text-[10px] text-zinc-400 font-bold uppercase shrink-0">Titre des options :</label>
+                                <input 
+                                    type="text" 
+                                    id="newProdOptionsTitle" 
+                                    placeholder="Ex: Garnissage & Matière, Finition..." 
+                                    value="Garnissage & Matière"
+                                    class="bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-sky-400 w-48 sm:w-56"
+                                >
+                            </div>
+                            <span id="multiOptionsCountBadge" class="text-[10px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/30 px-2.5 py-0.5 rounded-full font-bold self-start sm:self-auto">
+                                0 matière
+                            </span>
+                        </div>
+
+                        <!-- 1-Click Presets -->
+                        <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-zinc-800/80 text-[11px]">
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis matières :</span>
+                            <button type="button" onclick="applyMaterialPreset('canada_goose')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
+                                🧥 Canada Goose: Plume de canard (320€ / 110€) vs Coton (210€ / 70€)
+                            </button>
+                            <button type="button" onclick="applyMaterialPreset('fourrure')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
+                                🦊 Parka: Fourrure coyote (340€ / 130€) vs Sans fourrure (290€ / 95€)
+                            </button>
+                            <button type="button" onclick="applyMaterialPreset('cuir')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
+                                👜 Veste Cuir: Cuir pleine fleur (260€ / 90€) vs Simili (180€ / 50€)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Material Tabs Header Bar -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Sélectionnez la matière à configurer :</span>
+                            <button 
+                                type="button" 
+                                onclick="addNewMaterialOption()" 
+                                class="text-[10px] font-bold text-sky-400 hover:text-sky-300 bg-sky-500/10 border border-sky-500/30 px-2.5 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer transition"
+                            >
+                                <i data-lucide="plus" class="w-3 h-3"></i>
+                                <span>Ajouter une matière</span>
+                            </button>
+                        </div>
+                        <div id="materialTabsBar" class="flex flex-wrap gap-2 items-center"></div>
+                    </div>
+
+                    <!-- Active Material Card (Price, Cost, Live Profit & Size Stock Grid) -->
+                    <div id="activeMaterialCard" class="p-3.5 bg-zinc-900/90 rounded-2xl border border-sky-500/30 space-y-3.5 relative"></div>
+
+                    <!-- Global Recap of all Materials (Summary Table) -->
+                    <div class="p-3 bg-black/60 rounded-xl border border-zinc-800/80 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                Récapitulatif global des matières & stocks
+                            </span>
+                            <span id="multiTotalAllUnitsBadge" class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
+                                Total: 0 pièces
+                            </span>
+                        </div>
+                        <div id="multiMaterialsRecapContainer" class="space-y-1.5 text-xs"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- AI Streetwear Description -->
@@ -2450,6 +2472,7 @@
             container.innerHTML = list.map(p => {
                 const stockObj = p.stock || {};
                 const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                const hasOptions = Array.isArray(p.options) && p.options.length > 0;
 
                 return `
                 <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
@@ -2459,51 +2482,126 @@
                             <div>
                                 <span class="text-[10px] font-black uppercase text-zinc-400 tracking-wider">${p.brand}</span>
                                 <h3 class="font-bold text-sm text-white">${p.name}</h3>
-                                <div class="text-[11px] text-zinc-400">${p.price} € • ${p.category}</div>
+                                <div class="text-[11px] text-zinc-400">
+                                    ${hasOptions ? `<span class="text-sky-400 font-bold">${p.options.length} matières configurées</span>` : `${p.price} €`} • ${p.category}
+                                </div>
                             </div>
                         </div>
                         <span class="px-2.5 py-1 rounded-xl text-xs font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
-                            ${totalUnits} en stock
+                            ${totalUnits} en stock total
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-                        ${(p.sizes || []).map(sz => {
-                            const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
-                            const isZero = count === 0;
-                            const isLow = count > 0 && count <= 2;
+                    ${hasOptions ? `
+                        <!-- Sub-sections per material option -->
+                        <div class="space-y-3">
+                            ${p.options.map((opt, optIdx) => {
+                                const optStock = opt.stock || {};
+                                const optUnits = Object.values(optStock).reduce((a, b) => a + Number(b || 0), 0);
+                                return `
+                                <div class="p-3 bg-zinc-950/80 rounded-xl border border-zinc-800/80 space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-4 h-4 rounded-full bg-sky-500/20 text-sky-400 text-[10px] font-bold flex items-center justify-center">${optIdx + 1}</span>
+                                            <span class="font-bold text-xs text-white">${opt.name}</span>
+                                            <span class="text-[10px] text-emerald-400 font-mono font-bold">(${opt.price}€ / achat ${opt.costPrice || '?'}€)</span>
+                                        </div>
+                                        <span class="text-[10px] font-mono font-bold text-zinc-400">${optUnits} pcs</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+                                        ${(p.sizes || Object.keys(optStock)).map(sz => {
+                                            const count = optStock[sz] !== undefined ? optStock[sz] : 0;
+                                            const isZero = count === 0;
+                                            const isLow = count > 0 && count <= 2;
+                                            return `
+                                            <div class="bg-black/70 border border-zinc-800 rounded-xl p-2 flex flex-col items-center justify-between gap-1.5">
+                                                <div class="flex items-center justify-between w-full px-1">
+                                                    <span class="font-black text-xs text-zinc-300 uppercase">${sz}</span>
+                                                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${isZero ? 'bg-red-500/20 text-red-400' : isLow ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                                                        ${count}
+                                                    </span>
+                                                </div>
+                                                <div class="flex items-center justify-between w-full gap-1 pt-1 border-t border-zinc-900">
+                                                    <button onclick="updateOptionStockDelta('${p.id}', ${optIdx}, '${sz}', -1)" class="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 active:scale-90 text-white font-black text-sm flex items-center justify-center border border-zinc-700 transition cursor-pointer">-</button>
+                                                    <button onclick="updateOptionStockDelta('${p.id}', ${optIdx}, '${sz}', 1)" class="w-7 h-7 rounded-lg bg-white hover:bg-zinc-200 active:scale-90 text-black font-black text-sm flex items-center justify-center transition shadow cursor-pointer">+</button>
+                                                </div>
+                                            </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : `
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                            ${(p.sizes || []).map(sz => {
+                                const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                const isZero = count === 0;
+                                const isLow = count > 0 && count <= 2;
 
-                            return `
-                            <div class="bg-black/70 border border-zinc-800 rounded-xl p-2 flex flex-col items-center justify-between gap-1.5">
-                                <div class="flex items-center justify-between w-full px-1">
-                                    <span class="font-black text-xs text-zinc-300 uppercase">${sz}</span>
-                                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${isZero ? 'bg-red-500/20 text-red-400' : isLow ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}">
-                                        ${count}
-                                    </span>
+                                return `
+                                <div class="bg-black/70 border border-zinc-800 rounded-xl p-2 flex flex-col items-center justify-between gap-1.5">
+                                    <div class="flex items-center justify-between w-full px-1">
+                                        <span class="font-black text-xs text-zinc-300 uppercase">${sz}</span>
+                                        <span class="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${isZero ? 'bg-red-500/20 text-red-400' : isLow ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                                            ${count}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center justify-between w-full gap-1 pt-1 border-t border-zinc-900">
+                                        <button 
+                                            onclick="updateStockDelta('${p.id}', '${sz}', -1)"
+                                            class="w-8 h-8 rounded-lg bg-zinc-900 hover:bg-zinc-800 active:scale-90 text-white font-black text-base flex items-center justify-center border border-zinc-700 transition cursor-pointer"
+                                        >
+                                            -
+                                        </button>
+                                        <button 
+                                            onclick="updateStockDelta('${p.id}', '${sz}', 1)"
+                                            class="w-8 h-8 rounded-lg bg-white hover:bg-zinc-200 active:scale-90 text-black font-black text-base flex items-center justify-center transition shadow cursor-pointer"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="flex items-center justify-between w-full gap-1 pt-1 border-t border-zinc-900">
-                                    <button 
-                                        onclick="updateStockDelta('${p.id}', '${sz}', -1)"
-                                        class="w-8 h-8 rounded-lg bg-zinc-900 hover:bg-zinc-800 active:scale-90 text-white font-black text-base flex items-center justify-center border border-zinc-700 transition"
-                                    >
-                                        -
-                                    </button>
-                                    <button 
-                                        onclick="updateStockDelta('${p.id}', '${sz}', 1)"
-                                        class="w-8 h-8 rounded-lg bg-white hover:bg-zinc-200 active:scale-90 text-black font-black text-base flex items-center justify-center transition shadow"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            `;
-                        }).join('')}
-                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `}
                 </div>
                 `;
             }).join('');
 
             initIcons();
+        }
+
+        async function updateOptionStockDelta(prodId, optIdx, size, delta) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p || !p.options || !p.options[optIdx]) return;
+            const opt = p.options[optIdx];
+            if (!opt.stock) opt.stock = {};
+            const cur = Number(opt.stock[size] || 0);
+            opt.stock[size] = Math.max(0, cur + delta);
+
+            // Synchroniser le stock global agrégé du produit
+            if (!p.stock) p.stock = {};
+            p.stock[size] = p.options.reduce((sum, o) => sum + (Number(o.stock?.[size]) || 0), 0);
+
+            calculateKPIs();
+            renderProductsList();
+            renderTactileStocks();
+            showToast(`${p.name} - ${opt.name} (${size}) : ${opt.stock[size]} pcs`);
+
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch('/api/products', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id: p.id, options: p.options, stock: p.stock })
+                });
+            } catch (err) {}
         }
 
         async function updateStockDelta(prodId, size, delta) {
@@ -3321,14 +3419,27 @@
             let totalUnits = 0;
 
             adminProducts.forEach(p => {
-                const stockObj = p.stock || {};
-                const units = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
-                const price = Number(p.price || 0);
-                const cost = Number(p.costPrice || Math.round(price * 0.35));
+                if (Array.isArray(p.options) && p.options.length > 0) {
+                    p.options.forEach(opt => {
+                        const optStock = opt.stock || {};
+                        const units = Object.values(optStock).reduce((a, b) => a + Number(b || 0), 0);
+                        const price = Number(opt.price || p.price || 0);
+                        const cost = Number(opt.costPrice !== undefined ? opt.costPrice : (p.costPrice || Math.round(price * 0.35)));
 
-                totalUnits += units;
-                totalRev += (price * units);
-                totalCost += (cost * units);
+                        totalUnits += units;
+                        totalRev += (price * units);
+                        totalCost += (cost * units);
+                    });
+                } else {
+                    const stockObj = p.stock || {};
+                    const units = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
+                    const price = Number(p.price || 0);
+                    const cost = Number(p.costPrice || Math.round(price * 0.35));
+
+                    totalUnits += units;
+                    totalRev += (price * units);
+                    totalCost += (cost * units);
+                }
             });
 
             const netProfit = totalRev - totalCost;
@@ -3342,111 +3453,432 @@
         }
 
         // ==========================================
-        // OPTIONS & MATIÈRES DU PRODUIT (PRIX VARIANTES)
+        // GESTION DES OPTIONS & MATIÈRES PERSONNALISÉES
         // ==========================================
-        let productOptions = [];
+        let currentProductMode = 'standard'; // 'standard' | 'multi'
+        let materialOptions = []; // Array of { name, price, costPrice, stock: {} }
+        let activeMaterialIdx = 0;
+        let currentCategorySizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
 
-        function renderProductOptions() {
-            const container = document.getElementById('productOptionsContainer');
-            const badge = document.getElementById('optionsCountBadge');
-            if (!container) return;
+        function setProductMode(mode) {
+            currentProductMode = mode;
+            const btnStd = document.getElementById('btnModeStandard');
+            const btnMulti = document.getElementById('btnModeMulti');
+            const secStd = document.getElementById('standardConfigSection');
+            const secMulti = document.getElementById('multiMaterialConfigSection');
+            const modeBadge = document.getElementById('productModeBadge');
+            const priceInput = document.getElementById('newProdPrice');
 
-            if (badge) {
-                badge.innerText = `${productOptions.length} option${productOptions.length > 1 ? 's' : ''}`;
-                badge.className = productOptions.length > 0 
-                    ? 'text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold'
-                    : 'text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded font-bold';
+            if (mode === 'multi') {
+                if (btnMulti) btnMulti.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-white text-black shadow';
+                if (btnStd) btnStd.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-zinc-400 hover:text-white';
+                if (secStd) secStd.classList.add('hidden');
+                if (secMulti) secMulti.classList.remove('hidden');
+                if (modeBadge) {
+                    modeBadge.innerText = 'Multi-Matières';
+                    modeBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 font-mono';
+                }
+                if (priceInput) priceInput.removeAttribute('required');
+
+                // Si aucune option configurée, pré-remplir avec 2 options de base intelligentes
+                if (materialOptions.length === 0) {
+                    const defaultP1 = parseFloat(priceInput?.value) || 320;
+                    const defaultC1 = parseFloat(document.getElementById('newProdCost')?.value) || 110;
+                    const defaultStock1 = {};
+                    const defaultStock2 = {};
+                    currentCategorySizes.forEach(s => {
+                        const curInp = document.getElementById(`stockSize_${s}`);
+                        defaultStock1[s] = curInp ? (parseInt(curInp.value, 10) || 3) : 3;
+                        defaultStock2[s] = curInp ? Math.max(0, (parseInt(curInp.value, 10) || 3) - 1) : 2;
+                    });
+
+                    materialOptions = [
+                        {
+                            name: 'Plume de canard (Duvet naturel 1:1)',
+                            price: defaultP1,
+                            costPrice: defaultC1,
+                            stock: defaultStock1
+                        },
+                        {
+                            name: 'Coton (Rembourrage thermique standard)',
+                            price: Math.round(defaultP1 * 0.65),
+                            costPrice: Math.round(defaultC1 * 0.65),
+                            stock: defaultStock2
+                        }
+                    ];
+                    activeMaterialIdx = 0;
+                }
+                renderMultiMaterialUI();
+            } else {
+                if (btnStd) btnStd.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-white text-black shadow';
+                if (btnMulti) btnMulti.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-zinc-400 hover:text-white';
+                if (secStd) secStd.classList.remove('hidden');
+                if (secMulti) secMulti.classList.add('hidden');
+                if (modeBadge) {
+                    modeBadge.innerText = 'Standard';
+                    modeBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-mono';
+                }
+                if (priceInput) priceInput.setAttribute('required', 'required');
+                calculateMargin();
+            }
+            initIcons();
+        }
+
+        function renderMultiMaterialUI() {
+            const countBadge = document.getElementById('multiOptionsCountBadge');
+            const tabsBar = document.getElementById('materialTabsBar');
+            const activeCard = document.getElementById('activeMaterialCard');
+            const recapContainer = document.getElementById('multiMaterialsRecapContainer');
+            const totalUnitsBadge = document.getElementById('multiTotalAllUnitsBadge');
+
+            if (countBadge) {
+                countBadge.innerText = `${materialOptions.length} matière${materialOptions.length > 1 ? 's' : ''}`;
             }
 
-            if (productOptions.length === 0) {
-                container.innerHTML = `
-                    <div class="text-[11px] text-zinc-500 italic py-1 px-2">
-                        Aucune option spécifique de matière configurée. L'article utilisera le prix unique ci-dessus.
-                    </div>
-                `;
-                return;
+            // 1. Render Tabs Bar
+            if (tabsBar) {
+                tabsBar.innerHTML = materialOptions.map((opt, idx) => {
+                    const isActive = idx === activeMaterialIdx;
+                    return `
+                    <button 
+                        type="button" 
+                        onclick="selectMaterialTab(${idx})"
+                        class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${isActive ? 'bg-sky-500/20 border-sky-400 text-white shadow-lg' : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500'}"
+                    >
+                        <span class="w-4 h-4 rounded-full ${isActive ? 'bg-sky-400 text-black' : 'bg-zinc-800 text-zinc-300'} font-black text-[10px] flex items-center justify-center">${idx + 1}</span>
+                        <span>${opt.name ? opt.name.split('(')[0].trim() : 'Matière ' + (idx + 1)}</span>
+                        <span class="font-mono text-[10px] text-emerald-400 font-bold">${opt.price || 0}€</span>
+                    </button>
+                    `;
+                }).join('');
             }
 
-            container.innerHTML = productOptions.map((opt, idx) => `
-                <div class="flex items-center justify-between gap-2 p-2 bg-zinc-900/90 border border-zinc-800 rounded-lg">
-                    <div class="flex items-center gap-2 min-w-0">
-                        <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 font-bold text-[10px] flex items-center justify-center shrink-0">${idx + 1}</span>
-                        <span class="text-xs font-bold text-white truncate">${opt.name}</span>
-                    </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <span class="px-2.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-black text-xs">
-                            ${opt.price} €
+            // 2. Render Active Material Card
+            if (activeCard) {
+                if (materialOptions.length === 0) {
+                    activeCard.innerHTML = `
+                        <div class="py-6 text-center text-zinc-500 text-xs">
+                            Aucune matière configurée. Cliquez sur "Ajouter une matière" ci-dessus ou choisissez un raccourci.
+                        </div>
+                    `;
+                } else {
+                    const opt = materialOptions[activeMaterialIdx] || materialOptions[0];
+                    const optStock = opt.stock || {};
+                    const totalPiecesInOpt = currentCategorySizes.reduce((sum, sz) => sum + (Number(optStock[sz]) || 0), 0);
+                    const profit = (Number(opt.price) || 0) - (Number(opt.costPrice) || 0);
+                    const marginPct = Number(opt.price) > 0 ? Math.round((profit / Number(opt.price)) * 100) : 0;
+
+                    activeCard.innerHTML = `
+                    <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 font-black text-xs flex items-center justify-center">#${activeMaterialIdx + 1}</span>
+                            <span class="text-xs font-extrabold text-white uppercase tracking-wider">Fiche Matière : ${opt.name || 'Sans titre'}</span>
+                        </div>
+                        <span class="text-[10px] font-mono font-bold text-sky-300 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-lg">
+                            ${totalPiecesInOpt} pièce${totalPiecesInOpt > 1 ? 's' : ''} en stock
                         </span>
+                    </div>
+
+                    <!-- Material Name -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Nom de la matière / finition *</label>
+                        <input 
+                            type="text" 
+                            id="activeMatNameInput"
+                            value="${opt.name || ''}" 
+                            placeholder="Ex: Plume de canard (Duvet naturel 1:1), Coton..."
+                            oninput="updateActiveMaterialName(this.value)"
+                            class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400"
+                        >
+                    </div>
+
+                    <!-- Price, Cost, Profit -->
+                    <div class="grid sm:grid-cols-3 gap-2.5 p-2.5 bg-black/60 rounded-xl border border-zinc-800">
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente (€) *</label>
+                            <div class="relative flex items-center">
+                                <input 
+                                    type="number" 
+                                    value="${opt.price !== undefined ? opt.price : 0}" 
+                                    oninput="updateActiveMaterialPrice(this.value)"
+                                    class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400 pr-6"
+                                >
+                                <span class="absolute right-2 text-xs text-zinc-500 font-bold pointer-events-none">€</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût achat fournisseur (€)</label>
+                            <div class="relative flex items-center">
+                                <input 
+                                    type="number" 
+                                    value="${opt.costPrice !== undefined ? opt.costPrice : 0}" 
+                                    oninput="updateActiveMaterialCost(this.value)"
+                                    class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-sky-400 pr-6"
+                                >
+                                <span class="absolute right-2 text-xs text-zinc-500 font-bold pointer-events-none">€</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire</label>
+                            <div class="text-xs font-black py-1.5 ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                                ${profit >= 0 ? '+' : ''}${profit} € (${marginPct}% marge)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Independent Sizes & Stocks Grid for this Material -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-[11px] font-bold text-zinc-300 uppercase flex items-center gap-1.5">
+                                <i data-lucide="package" class="w-3.5 h-3.5 text-sky-400"></i>
+                                Stocks par Taille pour "${opt.name ? opt.name.split('(')[0].trim() : 'cette matière'}"
+                            </label>
+                            <span class="text-[10px] text-zinc-500">Ajustez les quantités XS à 3XL</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
+                            ${currentCategorySizes.map(sz => {
+                                const count = optStock[sz] !== undefined ? optStock[sz] : 0;
+                                return `
+                                <div class="bg-black/90 p-2 rounded-xl border border-zinc-800 text-center space-y-1.5">
+                                    <span class="block text-[11px] font-black uppercase text-zinc-300">${sz}</span>
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button 
+                                            type="button" 
+                                            onclick="updateActiveMaterialStock('${sz}', -1)"
+                                            class="w-6 h-6 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-black text-xs flex items-center justify-center active:scale-90 transition"
+                                        >-</button>
+                                        <input 
+                                            type="number" 
+                                            min="0"
+                                            value="${count}" 
+                                            oninput="setActiveMaterialStock('${sz}', this.value)"
+                                            class="w-10 bg-zinc-950 border border-zinc-700 rounded text-center py-0.5 text-xs text-white font-bold focus:outline-none"
+                                        >
+                                        <button 
+                                            type="button" 
+                                            onclick="updateActiveMaterialStock('${sz}', 1)"
+                                            class="w-6 h-6 rounded bg-white hover:bg-zinc-200 text-black font-black text-xs flex items-center justify-center active:scale-90 transition shadow"
+                                        >+</button>
+                                    </div>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Material Actions Footer -->
+                    <div class="flex items-center justify-between pt-2 border-t border-zinc-800/80">
                         <button 
                             type="button" 
-                            onclick="removeProductOption(${idx})" 
-                            class="p-1 text-zinc-500 hover:text-red-400 rounded transition cursor-pointer" 
-                            title="Supprimer cette option"
+                            onclick="duplicateCurrentMaterial()" 
+                            class="text-xs font-bold text-zinc-400 hover:text-white flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 transition"
                         >
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Dupliquer cette matière</span>
                         </button>
+
+                        ${materialOptions.length > 1 ? `
+                            <button 
+                                type="button" 
+                                onclick="removeCurrentMaterial()" 
+                                class="text-xs font-bold text-red-400 hover:text-red-300 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 transition"
+                            >
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <span>Supprimer cette matière</span>
+                            </button>
+                        ` : ''}
                     </div>
-                </div>
-            `).join('');
+                    `;
+                }
+            }
+
+            // 3. Render Global Summary Recap
+            if (recapContainer) {
+                let grandTotalPieces = 0;
+                let minPrice = Infinity;
+                let maxPrice = -Infinity;
+
+                const rowsHtml = materialOptions.map((opt, idx) => {
+                    const optStock = opt.stock || {};
+                    const totalPieces = currentCategorySizes.reduce((s, sz) => s + (Number(optStock[sz]) || 0), 0);
+                    grandTotalPieces += totalPieces;
+                    const pr = Number(opt.price) || 0;
+                    if (pr < minPrice) minPrice = pr;
+                    if (pr > maxPrice) maxPrice = pr;
+
+                    const profit = pr - (Number(opt.costPrice) || 0);
+                    const stockDetails = currentCategorySizes.map(sz => `${sz}:${optStock[sz] || 0}`).join(' • ');
+
+                    return `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2 rounded-lg ${idx === activeMaterialIdx ? 'bg-sky-950/30 border border-sky-500/30' : 'bg-zinc-950/60 border border-zinc-800/60'}">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-white">${opt.name || 'Matière ' + (idx + 1)}</span>
+                                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
+                                    Vente: ${pr}€ | Achat: ${opt.costPrice || 0}€ (Marge: +${profit}€)
+                                </span>
+                            </div>
+                            <div class="text-[10px] font-mono text-zinc-400 mt-0.5">${stockDetails}</div>
+                        </div>
+                        <div class="font-mono text-xs font-black text-white shrink-0 self-end sm:self-auto">
+                            ${totalPieces} pcs
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+                recapContainer.innerHTML = rowsHtml || `<div class="text-zinc-500 text-xs">Aucune déclinaison.</div>`;
+                if (totalUnitsBadge) {
+                    totalUnitsBadge.innerText = `Total: ${grandTotalPieces} pièces (${materialOptions.length} matières)`;
+                }
+            }
 
             initIcons();
         }
 
-        function addProductOptionFromInputs() {
-            const nameInput = document.getElementById('newOptionName');
-            const priceInput = document.getElementById('newOptionPrice');
-            const name = (nameInput.value || '').trim();
-            const price = parseFloat(priceInput.value);
-
-            if (!name) {
-                alert('Veuillez entrer le nom de l\'option de matière (ex: Plume de canard, Coton...).');
-                nameInput.focus();
-                return;
-            }
-            if (isNaN(price) || price <= 0) {
-                alert('Veuillez renseigner un prix de vente valide pour cette option.');
-                priceInput.focus();
-                return;
-            }
-
-            productOptions.push({ name, price });
-            nameInput.value = '';
-            priceInput.value = '';
-            renderProductOptions();
-            showToast(`Option "${name}" ajoutée (${price} €)`);
+        function selectMaterialTab(idx) {
+            activeMaterialIdx = idx;
+            renderMultiMaterialUI();
         }
 
-        function removeProductOption(idx) {
-            productOptions.splice(idx, 1);
-            renderProductOptions();
+        function addNewMaterialOption(name, price, costPrice, stock) {
+            const defaultStock = {};
+            currentCategorySizes.forEach(s => {
+                defaultStock[s] = (stock && stock[s] !== undefined) ? stock[s] : 3;
+            });
+
+            materialOptions.push({
+                name: name || `Matière ${materialOptions.length + 1}`,
+                price: price !== undefined ? price : 240,
+                costPrice: costPrice !== undefined ? costPrice : 80,
+                stock: defaultStock
+            });
+            activeMaterialIdx = materialOptions.length - 1;
+            renderMultiMaterialUI();
+            showToast('Nouvelle matière ajoutée');
         }
 
-        function applyOptionPreset(preset) {
-            if (preset === 'doudoune_duvet') {
-                document.getElementById('newProdOptionsTitle').value = 'Garnissage & Matière';
-                productOptions = [
-                    { name: 'Plume de canard (Duvet naturel 1:1)', price: 320 },
-                    { name: 'Coton (Rembourrage thermique standard)', price: 210 }
-                ];
-                if (!document.getElementById('newProdPrice').value) {
-                    document.getElementById('newProdPrice').value = '320';
-                    calculateMargin();
+        function duplicateCurrentMaterial() {
+            if (!materialOptions[activeMaterialIdx]) return;
+            const src = materialOptions[activeMaterialIdx];
+            const copy = {
+                name: `${src.name} (Copie)`,
+                price: src.price,
+                costPrice: src.costPrice,
+                stock: { ...src.stock }
+            };
+            materialOptions.push(copy);
+            activeMaterialIdx = materialOptions.length - 1;
+            renderMultiMaterialUI();
+            showToast('Matière dupliquée');
+        }
+
+        function removeCurrentMaterial() {
+            if (materialOptions.length <= 1) {
+                alert('Un article multi-matières doit comporter au moins 1 déclinaison.');
+                return;
+            }
+            materialOptions.splice(activeMaterialIdx, 1);
+            activeMaterialIdx = Math.max(0, activeMaterialIdx - 1);
+            renderMultiMaterialUI();
+            showToast('Matière supprimée');
+        }
+
+        function updateActiveMaterialName(val) {
+            if (!materialOptions[activeMaterialIdx]) return;
+            materialOptions[activeMaterialIdx].name = val;
+            const tabsBar = document.getElementById('materialTabsBar');
+            if (tabsBar) {
+                const btn = tabsBar.children[activeMaterialIdx];
+                if (btn) {
+                    const span = btn.querySelector('span:nth-child(2)');
+                    if (span) span.innerText = val ? val.split('(')[0].trim() : 'Matière';
                 }
+            }
+        }
+
+        function updateActiveMaterialPrice(val) {
+            if (!materialOptions[activeMaterialIdx]) return;
+            materialOptions[activeMaterialIdx].price = parseFloat(val) || 0;
+            renderMultiMaterialUI();
+        }
+
+        function updateActiveMaterialCost(val) {
+            if (!materialOptions[activeMaterialIdx]) return;
+            materialOptions[activeMaterialIdx].costPrice = parseFloat(val) || 0;
+            renderMultiMaterialUI();
+        }
+
+        function updateActiveMaterialStock(sz, delta) {
+            if (!materialOptions[activeMaterialIdx]) return;
+            if (!materialOptions[activeMaterialIdx].stock) materialOptions[activeMaterialIdx].stock = {};
+            const cur = Number(materialOptions[activeMaterialIdx].stock[sz] || 0) + delta;
+            materialOptions[activeMaterialIdx].stock[sz] = Math.max(0, cur);
+            renderMultiMaterialUI();
+        }
+
+        function setActiveMaterialStock(sz, val) {
+            if (!materialOptions[activeMaterialIdx]) return;
+            if (!materialOptions[activeMaterialIdx].stock) materialOptions[activeMaterialIdx].stock = {};
+            materialOptions[activeMaterialIdx].stock[sz] = Math.max(0, parseInt(val, 10) || 0);
+            renderMultiMaterialUI();
+        }
+
+        function applyMaterialPreset(preset) {
+            const titleInput = document.getElementById('newProdOptionsTitle');
+            if (preset === 'canada_goose') {
+                if (titleInput) titleInput.value = 'Garnissage & Matière';
+                materialOptions = [
+                    {
+                        name: 'Plume de canard (Duvet naturel 1:1)',
+                        price: 320,
+                        costPrice: 110,
+                        stock: { "XS": 2, "S": 4, "M": 5, "L": 4, "XL": 2, "XXL": 1, "3XL": 1 }
+                    },
+                    {
+                        name: 'Coton (Rembourrage thermique standard)',
+                        price: 210,
+                        costPrice: 70,
+                        stock: { "XS": 1, "S": 3, "M": 2, "L": 4, "XL": 2, "XXL": 0, "3XL": 0 }
+                    }
+                ];
             } else if (preset === 'fourrure') {
-                document.getElementById('newProdOptionsTitle').value = 'Option Capuche';
-                productOptions = [
-                    { name: 'Fourrure véritable coyote 1:1', price: 340 },
-                    { name: 'Sans fourrure (Capuche épurée)', price: 290 }
+                if (titleInput) titleInput.value = 'Option Capuche';
+                materialOptions = [
+                    {
+                        name: 'Fourrure véritable coyote 1:1',
+                        price: 340,
+                        costPrice: 130,
+                        stock: { "XS": 1, "S": 3, "M": 4, "L": 3, "XL": 2, "XXL": 1, "3XL": 1 }
+                    },
+                    {
+                        name: 'Sans fourrure (Capuche épurée)',
+                        price: 290,
+                        costPrice: 95,
+                        stock: { "XS": 2, "S": 2, "M": 5, "L": 4, "XL": 1, "XXL": 1, "3XL": 0 }
+                    }
                 ];
             } else if (preset === 'cuir') {
-                document.getElementById('newProdOptionsTitle').value = 'Qualité du Cuir';
-                productOptions = [
-                    { name: 'Cuir véritable pleine fleur 1:1', price: 260 },
-                    { name: 'Simili cuir haute résistance', price: 180 }
+                if (titleInput) titleInput.value = 'Qualité du Cuir';
+                materialOptions = [
+                    {
+                        name: 'Cuir véritable pleine fleur 1:1',
+                        price: 260,
+                        costPrice: 90,
+                        stock: { "S": 3, "M": 4, "L": 3, "XL": 2 }
+                    },
+                    {
+                        name: 'Simili cuir haute résistance',
+                        price: 180,
+                        costPrice: 50,
+                        stock: { "S": 2, "M": 5, "L": 4, "XL": 1 }
+                    }
                 ];
             }
-            renderProductOptions();
-            showToast('Options préconfigurées appliquées !');
+            activeMaterialIdx = 0;
+            setProductMode('multi');
+            showToast('Raccourci matières appliqué avec succès !');
         }
 
         // ==========================================
@@ -3460,15 +3892,20 @@
             activeColors = ['Noir'];
             renderColorTags();
 
-            productOptions = [];
-            document.getElementById('newProdOptionsTitle').value = 'Garnissage & Matière';
-            renderProductOptions();
+            materialOptions = [];
+            activeMaterialIdx = 0;
+            const optionsTitleInput = document.getElementById('newProdOptionsTitle');
+            if (optionsTitleInput) optionsTitleInput.value = 'Garnissage & Matière';
 
             finalCroppedDataUrl = '';
             document.getElementById('photoPreviewContainer').classList.add('hidden');
             document.getElementById('newProdImageUrl').value = '';
             
+            document.getElementById('newProdPrice').value = '120';
+            document.getElementById('newProdCost').value = '40';
+
             switchSizesByCategory('vestes');
+            setProductMode('standard');
             calculateMargin();
 
             document.getElementById('newProductBackdrop').classList.remove('hidden');
@@ -3498,9 +3935,32 @@
             activeColors = Array.isArray(p.colors) && p.colors.length > 0 ? [...p.colors] : (p.color ? [p.color] : ['Noir']);
             renderColorTags();
 
-            productOptions = Array.isArray(p.options) ? JSON.parse(JSON.stringify(p.options)) : [];
-            document.getElementById('newProdOptionsTitle').value = p.optionsTitle || 'Garnissage & Matière';
-            renderProductOptions();
+            switchSizesByCategory(p.category);
+
+            // Charger les options si elles existent
+            const hasOptions = Array.isArray(p.options) && p.options.length > 0;
+            if (hasOptions) {
+                materialOptions = JSON.parse(JSON.stringify(p.options)).map(opt => ({
+                    name: opt.name || 'Matière',
+                    price: Number(opt.price !== undefined ? opt.price : p.price),
+                    costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : (p.costPrice || Math.round((opt.price || p.price) * 0.35))),
+                    stock: (opt.stock && typeof opt.stock === 'object') ? opt.stock : { ...(p.stock || {}) }
+                }));
+                activeMaterialIdx = 0;
+                const titleInput = document.getElementById('newProdOptionsTitle');
+                if (titleInput) titleInput.value = p.optionsTitle || 'Garnissage & Matière';
+                setProductMode('multi');
+            } else {
+                materialOptions = [];
+                activeMaterialIdx = 0;
+                setProductMode('standard');
+
+                const stockObj = p.stock || {};
+                (p.sizes || []).forEach(sz => {
+                    const input = document.getElementById(`stockSize_${sz}`);
+                    if (input) input.value = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                });
+            }
 
             if (p.image) {
                 finalCroppedDataUrl = p.image;
@@ -3508,13 +3968,6 @@
                 document.getElementById('photoPreviewImg').src = p.image;
                 document.getElementById('photoPreviewContainer').classList.remove('hidden');
             }
-
-            switchSizesByCategory(p.category);
-            const stockObj = p.stock || {};
-            (p.sizes || []).forEach(sz => {
-                const input = document.getElementById(`stockSize_${sz}`);
-                if (input) input.value = stockObj[sz] !== undefined ? stockObj[sz] : 0;
-            });
 
             calculateMargin();
 
@@ -3533,9 +3986,6 @@
         }
 
         function switchSizesByCategory(cat) {
-            const grid = document.getElementById('sizesStockGrid');
-            if (!grid) return;
-
             let sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
             if (cat === 'vestes') {
                 sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
@@ -3544,19 +3994,34 @@
             } else if (cat === 'accessoires') {
                 sizes = ['Unique'];
             }
+            currentCategorySizes = sizes;
 
-            grid.innerHTML = sizes.map(sz => `
-                <div class="bg-zinc-950 p-2 rounded-xl border border-zinc-800 text-center space-y-1">
-                    <span class="block text-[11px] font-black uppercase text-zinc-300">${sz}</span>
-                    <input 
-                        type="number" 
-                        id="stockSize_${sz}" 
-                        value="3" 
-                        min="0"
-                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg text-center py-1 text-xs text-white font-bold focus:outline-none"
-                    >
-                </div>
-            `).join('');
+            const grid = document.getElementById('sizesStockGrid');
+            if (grid) {
+                grid.innerHTML = sizes.map(sz => `
+                    <div class="bg-zinc-950 p-2 rounded-xl border border-zinc-800 text-center space-y-1">
+                        <span class="block text-[11px] font-black uppercase text-zinc-300">${sz}</span>
+                        <input 
+                            type="number" 
+                            id="stockSize_${sz}" 
+                            value="3" 
+                            min="0"
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-lg text-center py-1 text-xs text-white font-bold focus:outline-none"
+                        >
+                    </div>
+                `).join('');
+            }
+
+            // Sync multi-material options stock structure if needed
+            if (currentProductMode === 'multi' && materialOptions.length > 0) {
+                materialOptions.forEach(opt => {
+                    if (!opt.stock) opt.stock = {};
+                    currentCategorySizes.forEach(sz => {
+                        if (opt.stock[sz] === undefined) opt.stock[sz] = 3;
+                    });
+                });
+                renderMultiMaterialUI();
+            }
         }
 
         function calculateMargin() {
@@ -3566,12 +4031,14 @@
             const pct = price > 0 ? Math.round((profit / price) * 100) : 0;
 
             const display = document.getElementById('newProdMarginDisplay');
-            if (profit >= 0) {
-                display.innerText = `+${profit} € (${pct}% marge)`;
-                display.className = 'text-xs font-black text-emerald-400 py-1.5';
-            } else {
-                display.innerText = `${profit} € (Vente à perte)`;
-                display.className = 'text-xs font-black text-red-400 py-1.5';
+            if (display) {
+                if (profit >= 0) {
+                    display.innerText = `+${profit} € (${pct}% marge)`;
+                    display.className = 'text-xs font-black text-emerald-400 py-1.5';
+                } else {
+                    display.innerText = `${profit} € (Vente à perte)`;
+                    display.className = 'text-xs font-black text-red-400 py-1.5';
+                }
             }
         }
 
@@ -3581,9 +4048,7 @@
             const name = document.getElementById('newProdName').value;
             const brand = document.getElementById('newProdBrand').value || document.getElementById('brandSelect').value;
             const category = document.getElementById('newProdCategory').value;
-            const conditionGrade = '1:1 Miroir'; // Toujours 1:1 Miroir
-            const price = parseFloat(document.getElementById('newProdPrice').value);
-            const costPrice = parseFloat(document.getElementById('newProdCost').value) || Math.round(price * 0.35);
+            const conditionGrade = '1:1 Miroir';
             const description = document.getElementById('newProdDescription').value;
             const image = finalCroppedDataUrl || document.getElementById('newProdImageUrl').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
 
@@ -3592,15 +4057,62 @@
                 return;
             }
 
-            const stock = {};
-            const sizes = [];
-            document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
-                const sz = inp.id.replace('stockSize_', '');
-                sizes.push(sz);
-                stock[sz] = parseInt(inp.value, 10) || 0;
-            });
+            let price = 0;
+            let costPrice = 0;
+            let stock = {};
+            let options = [];
+            let optionsTitle = 'Garnissage & Matière';
 
-            const optionsTitle = document.getElementById('newProdOptionsTitle')?.value || 'Garnissage & Matière';
+            if (currentProductMode === 'multi') {
+                if (materialOptions.length === 0) {
+                    alert('Veuillez ajouter au moins une option de matière ou basculer en Article Standard.');
+                    return;
+                }
+
+                // Vérifier que chaque matière a un nom et un prix
+                for (let i = 0; i < materialOptions.length; i++) {
+                    const opt = materialOptions[i];
+                    if (!opt.name || !opt.name.trim()) {
+                        alert(`Veuillez renseigner le nom de la matière #${i + 1}.`);
+                        selectMaterialTab(i);
+                        return;
+                    }
+                    if (isNaN(opt.price) || opt.price <= 0) {
+                        alert(`Le prix de la matière "${opt.name}" doit être supérieur à 0 €.`);
+                        selectMaterialTab(i);
+                        return;
+                    }
+                }
+
+                options = materialOptions.map(opt => ({
+                    name: opt.name.trim(),
+                    price: Number(opt.price),
+                    costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : Math.round(Number(opt.price) * 0.35)),
+                    stock: { ...opt.stock }
+                }));
+
+                price = options[0].price;
+                costPrice = options[0].costPrice;
+                optionsTitle = (document.getElementById('newProdOptionsTitle')?.value || 'Garnissage & Matière').trim();
+
+                // Calculer le stock global agrégé du produit
+                currentCategorySizes.forEach(sz => {
+                    stock[sz] = options.reduce((sum, o) => sum + (Number(o.stock[sz]) || 0), 0);
+                });
+            } else {
+                price = parseFloat(document.getElementById('newProdPrice').value);
+                costPrice = parseFloat(document.getElementById('newProdCost').value) || Math.round(price * 0.35);
+
+                if (isNaN(price) || price <= 0) {
+                    alert('Veuillez renseigner un prix de vente valide.');
+                    return;
+                }
+
+                document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
+                    const sz = inp.id.replace('stockSize_', '');
+                    stock[sz] = parseInt(inp.value, 10) || 0;
+                });
+            }
 
             const productData = {
                 name,
@@ -3612,9 +4124,9 @@
                 costPrice,
                 color: activeColors[0] || 'Standard',
                 colors: activeColors.length > 0 ? activeColors : ['Standard'],
-                sizes,
+                sizes: currentCategorySizes,
                 stock,
-                options: productOptions,
+                options,
                 optionsTitle,
                 image,
                 description,
@@ -3634,7 +4146,7 @@
                         },
                         body: JSON.stringify(productData)
                     });
-                    showToast('Article modifié avec succès');
+                    showToast('Article et déclinaisons modifiés avec succès');
                 } else {
                     await fetch('/api/products', {
                         method: 'POST',
@@ -3644,13 +4156,14 @@
                         },
                         body: JSON.stringify(productData)
                     });
-                    showToast('Nouvel article publié en direct');
+                    showToast('Nouvel article publié avec succès');
                 }
 
                 closeNewProductModal();
-                loadProducts();
+                await loadProducts();
+                calculateKPIs();
             } catch (err) {
-                alert('Erreur lors de l\'enregistrement de l\'article.');
+                alert('Erreur lors de la sauvegarde : ' + err.message);
             }
         }
 
