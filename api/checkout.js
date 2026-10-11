@@ -77,6 +77,7 @@ module.exports = async (req, res) => {
             brand: sanitizeString(it.brand || 'ELS', 50),
             color: sanitizeString(it.color || 'Standard', 40),
             size: sanitizeString(it.size || 'M', 20),
+            option: it.option ? sanitizeString(it.option, 80) : undefined,
             price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
             quantity: parseInt(it.quantity, 10) || 1
           })),
@@ -135,7 +136,7 @@ module.exports = async (req, res) => {
           currency: 'eur',
           product_data: {
             name: `${item.brand || 'ELS'} - ${item.name}`,
-            description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
+            description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''}${item.option ? ` | Option : ${item.option}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
             images: item.image ? [item.image] : []
           },
           unit_amount: Math.round(unitPrice * 100)
