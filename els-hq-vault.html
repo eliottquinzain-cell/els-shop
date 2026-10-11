@@ -940,6 +940,91 @@
                 </div>
             </div>
 
+            <!-- OPTIONS & MATIÈRES AVEC PRIX PERSONNALISÉS (ex: Plume de canard vs Coton) -->
+            <div class="space-y-3 p-3.5 bg-zinc-950 rounded-xl border border-zinc-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
+                            <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i>
+                            Options & Matières (Prix spécifiques au choix)
+                        </label>
+                        <p class="text-[10px] text-zinc-500 mt-0.5">
+                            Ex: Doudoune en plume de canard (320 €) ou en coton (210 €), avec ou sans fourrure, etc.
+                        </p>
+                    </div>
+                    <span id="optionsCountBadge" class="text-[10px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/30 px-2 py-0.5 rounded font-bold">
+                        0 option
+                    </span>
+                </div>
+
+                <!-- Input for Option Group Title -->
+                <div class="flex items-center gap-2">
+                    <label class="text-[10px] text-zinc-400 font-bold uppercase shrink-0">Titre affiché :</label>
+                    <input 
+                        type="text" 
+                        id="newProdOptionsTitle" 
+                        placeholder="Ex: Garnissage & Matière, Finition, Capuche..." 
+                        value="Garnissage & Matière"
+                        class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-sky-400"
+                    >
+                </div>
+
+                <!-- Active Options List Container -->
+                <div id="productOptionsContainer" class="space-y-1.5 min-h-[36px] p-2 bg-black/80 border border-zinc-800 rounded-lg"></div>
+
+                <!-- Add New Option Inputs -->
+                <div class="p-2.5 bg-zinc-900/60 border border-zinc-800 rounded-xl space-y-2">
+                    <div class="text-[10px] font-bold text-zinc-400 uppercase">Ajouter une option de matière / garnissage :</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                        <div class="sm:col-span-6">
+                            <input 
+                                type="text" 
+                                id="newOptionName" 
+                                placeholder="Nom (ex: Plume de canard / Duvet 1:1, Coton)..." 
+                                onkeydown="if(event.key==='Enter'){event.preventDefault();addProductOptionFromInputs();}"
+                                class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
+                            >
+                        </div>
+                        <div class="sm:col-span-3">
+                            <div class="relative flex items-center">
+                                <input 
+                                    type="number" 
+                                    id="newOptionPrice" 
+                                    placeholder="Prix vente (€)" 
+                                    onkeydown="if(event.key==='Enter'){event.preventDefault();addProductOptionFromInputs();}"
+                                    class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400 pr-6"
+                                >
+                                <span class="absolute right-2 text-xs text-zinc-500 font-bold pointer-events-none">€</span>
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <button 
+                                type="button" 
+                                onclick="addProductOptionFromInputs()" 
+                                class="w-full py-1.5 px-3 bg-sky-400 hover:bg-sky-300 text-black font-black text-xs rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>Ajouter</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick 1-click Presets -->
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-zinc-800 text-[11px]">
+                        <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis matières :</span>
+                        <button type="button" onclick="applyOptionPreset('doudoune_duvet')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
+                            🧥 Plume de canard (320€) / Coton (210€)
+                        </button>
+                        <button type="button" onclick="applyOptionPreset('fourrure')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
+                            🦊 Fourrure coyote (340€) / Sans fourrure (290€)
+                        </button>
+                        <button type="button" onclick="applyOptionPreset('cuir')" class="px-2 py-0.5 rounded bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] cursor-pointer">
+                            👜 Cuir véritable 1:1 (260€) / Simili standard (180€)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Photo Import with Camera / Gallery -->
             <div class="space-y-2">
                 <label class="block text-[11px] font-bold text-zinc-400 uppercase">
@@ -2193,6 +2278,12 @@
                                     <span class="font-black text-base text-white">${p.price} €</span>
                                     <span class="text-[11px] text-emerald-400 font-bold">+${unitProfit} € net (${marginPct}%)</span>
                                 </div>
+                                ${Array.isArray(p.options) && p.options.length > 0 ? `
+                                    <div class="mt-1 text-[10px] text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded font-mono flex items-center gap-1">
+                                        <i data-lucide="layers" class="w-3 h-3"></i>
+                                        <span>${p.options.length} options : ${p.options.map(o => o.name.split(' ')[0] + ' (' + o.price + '€)').join(' / ')}</span>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
 
@@ -2263,6 +2354,11 @@
                                         ${pColors.map(c => `
                                             <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
                                         `).join('')}
+                                        ${Array.isArray(p.options) && p.options.length > 0 ? `
+                                            <span class="text-[9px] bg-sky-500/10 text-sky-400 border border-sky-500/30 px-1.5 py-0.2 rounded font-mono font-bold" title="${p.options.map(o => o.name + ': ' + o.price + '€').join('\n')}">
+                                                ${p.options.length} options (${p.options.map(o => o.price + '€').join('/')})
+                                            </span>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -2599,6 +2695,7 @@
                                     <span class="font-bold text-zinc-300">${it.brand} ${it.name}</span>
                                     <span class="font-mono text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded font-bold">${it.size}</span>
                                     ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
+                                    ${it.option ? `<span class="text-[10px] text-sky-400 font-mono font-bold bg-sky-500/10 border border-sky-500/30 px-1.5 py-0.2 rounded">[${it.option}]</span>` : ''}
                                 </div>
                                 <span class="font-mono font-bold text-zinc-300">${it.price * (it.quantity || 1)} €</span>
                             </div>
@@ -3245,6 +3342,114 @@
         }
 
         // ==========================================
+        // OPTIONS & MATIÈRES DU PRODUIT (PRIX VARIANTES)
+        // ==========================================
+        let productOptions = [];
+
+        function renderProductOptions() {
+            const container = document.getElementById('productOptionsContainer');
+            const badge = document.getElementById('optionsCountBadge');
+            if (!container) return;
+
+            if (badge) {
+                badge.innerText = `${productOptions.length} option${productOptions.length > 1 ? 's' : ''}`;
+                badge.className = productOptions.length > 0 
+                    ? 'text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold'
+                    : 'text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded font-bold';
+            }
+
+            if (productOptions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-[11px] text-zinc-500 italic py-1 px-2">
+                        Aucune option spécifique de matière configurée. L'article utilisera le prix unique ci-dessus.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = productOptions.map((opt, idx) => `
+                <div class="flex items-center justify-between gap-2 p-2 bg-zinc-900/90 border border-zinc-800 rounded-lg">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 font-bold text-[10px] flex items-center justify-center shrink-0">${idx + 1}</span>
+                        <span class="text-xs font-bold text-white truncate">${opt.name}</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="px-2.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-black text-xs">
+                            ${opt.price} €
+                        </span>
+                        <button 
+                            type="button" 
+                            onclick="removeProductOption(${idx})" 
+                            class="p-1 text-zinc-500 hover:text-red-400 rounded transition cursor-pointer" 
+                            title="Supprimer cette option"
+                        >
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            initIcons();
+        }
+
+        function addProductOptionFromInputs() {
+            const nameInput = document.getElementById('newOptionName');
+            const priceInput = document.getElementById('newOptionPrice');
+            const name = (nameInput.value || '').trim();
+            const price = parseFloat(priceInput.value);
+
+            if (!name) {
+                alert('Veuillez entrer le nom de l\'option de matière (ex: Plume de canard, Coton...).');
+                nameInput.focus();
+                return;
+            }
+            if (isNaN(price) || price <= 0) {
+                alert('Veuillez renseigner un prix de vente valide pour cette option.');
+                priceInput.focus();
+                return;
+            }
+
+            productOptions.push({ name, price });
+            nameInput.value = '';
+            priceInput.value = '';
+            renderProductOptions();
+            showToast(`Option "${name}" ajoutée (${price} €)`);
+        }
+
+        function removeProductOption(idx) {
+            productOptions.splice(idx, 1);
+            renderProductOptions();
+        }
+
+        function applyOptionPreset(preset) {
+            if (preset === 'doudoune_duvet') {
+                document.getElementById('newProdOptionsTitle').value = 'Garnissage & Matière';
+                productOptions = [
+                    { name: 'Plume de canard (Duvet naturel 1:1)', price: 320 },
+                    { name: 'Coton (Rembourrage thermique standard)', price: 210 }
+                ];
+                if (!document.getElementById('newProdPrice').value) {
+                    document.getElementById('newProdPrice').value = '320';
+                    calculateMargin();
+                }
+            } else if (preset === 'fourrure') {
+                document.getElementById('newProdOptionsTitle').value = 'Option Capuche';
+                productOptions = [
+                    { name: 'Fourrure véritable coyote 1:1', price: 340 },
+                    { name: 'Sans fourrure (Capuche épurée)', price: 290 }
+                ];
+            } else if (preset === 'cuir') {
+                document.getElementById('newProdOptionsTitle').value = 'Qualité du Cuir';
+                productOptions = [
+                    { name: 'Cuir véritable pleine fleur 1:1', price: 260 },
+                    { name: 'Simili cuir haute résistance', price: 180 }
+                ];
+            }
+            renderProductOptions();
+            showToast('Options préconfigurées appliquées !');
+        }
+
+        // ==========================================
         // PRODUITS: CREATION & ÉDITION
         // ==========================================
         function openNewProductModal() {
@@ -3254,6 +3459,11 @@
             document.getElementById('saveBtnText').innerText = 'Enregistrer & Publier';
             activeColors = ['Noir'];
             renderColorTags();
+
+            productOptions = [];
+            document.getElementById('newProdOptionsTitle').value = 'Garnissage & Matière';
+            renderProductOptions();
+
             finalCroppedDataUrl = '';
             document.getElementById('photoPreviewContainer').classList.add('hidden');
             document.getElementById('newProdImageUrl').value = '';
@@ -3287,6 +3497,10 @@
 
             activeColors = Array.isArray(p.colors) && p.colors.length > 0 ? [...p.colors] : (p.color ? [p.color] : ['Noir']);
             renderColorTags();
+
+            productOptions = Array.isArray(p.options) ? JSON.parse(JSON.stringify(p.options)) : [];
+            document.getElementById('newProdOptionsTitle').value = p.optionsTitle || 'Garnissage & Matière';
+            renderProductOptions();
 
             if (p.image) {
                 finalCroppedDataUrl = p.image;
@@ -3386,6 +3600,8 @@
                 stock[sz] = parseInt(inp.value, 10) || 0;
             });
 
+            const optionsTitle = document.getElementById('newProdOptionsTitle')?.value || 'Garnissage & Matière';
+
             const productData = {
                 name,
                 brand,
@@ -3398,6 +3614,8 @@
                 colors: activeColors.length > 0 ? activeColors : ['Standard'],
                 sizes,
                 stock,
+                options: productOptions,
+                optionsTitle,
                 image,
                 description,
                 badge: '1:1 BEST-SELLER'
