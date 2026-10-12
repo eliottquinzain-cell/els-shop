@@ -25,7 +25,7 @@
     "stock": {
       "XS": 0,
       "S": 0,
-      "M": 0,
+      "M": 1,
       "L": 0,
       "XL": 0,
       "XXL": 0
@@ -36,8 +36,8 @@
     "description": "Qualité 1:1 haute fidélité. Coton lourd 450 GSM avec broderie relief Alcatraz identique. Étiquettes intérieures, wash tags et sachet zippé officiel fournis.",
     "createdAt": "2026-10-09T22:31:02.005Z",
     "createdBy": "Ilies",
-    "updatedAt": "2026-10-11T12:07:45.358Z",
-    "updatedBy": "Eliott"
+    "updatedAt": "2026-10-12T19:13:37.056Z",
+    "updatedBy": "Ilies"
   },
   {
     "id": "els-001",
