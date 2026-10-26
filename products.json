@@ -46,8 +46,8 @@
     "name": "Wyndham Parka Black Label",
     "brand": "Canada Goose",
     "category": "vestes",
-    "price": 320,
-    "costPrice": 110,
+    "price": 130,
+    "costPrice": 85,
     "condition": "Neuf (1:1)",
     "conditionGrade": "1:1 Miroir",
     "color": "Noir Mat",
@@ -62,52 +62,56 @@
       "M",
       "L",
       "XL",
-      "XXL"
+      "XXL",
+      "3XL"
     ],
     "stock": {
       "XS": 0,
-      "S": 0,
-      "M": 0,
-      "L": 0,
-      "XL": 0,
-      "XXL": 0
+      "S": 2,
+      "M": 2,
+      "L": 2,
+      "XL": 2,
+      "XXL": 2,
+      "3XL": 0
     },
-    "badge": "NOUVEAU 1:1",
+    "badge": "1:1 BEST-SELLER",
     "featured": false,
     "optionsTitle": "Garnissage & Matière",
     "options": [
       {
         "name": "Plume de canard (Duvet naturel 1:1)",
-        "price": 320,
-        "costPrice": 110,
+        "price": 130,
+        "costPrice": 85,
         "stock": {
           "XS": 0,
-          "S": 0,
-          "M": 0,
-          "L": 0,
-          "XL": 0,
-          "XXL": 0
+          "S": 1,
+          "M": 1,
+          "L": 1,
+          "XL": 1,
+          "XXL": 1,
+          "3XL": 0
         }
       },
       {
         "name": "Coton (Rembourrage thermique standard)",
-        "price": 210,
-        "costPrice": 70,
+        "price": 100,
+        "costPrice": 65,
         "stock": {
           "XS": 0,
-          "S": 0,
-          "M": 0,
-          "L": 0,
-          "XL": 0,
-          "XXL": 0
+          "S": 1,
+          "M": 1,
+          "L": 1,
+          "XL": 1,
+          "XXL": 1,
+          "3XL": 0
         }
       }
     ],
-    "image": "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
-    "description": "Version 1:1 Miroir de la parka Wyndham. Tissu Arctic Tech® déperlant et coupe-vent, garnissage au choix (Plume de canard haute isolation thermique ou Coton thermique standard). Écusson Black Label brodé au millimètre sur le bras gauche, zips métalliques YKK® étanches double sens, fourrure de capuche amovible et hologramme d'authenticité intérieur 1:1.",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfFEduKYnFffzUkEX64DL8nNyqJJw16rVO4-ibxNmnmg&s=10",
+    "description": "Canada Goose puffer, qualité 1.1 parfaite",
     "createdAt": "2026-10-09T22:29:58.449Z",
     "createdBy": "Eliott",
-    "updatedAt": "2026-10-11T12:07:19.786Z",
-    "updatedBy": "Eliott"
+    "updatedAt": "2026-10-26T18:22:50.065Z",
+    "updatedBy": "Ilies"
   }
 ]
