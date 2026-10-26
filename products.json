@@ -1,18 +1,16 @@
 [
   {
     "id": "els-002",
-    "name": "Alcatraz Pullover Hoodie",
-    "brand": "Corteiz",
-    "category": "sweats",
-    "price": 110,
-    "costPrice": 38,
+    "name": "Veste Brasil Verte ",
+    "brand": "Nike",
+    "category": "vestes",
+    "price": 50,
+    "costPrice": 30,
     "condition": "Neuf (1:1)",
     "conditionGrade": "1:1 Miroir",
-    "color": "Triple Black",
+    "color": "Vert",
     "colors": [
-      "Triple Black",
-      "Gris Chiné",
-      "Baby Blue"
+      "Vert"
     ],
     "sizes": [
       "XS",
@@ -20,24 +18,28 @@
       "M",
       "L",
       "XL",
-      "XXL"
+      "XXL",
+      "3XL"
     ],
     "stock": {
-      "XS": 0,
-      "S": 0,
-      "M": 1,
-      "L": 0,
-      "XL": 0,
-      "XXL": 0
+      "XS": 3,
+      "S": 3,
+      "M": 3,
+      "L": 3,
+      "XL": 3,
+      "XXL": 3,
+      "3XL": 3
     },
-    "badge": "NOUVEAU 1:1",
+    "badge": "1:1 BEST-SELLER",
     "featured": false,
-    "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
-    "description": "Qualité 1:1 haute fidélité. Coton lourd 450 GSM avec broderie relief Alcatraz identique. Étiquettes intérieures, wash tags et sachet zippé officiel fournis.",
+    "image": "=crop&w=800&q=80",
+    "description": "Veste Brasil verte, qualite 1.1 parfaite ",
     "createdAt": "2026-10-09T22:31:02.005Z",
     "createdBy": "Ilies",
-    "updatedAt": "2026-10-12T19:13:37.056Z",
-    "updatedBy": "Ilies"
+    "updatedAt": "2026-10-26T17:48:23.645Z",
+    "updatedBy": "Ilies",
+    "options": [],
+    "optionsTitle": "Garnissage & Matière"
   },
   {
     "id": "els-001",
