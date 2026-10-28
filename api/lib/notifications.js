@@ -1,11 +1,13 @@
 /**
- * ELS.SHOP - Module de Notifications Automatiques
- * 1. Ticket de commande automatique sur Groupe WhatsApp (Nom + Téléphone + Adresse de livraison + Articles + Preuve PayPal)
+ * ELS.SHOP - Module de Notifications Automatiques 24h/24
+ * 1. Ticket de commande automatique sur Groupe WhatsApp (SANS PRIX : Infos Client + Adresse + Téléphone + Article exact + Photo du produit)
  * 2. Envoi automatique du Numéro de Suivi par message (WhatsApp / SMS) au numéro de téléphone du client dès saisie dans l'Admin
  * 3. Emails transactionnels de confirmation et d'expédition
  */
 
-const { getCarrierTrackingUrl, calculateEstimatedDelivery } = require('./security');
+const { getCarrierTrackingUrl } = require('./security');
+
+const SITE_ORIGIN = 'https://els-shop.vercel.app';
 
 /**
  * Normalise un numéro de téléphone (06/07, +33, +32, +41...) au format international sans '+'
@@ -22,56 +24,67 @@ function normalizePhoneInternational(rawPhone = '') {
 }
 
 /**
- * Génère le Ticket de Commande complet pour le Groupe WhatsApp Admin
- * Contient obligatoirement : Nom + Numéro de téléphone + Adresse de livraison + Articles + Paiement vérifié
+ * Retourne l'URL publique de la photo d'un article commandé
  */
-function formatWhatsAppGroupTicket(order) {
+function getItemPublicPhotoUrl(item = {}, origin = SITE_ORIGIN) {
+  if (item.id) {
+    return `${origin}/api/products?productImg=${encodeURIComponent(item.id)}`;
+  }
+  if (item.image && /^https?:\/\//i.test(item.image)) {
+    return item.image;
+  }
+  return `${origin}/api/products?productImg=els-001`;
+}
+
+/**
+ * Génère le Ticket de Commande pour le Groupe WhatsApp Admin
+ * IMPORTANT : AUCUN PRIX AFFICHÉ (Uniquement Infos Client + Adresse + Téléphone + Article exact + Photo du produit)
+ */
+function formatWhatsAppGroupTicket(order, origin = SITE_ORIGIN) {
   const dateFormatted = new Date(order.createdAt || Date.now()).toLocaleDateString('fr-FR', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
-  const itemsLines = (order.items || []).map(it => {
-    const optStr = it.option ? ` [${it.option}]` : '';
-    const colStr = it.color ? ` - ${it.color}` : '';
-    return `• *${it.quantity || 1}x* ${it.brand || 'ELS'} ${it.name} (Taille: *${it.size || 'Unique'}*${colStr}${optStr}) — ${(parseFloat(it.price || 0) * (it.quantity || 1)).toFixed(2)} €`;
-  }).join('\n');
-
-  const paymentBadge = order.paymentVerified
-    ? `✅ *VÉRIFIÉ AUTOMATIQUEMENT* (${order.paymentMethod || 'PayPal Amis & Proches'})`
-    : `⏳ ${order.paymentMethod || 'PayPal Amis & Proches'}`;
-
-  const txLine = order.paypalTransactionId
-    ? `🔑 *Réf Transaction PayPal :* ${order.paypalTransactionId}${order.paypalSenderEmail ? ` (${order.paypalSenderEmail})` : ''}\n`
-    : '';
+  const itemsBlocks = (order.items || []).map((it, idx) => {
+    const photoUrl = getItemPublicPhotoUrl(it, origin);
+    const lines = [
+      `📦 *ARTICLE ${(order.items || []).length > 1 ? `#${idx + 1}` : 'COMMANDÉ'} :*`,
+      `• *Quantité :* ${it.quantity || 1}x`,
+      `• *Marque :* ${it.brand || 'ELS'}`,
+      `• *Modèle exact :* ${it.name || 'Article'}`,
+      `• *Taille :* *${it.size || 'Unique'}*`,
+      `• *Coloris :* ${it.color || 'Standard'}`
+    ];
+    if (it.option) {
+      lines.push(`• *Option / Finition :* ${it.option}`);
+    }
+    lines.push(`🖼️ *Photo du produit :* ${photoUrl}`);
+    return lines.join('\n');
+  }).join('\n\n');
 
   return (
     `🎫 *NOUVEAU TICKET COMMANDE — ELS.SHOP*\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━\n` +
     `🆔 *N° Commande :* ${order.id}\n` +
-    `📅 *Date :* ${dateFormatted}\n` +
-    `💳 *Paiement :* ${paymentBadge}\n` +
-    txLine +
-    `💰 *Total Réglé :* *${parseFloat(order.total || 0).toFixed(2)} €* (dont ${parseFloat(order.shippingCost !== undefined ? order.shippingCost : 4.90).toFixed(2)} € livraison)\n\n` +
-    `👤 *COORDONNÉES & ADRESSE DE LIVRAISON :*\n` +
-    `• *Nom complet :* ${order.customerName || 'Non renseigné'}\n` +
+    `📅 *Date :* ${dateFormatted}\n\n` +
+    `👤 *INFORMATIONS CLIENT & LIVRAISON :*\n` +
+    `• *Nom & Prénom :* ${order.customerName || 'Non renseigné'}\n` +
     `• *Téléphone :* ${order.customerPhone || 'Non renseigné'}\n` +
     `• *Adresse de livraison :* ${order.customerAddress || 'Non renseignée'}\n` +
-    (order.customerEmail ? `• *Email :* ${order.customerEmail}\n` : '') +
-    `\n📦 *ARTICLES À PRÉPARER :*\n` +
-    `${itemsLines || '• Aucun détail'}\n` +
-    `━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-    `📲 *Action Admin :* Dès l'expédition, entrez le numéro de suivi sur la commande dans l'espace Admin pour l'envoyer automatiquement au ${order.customerPhone || 'client'}.`
+    (order.customerEmail ? `• *E-mail :* ${order.customerEmail}\n` : '') +
+    `\n${itemsBlocks || '📦 Aucun détail article'}\n` +
+    `━━━━━━━━━━━━━━━━━━━━━━━━`
   );
 }
 
 /**
- * Envoie automatiquement le Ticket de Commande sur le Groupe WhatsApp configuré
- * Compatible :
- *  - Green-API (Gratuit, envoi direct dans un groupe WhatsApp @g.us)
- *  - Webhook personnalisé (Make, Discord, Telegram, UltraMsg, Whapi)
+ * Envoie automatiquement 24h/24 le Ticket de Commande (AVEC PHOTO DU PRODUIT & SANS PRIX) sur le Groupe WhatsApp configuré
  */
-async function sendWhatsAppGroupOrderTicket(order, settings = {}) {
-  const ticketText = formatWhatsAppGroupTicket(order);
+async function sendWhatsAppGroupOrderTicket(order, settings = {}, origin = SITE_ORIGIN) {
+  const ticketText = formatWhatsAppGroupTicket(order, origin);
+  const firstItem = (order.items && order.items[0]) ? order.items[0] : {};
+  const primaryPhotoUrl = getItemPublicPhotoUrl(firstItem, origin);
+
   const results = [];
   let sentAutomatic = false;
 
@@ -80,27 +93,48 @@ async function sendWhatsAppGroupOrderTicket(order, settings = {}) {
   const apiHost = (settings.greenApiHost || process.env.GREEN_API_HOST || 'https://api.green-api.com').trim().replace(/\/$/, '');
   let groupId = (settings.whatsappGroupId || process.env.WHATSAPP_GROUP_ID || '').trim();
 
-  // 1. Envoi via Green-API sur le Groupe WhatsApp (@g.us)
+  // 1. Envoi via Green-API sur le Groupe WhatsApp (@g.us) avec la PHOTO du produit + le Ticket en légende
   if (instanceId && apiToken && groupId) {
     if (!groupId.includes('@')) {
       groupId = `${groupId}@g.us`;
     }
     try {
-      const url = `${apiHost}/waInstance${instanceId}/sendMessage/${apiToken}`;
-      const resp = await fetch(url, {
+      // Tentative 1 : Envoi direct de la photo du produit avec le ticket en légende (sendFileByUrl)
+      const fileUrl = `${apiHost}/waInstance${instanceId}/sendFileByUrl/${apiToken}`;
+      const fileResp = await fetch(fileUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chatId: groupId,
-          message: ticketText
+          urlFile: primaryPhotoUrl,
+          fileName: `${order.id || 'article'}.jpg`,
+          caption: ticketText
         })
       });
-      const data = await resp.json().catch(() => ({}));
-      if (resp.ok && data.idMessage) {
+      const fileData = await fileResp.json().catch(() => ({}));
+
+      if (fileResp.ok && fileData.idMessage) {
         sentAutomatic = true;
-        results.push({ provider: 'green-api-group', success: true, idMessage: data.idMessage, groupId });
+        results.push({ provider: 'green-api-group-photo', success: true, idMessage: fileData.idMessage, groupId, photoUrl: primaryPhotoUrl });
       } else {
-        results.push({ provider: 'green-api-group', success: false, status: resp.status, error: data });
+        // Fallback : Envoi du message texte contenant le lien d'aperçu photo WhatsApp
+        const msgUrl = `${apiHost}/waInstance${instanceId}/sendMessage/${apiToken}`;
+        const msgResp = await fetch(msgUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chatId: groupId,
+            message: ticketText,
+            linkPreview: true
+          })
+        });
+        const msgData = await msgResp.json().catch(() => ({}));
+        if (msgResp.ok && msgData.idMessage) {
+          sentAutomatic = true;
+          results.push({ provider: 'green-api-group-text', success: true, idMessage: msgData.idMessage, groupId });
+        } else {
+          results.push({ provider: 'green-api-group', success: false, status: msgResp.status, error: msgData });
+        }
       }
     } catch (err) {
       console.error('Erreur Green-API Group Ticket:', err);
@@ -108,7 +142,7 @@ async function sendWhatsAppGroupOrderTicket(order, settings = {}) {
     }
   }
 
-  // 2. Envoi via Webhook personnalisé si configuré
+  // 2. Envoi via Webhook personnalisé si configuré (Make, Discord, Telegram, Whapi, UltraMsg)
   const webhookUrl = (settings.customWebhookUrl || process.env.ORDER_WEBHOOK_URL || '').trim();
   if (webhookUrl) {
     try {
@@ -119,16 +153,29 @@ async function sendWhatsAppGroupOrderTicket(order, settings = {}) {
           event: 'new_order_ticket',
           content: ticketText,
           text: ticketText,
+          photoUrl: primaryPhotoUrl,
+          embeds: [{
+            title: `🎫 Ticket Commande ${order.id}`,
+            description: ticketText,
+            image: { url: primaryPhotoUrl }
+          }],
           order: {
             id: order.id,
             customerName: order.customerName,
             customerPhone: order.customerPhone,
             customerAddress: order.customerAddress,
             customerEmail: order.customerEmail,
-            total: order.total,
-            shippingCost: order.shippingCost,
-            paypalTransactionId: order.paypalTransactionId,
-            items: order.items,
+            photoUrl: primaryPhotoUrl,
+            items: (order.items || []).map(it => ({
+              id: it.id,
+              brand: it.brand,
+              name: it.name,
+              size: it.size,
+              color: it.color,
+              option: it.option,
+              quantity: it.quantity,
+              photoUrl: getItemPublicPhotoUrl(it, origin)
+            })),
             createdAt: order.createdAt
           }
         })
@@ -147,6 +194,7 @@ async function sendWhatsAppGroupOrderTicket(order, settings = {}) {
     success: true,
     sentAutomatic,
     ticketText,
+    photoUrl: primaryPhotoUrl,
     whatsappShareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(ticketText)}`,
     results
   };
@@ -280,7 +328,7 @@ async function sendTrackingMessageToCustomer(order, settings = {}) {
 }
 
 /**
- * Génère le modèle HTML premium pour le mail de confirmation de commande (sans suivi sur site)
+ * Génère le modèle HTML premium pour le mail de confirmation de commande
  */
 function generateOrderConfirmationEmail(order) {
   const itemsHtml = (order.items || []).map(it => `
@@ -421,9 +469,6 @@ function generateShippingEmailHtml(order) {
   `.trim();
 }
 
-/**
- * Envoie un email de notification en production
- */
 async function sendEmailNotification({ to, subject, html, text }) {
   if (!to) return { success: false, reason: 'missing_recipient' };
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -466,11 +511,12 @@ function generateSmsMessage(order) {
   if (trackingNum) {
     return `ELS.SHOP : Votre commande ${order.id} a été expédiée ! Numéro de suivi : ${trackingNum}`;
   }
-  return `ELS.SHOP : Votre commande ${order.id} (${order.total}€) est bien confirmée. Votre numéro de suivi vous sera envoyé par message dès l'expédition.`;
+  return `ELS.SHOP : Votre commande ${order.id} est bien confirmée. Votre numéro de suivi vous sera envoyé par message dès l'expédition.`;
 }
 
 module.exports = {
   normalizePhoneInternational,
+  getItemPublicPhotoUrl,
   formatWhatsAppGroupTicket,
   sendWhatsAppGroupOrderTicket,
   formatCustomerTrackingMessage,
