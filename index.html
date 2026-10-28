@@ -192,9 +192,37 @@
         <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
             
             <!-- ========================================================== -->
+            <!-- ========================================================== -->
+            <!-- 4.0 MOBILE QUICK FILTER BAR (VISIBLE ONLY ON MOBILE < LG)  -->
+            <!-- ========================================================== -->
+            <div class="lg:hidden space-y-3 -mb-4">
+                <!-- Horizontal Category Pills -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" id="mobileCategoryPills">
+                    <button onclick="setCategory('all')" data-cat="all" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-white bg-white text-black transition">Tout</button>
+                    <button onclick="setCategory('vestes')" data-cat="vestes" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">Vestes</button>
+                    <button onclick="setCategory('sweats')" data-cat="sweats" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">Sweats</button>
+                    <button onclick="setCategory('chaussures')" data-cat="chaussures" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">Sneakers</button>
+                    <button onclick="setCategory('t-shirts')" data-cat="t-shirts" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">T-Shirts</button>
+                    <button onclick="setCategory('pantalons')" data-cat="pantalons" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">Pantalons</button>
+                    <button onclick="setCategory('accessoires')" data-cat="accessoires" class="mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition">Accessoires</button>
+                </div>
+
+                <!-- Mobile Filter & Sort Row -->
+                <div class="flex items-center justify-between gap-2">
+                    <button onclick="toggleMobileFilters()" id="mobileFiltersToggleBtn" class="flex-1 py-2 px-3 bg-zinc-950 border border-zinc-800 text-white text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                        <span id="mobileFiltersBtnText">Filtrer par marque / Trier</span>
+                    </button>
+                    <div class="flex items-center border border-zinc-800 bg-zinc-950">
+                        <button onclick="setMobileGridCols(1)" id="btnMobGrid1" class="px-2.5 py-2 text-[10px] font-mono text-zinc-500">1 COL</button>
+                        <button onclick="setMobileGridCols(2)" id="btnMobGrid2" class="px-2.5 py-2 text-[10px] font-mono bg-white text-black font-bold">2 COL</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 4.1 LEFT SIDEBAR: DESIGNERS (A-Z) & CATEGORIES             -->
             <!-- ========================================================== -->
-            <aside class="w-full lg:w-60 shrink-0 space-y-8">
+            <aside id="catalogSidebar" class="hidden lg:block w-full lg:w-60 shrink-0 space-y-6 bg-zinc-950 lg:bg-transparent p-4 lg:p-0 border border-zinc-800 lg:border-0">
                 
                 <!-- Active Filters / Reset -->
                 <div id="activeFilterSummary" class="hidden pb-4 border-b border-ssense-border space-y-2">
@@ -314,7 +342,7 @@
                 </div>
 
                 <!-- Products Grid -->
-                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-6 sm:gap-y-10">
                     <!-- Populated dynamically -->
                 </div>
 
@@ -559,8 +587,8 @@
     <!-- 7. SSENSE STUDIO PRODUCT DETAIL MODAL (QUICK VIEW)             -->
     <!-- ============================================================== -->
     <div id="quickViewBackdrop" onclick="closeQuickView()" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden transition-opacity"></div>
-    <div id="quickViewModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-4xl bg-black border border-ssense-border z-50 hidden max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-10">
-        <button onclick="closeQuickView()" class="absolute top-5 right-5 p-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition">
+    <div id="quickViewModal" class="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[90%] max-w-4xl bg-black border-t sm:border border-ssense-border rounded-t-2xl sm:rounded-none z-50 hidden max-h-[92vh] overflow-y-auto shadow-2xl p-4 sm:p-10">
+        <button onclick="closeQuickView()" class="sticky sm:absolute top-2 sm:top-5 float-right sm:float-none right-4 sm:right-5 z-20 p-2 bg-zinc-900/90 border border-zinc-700 rounded-full sm:rounded-none text-zinc-300 hover:text-white transition">
             <i data-lucide="x" class="w-5 h-5"></i>
         </button>
         <div id="quickViewContent">
@@ -669,6 +697,31 @@
             renderProducts();
         }
 
+        function toggleMobileFilters() {
+            const sidebar = document.getElementById('catalogSidebar');
+            const btnText = document.getElementById('mobileFiltersBtnText');
+            if (!sidebar) return;
+            sidebar.classList.toggle('hidden');
+            const isOpen = !sidebar.classList.contains('hidden');
+            if (btnText) btnText.innerText = isOpen ? 'Fermer les filtres' : 'Filtrer par marque / Trier';
+        }
+
+        function setMobileGridCols(n) {
+            const grid = document.getElementById('productsGrid');
+            const b1 = document.getElementById('btnMobGrid1');
+            const b2 = document.getElementById('btnMobGrid2');
+            if (!grid) return;
+            if (n === 1) {
+                grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10';
+                if (b1) b1.className = 'px-2.5 py-2 text-[10px] font-mono bg-white text-black font-bold';
+                if (b2) b2.className = 'px-2.5 py-2 text-[10px] font-mono text-zinc-500';
+            } else {
+                grid.className = 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-6 sm:gap-y-10';
+                if (b2) b2.className = 'px-2.5 py-2 text-[10px] font-mono bg-white text-black font-bold';
+                if (b1) b1.className = 'px-2.5 py-2 text-[10px] font-mono text-zinc-500';
+            }
+        }
+
         function setCategory(cat) {
             activeCategory = cat;
             document.querySelectorAll('.sidebar-cat-btn').forEach(btn => {
@@ -676,6 +729,13 @@
                     btn.className = 'sidebar-cat-btn block w-full text-left py-1 text-white font-bold transition';
                 } else {
                     btn.className = 'sidebar-cat-btn block w-full text-left py-1 text-zinc-400 hover:text-white transition';
+                }
+            });
+            document.querySelectorAll('.mobile-cat-pill').forEach(pill => {
+                if (pill.dataset.cat === cat) {
+                    pill.className = 'mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-white bg-white text-black transition';
+                } else {
+                    pill.className = 'mobile-cat-pill shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400 transition';
                 }
             });
             updateActiveFilterSummary();
@@ -700,11 +760,11 @@
             const btn4 = document.getElementById('btnGrid4');
 
             if (n === 3) {
-                grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-8 gap-y-12';
+                grid.className = 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-8 sm:gap-x-8 sm:gap-y-12';
                 btn3.className = 'px-2 py-0.5 border border-white bg-white text-black text-[10px] font-mono transition';
                 btn4.className = 'px-2 py-0.5 border border-ssense-border hover:border-white text-zinc-400 hover:text-white text-[10px] font-mono transition';
             } else {
-                grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10';
+                grid.className = 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-7 sm:gap-x-6 sm:gap-y-10';
                 btn4.className = 'px-2 py-0.5 border border-white bg-white text-black text-[10px] font-mono transition';
                 btn3.className = 'px-2 py-0.5 border border-ssense-border hover:border-white text-zinc-400 hover:text-white text-[10px] font-mono transition';
             }
@@ -816,6 +876,7 @@
                         <img 
                             src="${p.image}" 
                             alt="${p.name}" 
+                            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                             loading="lazy"
                         >
@@ -900,8 +961,8 @@
                 <div class="grid md:grid-cols-2 gap-8 md:gap-12">
                     
                     <!-- Left: Studio Image (SSENSE Lookbook) -->
-                    <div class="bg-ssense-card border border-ssense-border aspect-[3/4] overflow-hidden">
-                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                    <div class="bg-ssense-card border border-ssense-border aspect-square sm:aspect-[3/4] overflow-hidden max-h-72 sm:max-h-none">
+                        <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover">
                     </div>
 
                     <!-- Right: Designer & Technical Details -->
@@ -1014,27 +1075,34 @@
             const container = document.getElementById('modalSizesContainer');
             if (!container) return;
 
+            const isUnlimited = p.unlimitedStock === true;
             const stockMap = (selectedOptionModal && selectedOptionModal.stock) ? selectedOptionModal.stock : (p.stock || {});
             
             // Si la taille actuelle est épuisée dans cette matière, basculer sur la 1ère dispo
-            if (!selectedSizeModal || stockMap[selectedSizeModal] === 0 || stockMap[selectedSizeModal] === undefined) {
+            if (!isUnlimited && (!selectedSizeModal || stockMap[selectedSizeModal] === 0 || stockMap[selectedSizeModal] === undefined)) {
                 const firstAvailable = (p.sizes || []).find(s => (stockMap[s] || 0) > 0);
                 if (firstAvailable) {
                     selectedSizeModal = firstAvailable;
                 }
+            } else if (isUnlimited && !selectedSizeModal) {
+                selectedSizeModal = (p.sizes && p.sizes[0]) || 'Unique';
             }
 
-            const curStock = stockMap[selectedSizeModal] !== undefined ? stockMap[selectedSizeModal] : 0;
+            const curStock = isUnlimited ? 99 : (stockMap[selectedSizeModal] !== undefined ? stockMap[selectedSizeModal] : 0);
             const sizeText = document.getElementById('modalSelectedSizeText');
             if (sizeText) {
-                sizeText.innerHTML = `${selectedSizeModal} ${curStock > 0 ? `<span class="text-emerald-400 font-normal">(${curStock} en stock)</span>` : '<span class="text-red-400 font-normal">(Épuisé)</span>'}`;
+                if (isUnlimited) {
+                    sizeText.innerHTML = `${selectedSizeModal} <span class="text-emerald-400 font-normal">(En stock)</span>`;
+                } else {
+                    sizeText.innerHTML = `${selectedSizeModal} ${curStock > 0 ? `<span class="text-emerald-400 font-normal">(${curStock} en stock)</span>` : '<span class="text-red-400 font-normal">(Épuisé)</span>'}`;
+                }
             }
 
             // Bouton Panier disable si taille épuisée
             const addBtn = document.getElementById('modalAddToCartBtn');
             const addText = document.getElementById('modalAddToCartText');
             if (addBtn && addText) {
-                if (curStock <= 0) {
+                if (!isUnlimited && curStock <= 0) {
                     addBtn.disabled = true;
                     addBtn.className = 'w-full bg-zinc-800 text-zinc-500 py-4 font-bold text-xs uppercase tracking-widest cursor-not-allowed flex items-center justify-center gap-2';
                     addText.innerText = 'Taille Épuisée dans cette matière';
@@ -1046,11 +1114,11 @@
             }
 
             container.innerHTML = (p.sizes || []).map(s => {
-                const qty = stockMap[s] !== undefined ? stockMap[s] : 0;
-                const isOutOfStock = qty <= 0;
+                const qty = isUnlimited ? 99 : (stockMap[s] !== undefined ? stockMap[s] : 0);
+                const isOutOfStock = !isUnlimited && qty <= 0;
                 const isSelected = selectedSizeModal === s && !isOutOfStock;
 
-                let btnClass = 'modal-sz-btn py-2 border text-center text-xs transition font-mono ';
+                let btnClass = 'modal-sz-btn py-2.5 sm:py-2 border text-center text-xs transition font-mono ';
                 if (isOutOfStock) {
                     btnClass += 'border-zinc-900 bg-zinc-950/60 text-zinc-600 opacity-40 cursor-not-allowed line-through';
                 } else if (isSelected) {
@@ -1065,7 +1133,7 @@
                         ${isOutOfStock ? 'disabled' : `onclick="selectModalSize('${s}', this)"`}
                         class="${btnClass}"
                         data-size="${s}"
-                        title="${isOutOfStock ? 'Épuisé' : `${qty} pièces disponibles`}"
+                        title="${isOutOfStock ? 'Épuisé' : isUnlimited ? 'En stock' : `${qty} pièces disponibles`}"
                     >
                         <span>${s}</span>
                         ${isOutOfStock ? '<span class="block text-[8px] no-underline uppercase text-zinc-600 font-sans">0 dispo</span>' : ''}
@@ -1111,9 +1179,10 @@
         function addFromModal(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
+            const isUnlimited = p.unlimitedStock === true;
             const stockMap = (selectedOptionModal && selectedOptionModal.stock) ? selectedOptionModal.stock : (p.stock || {});
             const size = selectedSizeModal || p.sizes[0] || 'Unique';
-            if (stockMap[size] !== undefined && stockMap[size] <= 0) {
+            if (!isUnlimited && stockMap[size] !== undefined && stockMap[size] <= 0) {
                 showToast(`La taille ${size} est actuellement épuisée dans cette matière.`);
                 return;
             }
@@ -1162,6 +1231,8 @@
             const optNotice = chosenOption ? ` [${chosenOption}]` : '';
             showToast(`${p.brand} - ${p.name} (${chosenColor}, ${chosenSize}${optNotice}) ajouté au panier`);
             openCart();
+        }
+
         function saveCart() {
             localStorage.setItem('els_cart', JSON.stringify(cart));
             updateCartUI();
@@ -1190,7 +1261,7 @@
 
             list.innerHTML = cart.map((item, idx) => `
                 <div class="flex items-start gap-4 p-3 bg-zinc-950 border border-zinc-900">
-                    <img src="${item.image}" alt="${item.name}" class="w-16 h-20 object-cover bg-black shrink-0 border border-zinc-800">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-16 h-20 object-cover bg-black shrink-0 border border-zinc-800">
                     
                     <div class="flex-1 min-w-0 space-y-1">
                         <div class="flex items-start justify-between gap-1">
