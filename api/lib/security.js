@@ -55,6 +55,8 @@ function sanitizePublicOrder(order) {
       quantity: it.quantity,
       price: it.price
     })),
+    subtotal: order.subtotal,
+    shippingCost: order.shippingCost,
     total: order.total,
     paymentMethod: order.paymentMethod,
     status: order.status,
