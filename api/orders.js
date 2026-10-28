@@ -158,6 +158,89 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const action = body?.action || '';
 
+      // Action 1a: Vérifier l'état de connexion WhatsApp ou récupérer le QR Code directement dans l'Admin
+      if (action === 'get_whatsapp_qr') {
+        const instanceId = String(body.greenApiInstanceId || '').trim();
+        const apiToken = String(body.greenApiToken || '').trim();
+        const apiHost = String(body.greenApiHost || 'https://api.green-api.com').trim().replace(/\/$/, '');
+
+        if (!instanceId || !apiToken) {
+          return res.status(400).json({
+            success: false,
+            error: 'Veuillez renseigner votre idInstance et apiTokenInstance.'
+          });
+        }
+
+        try {
+          const stateResp = await fetch(`${apiHost}/waInstance${instanceId}/getStateInstance/${apiToken}`);
+          const stateData = await stateResp.json().catch(() => ({}));
+          if (stateData && stateData.stateInstance === 'authorized') {
+            return res.status(200).json({
+              success: true,
+              stateInstance: 'authorized',
+              message: 'Votre compte WhatsApp est déjà connecté et actif 24h/24 !'
+            });
+          }
+
+          const qrResp = await fetch(`${apiHost}/waInstance${instanceId}/qr/${apiToken}`);
+          const qrData = await qrResp.json().catch(() => ({}));
+          return res.status(200).json({
+            success: true,
+            stateInstance: stateData.stateInstance || 'notAuthorized',
+            qrType: qrData.type || '',
+            qrMessage: qrData.message || ''
+          });
+        } catch (err) {
+          return res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération du QR Code : ' + err.message
+          });
+        }
+      }
+
+      // Action 1b: Obtenir un code d'appairage à 8 caractères sur iPhone (sans scanner de QR Code)
+      if (action === 'get_whatsapp_pairing_code') {
+        const instanceId = String(body.greenApiInstanceId || '').trim();
+        const apiToken = String(body.greenApiToken || '').trim();
+        const apiHost = String(body.greenApiHost || 'https://api.green-api.com').trim().replace(/\/$/, '');
+        let rawPhone = String(body.phoneNumber || '').replace(/\D/g, '');
+        if (rawPhone.startsWith('0') && rawPhone.length === 10) {
+          rawPhone = '33' + rawPhone.substring(1);
+        }
+
+        if (!instanceId || !apiToken || rawPhone.length < 9) {
+          return res.status(400).json({
+            success: false,
+            error: 'Veuillez renseigner idInstance, apiTokenInstance et votre numéro de téléphone mobile.'
+          });
+        }
+
+        try {
+          const codeResp = await fetch(`${apiHost}/waInstance${instanceId}/getAuthorizationCode/${apiToken}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phoneNumber: Number(rawPhone) })
+          });
+          const codeData = await codeResp.json().catch(() => ({}));
+          if (codeData && codeData.code) {
+            return res.status(200).json({
+              success: true,
+              code: codeData.code,
+              phoneNumber: rawPhone
+            });
+          }
+          return res.status(400).json({
+            success: false,
+            error: codeData.message || 'Impossible de générer le code d\'appairage. Vérifiez que l\'instance n\'est pas déjà connectée.'
+          });
+        } catch (err) {
+          return res.status(500).json({
+            success: false,
+            error: 'Erreur code d\'appairage WhatsApp : ' + err.message
+          });
+        }
+      }
+
       // Action 1: Lister automatiquement les groupes WhatsApp depuis Green-API
       if (action === 'fetch_whatsapp_groups') {
         const instanceId = String(body.greenApiInstanceId || '').trim();
