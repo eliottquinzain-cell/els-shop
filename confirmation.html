@@ -55,6 +55,96 @@
     <!-- Content -->
     <main class="max-w-3xl mx-auto px-4 py-8 sm:py-12 flex-1 w-full space-y-8">
         
+        <!-- AUTOMATIC PAYPAL PAYMENT CARD (Visible when pay=paypal) -->
+        <div id="paypalAutoPaymentCard" class="hidden bg-gradient-to-b from-sky-950/60 to-els-card border-2 border-sky-400 rounded-2xl p-5 sm:p-8 space-y-5 shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-sky-500/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500 text-black font-black text-xl flex items-center justify-center shadow-lg shrink-0">
+                        💳
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-sky-300 bg-sky-500/20 border border-sky-400/40 px-2.5 py-0.5 rounded-full">
+                            Page de Paiement PayPal Automatique
+                        </span>
+                        <h2 class="font-display font-black text-xl sm:text-2xl text-white mt-1">
+                            Finalisez votre règlement PayPal
+                        </h2>
+                    </div>
+                </div>
+                <div class="text-left sm:text-right bg-black/60 border border-sky-500/40 px-4 py-2.5 rounded-xl">
+                    <span class="text-[10px] uppercase font-bold text-zinc-400 block">Montant Total à Payer</span>
+                    <span id="paypalTotalBigDisplay" class="font-mono font-black text-2xl text-emerald-400">0,00 €</span>
+                </div>
+            </div>
+
+            <!-- Breakdown: Articles + Shipping -->
+            <div class="bg-black/70 border border-zinc-800 rounded-xl p-4 space-y-2 text-xs">
+                <div class="flex justify-between text-zinc-300">
+                    <span>Sous-total article(s) :</span>
+                    <span id="paypalSubtotalDisplay" class="font-mono font-bold text-white">0,00 €</span>
+                </div>
+                <div class="flex justify-between text-zinc-300">
+                    <span id="paypalShippingLabel">Livraison :</span>
+                    <span id="paypalShippingDisplay" class="font-mono font-bold text-emerald-400">0,00 €</span>
+                </div>
+                <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-zinc-800">
+                    <span>TOTAL À RÉGLER SUR PAYPAL :</span>
+                    <span id="paypalTotalRowDisplay" class="font-mono text-emerald-400">0,00 €</span>
+                </div>
+            </div>
+
+            <!-- PayPal Recipient Account Box -->
+            <div class="p-4 rounded-xl bg-zinc-950 border border-sky-500/40 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase text-zinc-400 block">Compte PayPal destinataire officiel (E-mail) :</span>
+                        <span id="paypalEmailText" class="font-mono font-black text-sm sm:text-base text-sky-300 select-all">yasminebendaoui@gmail.com</span>
+                    </div>
+                    <button type="button" onclick="copyPaypalText('yasminebendaoui@gmail.com', 'E-mail PayPal copié !')" class="px-3.5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-black border border-sky-400/50 text-sky-300 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span>Copier l'e-mail</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-800/80">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase text-zinc-400 block">Montant exact & Référence à indiquer :</span>
+                        <span class="font-mono text-xs text-white"><strong id="paypalCopyAmountText" class="text-emerald-400">0.00 €</strong> — Réf : <strong id="paypalRefText">ELS-CMD</strong></span>
+                    </div>
+                    <button type="button" onclick="copyPaypalAmount()" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0">
+                        <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        <span>Copier le montant</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Auto-Redirect Notice & Direct PayPal Checkout Button -->
+            <div class="space-y-3 pt-1">
+                <a 
+                    id="btnOpenPaypalAuto" 
+                    href="#" 
+                    target="_blank"
+                    class="w-full py-4 px-6 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-xl transition active:scale-[0.99] cursor-pointer"
+                >
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span id="btnOpenPaypalAutoText">Ouvrir PayPal & Payer maintenant</span>
+                </a>
+
+                <p id="paypalAutoRedirectNotice" class="text-[11px] text-center text-sky-300 font-medium">
+                    ⚡ Ouverture automatique de la page PayPal pré-remplie (<span class="font-mono">yasminebendaoui@gmail.com</span>)...
+                </p>
+
+                <button 
+                    type="button" 
+                    onclick="confirmPaypalDone()" 
+                    class="w-full py-3 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 hover:text-black border border-emerald-500/40 text-emerald-300 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>J'ai effectué mon paiement PayPal — Voir mon suivi</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Big Success Hero Card -->
         <div class="bg-els-card border border-els-border rounded-2xl p-6 sm:p-8 text-center space-y-5 shadow-2xl relative overflow-hidden">
             <div class="w-16 h-16 bg-emerald-500/10 border-2 border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-500/10">
@@ -186,32 +276,132 @@
 
     <script>
         let currentOrderId = '';
+        let currentPaypalAmount = 0;
+        const PAYPAL_DEST_EMAIL = 'yasminebendaoui@gmail.com';
 
         function initIcons() {
             if (window.lucide) lucide.createIcons();
         }
 
+        function copyPaypalText(txt, msg) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(txt).catch(() => {});
+            }
+            alert(msg || `Copié : ${txt}`);
+        }
+
+        function copyPaypalAmount() {
+            const amt = currentPaypalAmount ? currentPaypalAmount.toFixed(2) : '0.00';
+            copyPaypalText(amt, `Montant exact copié : ${amt} €`);
+        }
+
+        function confirmPaypalDone() {
+            const card = document.getElementById('paypalAutoPaymentCard');
+            if (card) {
+                card.innerHTML = `
+                    <div class="text-center py-4 space-y-2">
+                        <div class="text-emerald-400 font-black text-base flex items-center justify-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                            <span>Paiement PayPal signalé comme effectué (${currentPaypalAmount.toFixed(2)} € vers ${PAYPAL_DEST_EMAIL})</span>
+                        </div>
+                        <p class="text-xs text-zinc-300">Merci ! Votre commande <strong>${currentOrderId}</strong> est en cours de vérification et préparation.</p>
+                    </div>
+                `;
+                initIcons();
+            }
+        }
+
+        function setupPaypalCard(totalAmt, shipAmt, orderId, itemsDesc = '') {
+            currentPaypalAmount = Number(totalAmt) || 0;
+            const ship = Number(shipAmt) || 0;
+            const sub = Math.max(0, Math.round((currentPaypalAmount - ship) * 100) / 100);
+
+            const card = document.getElementById('paypalAutoPaymentCard');
+            if (!card) return;
+            card.classList.remove('hidden');
+
+            document.getElementById('paypalTotalBigDisplay').innerText = `${currentPaypalAmount.toFixed(2)} €`;
+            document.getElementById('paypalSubtotalDisplay').innerText = `${sub.toFixed(2)} €`;
+            document.getElementById('paypalShippingDisplay').innerText = ship > 0 ? `+ ${ship.toFixed(2)} € (Colissimo 24/48h)` : '0,00 € (Offerte / Main propre)';
+            document.getElementById('paypalTotalRowDisplay').innerText = `${currentPaypalAmount.toFixed(2)} €`;
+            document.getElementById('paypalCopyAmountText').innerText = `${currentPaypalAmount.toFixed(2)} €`;
+            document.getElementById('paypalRefText').innerText = orderId;
+
+            const btnAuto = document.getElementById('btnOpenPaypalAuto');
+            const btnAutoTxt = document.getElementById('btnOpenPaypalAutoText');
+            if (btnAutoTxt) {
+                btnAutoTxt.innerText = `Ouvrir PayPal & Payer ${currentPaypalAmount.toFixed(2)} € maintenant`;
+            }
+
+            const itemTitle = `Commande ELS.SHOP #${orderId}${itemsDesc ? ' - ' + itemsDesc : ''}`.slice(0, 120);
+            const returnUrl = `${window.location.origin}/confirmation.html?order=${encodeURIComponent(orderId)}&paid=paypal`;
+            const cancelUrl = `${window.location.origin}/confirmation.html?order=${encodeURIComponent(orderId)}&pay=paypal&total=${currentPaypalAmount.toFixed(2)}&ship=${ship.toFixed(2)}`;
+            const paypalWebscrUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(PAYPAL_DEST_EMAIL)}&item_name=${encodeURIComponent(itemTitle)}&item_number=${encodeURIComponent(orderId)}&amount=${currentPaypalAmount.toFixed(2)}&currency_code=EUR&no_shipping=1&return=${encodeURIComponent(returnUrl)}&cancel_return=${encodeURIComponent(cancelUrl)}`;
+
+            if (btnAuto) {
+                btnAuto.href = paypalWebscrUrl;
+            }
+            initIcons();
+            return paypalWebscrUrl;
+        }
+
         async function loadConfirmedOrder(orderId) {
+            const params = new URLSearchParams(window.location.search);
+            const isPayPaypal = params.get('pay') === 'paypal';
+            const urlTotal = parseFloat(params.get('total') || '0');
+            const urlShip = parseFloat(params.get('ship') || '0');
+
+            if (isPayPaypal && urlTotal > 0) {
+                setupPaypalCard(urlTotal, urlShip, orderId);
+            }
+
             try {
                 const res = await fetch(`/api/track?id=${encodeURIComponent(orderId)}`);
                 const data = await res.json();
                 if (data.success && data.order) {
                     const order = data.order;
                     const itemsContainer = document.getElementById('confirmedItemsList');
-                    itemsContainer.innerHTML = (order.items || []).map(it => `
+                    const itemsSum = (order.items || []).reduce((acc, it) => acc + (Number(it.price || 0) * (Number(it.quantity) || 1)), 0);
+                    const shipCost = order.shippingCost !== undefined ? Number(order.shippingCost) : Math.max(0, Math.round((Number(order.total || 0) - itemsSum) * 100) / 100);
+
+                    let rowsHtml = (order.items || []).map(it => `
                         <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 text-xs">
                             <div>
                                 <div class="font-bold text-white">${it.brand} ${it.name}</div>
                                 <div class="text-[10px] text-zinc-400">Taille : <strong>${it.size}</strong> • Coloris : ${it.color || 'Standard'}${it.option ? ` • Option : <strong class="text-sky-400">${it.option}</strong>` : ''} • Qte : ${it.quantity}</div>
                             </div>
-                            <span class="font-mono font-bold text-white">${it.price * (it.quantity || 1)} €</span>
+                            <span class="font-mono font-bold text-white">${(it.price * (it.quantity || 1)).toFixed(2)} €</span>
                         </div>
                     `).join('');
-                    document.getElementById('confirmedTotalDisplay').innerText = `${order.total} €`;
+
+                    if (shipCost > 0) {
+                        rowsHtml += `
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/60 text-xs">
+                                <div class="text-zinc-300 font-semibold">📦 Frais de livraison (${order.carrier || 'Colissimo 24/48h'})</div>
+                                <span class="font-mono font-bold text-emerald-400">+ ${shipCost.toFixed(2)} €</span>
+                            </div>
+                        `;
+                    }
+
+                    itemsContainer.innerHTML = rowsHtml;
+                    document.getElementById('confirmedTotalDisplay').innerText = `${Number(order.total).toFixed(2)} €`;
                     document.getElementById('orderItemsCard').classList.remove('hidden');
 
+                    if (isPayPaypal || (order.paymentMethod && order.paymentMethod.toLowerCase().includes('paypal') && params.get('paid') !== 'paypal')) {
+                        const desc = (order.items || []).map(i => `${i.quantity || 1}x ${i.brand} ${i.name}`).join(', ');
+                        const autoUrl = setupPaypalCard(order.total, shipCost, order.id, desc);
+                        // Redirection automatique vers la page de paiement PayPal pré-remplie (1 seule fois par commande)
+                        const autoRedirectKey = `els_paypal_opened_${order.id}`;
+                        if (!sessionStorage.getItem(autoRedirectKey)) {
+                            sessionStorage.setItem(autoRedirectKey, '1');
+                            setTimeout(() => {
+                                window.location.href = autoUrl;
+                            }, 1800);
+                        }
+                    }
+
                     // Set up WhatsApp button
-                    const waText = encodeURIComponent(`Bonjour ELS.SHOP ! J'ai bien validé ma commande ${order.id} (${order.total}€). Pouvez-vous me confirmer la préparation ?`);
+                    const waText = encodeURIComponent(`Bonjour ELS.SHOP ! J'ai bien validé ma commande ${order.id} (${Number(order.total).toFixed(2)}€). Pouvez-vous me confirmer la préparation ?`);
                     document.getElementById('btnWhatsAppRecap').href = `https://wa.me/33612345678?text=${waText}`;
                 }
             } catch (err) {}
