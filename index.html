@@ -633,14 +633,18 @@
             </div>
 
             <a 
-                href="https://www.paypal.com/myaccount/transfer/homepage/pay" 
+                id="btnOpenPaypalDirect"
+                href="https://www.paypal.com/myaccount/transfer/buy/external?recipient=iliesimaj9%40gmail.com&amount=0.00&currencyCode=EUR" 
                 target="_blank" 
                 rel="noopener"
-                class="w-full py-3 px-4 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                class="w-full py-3.5 px-4 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
             >
                 <i data-lucide="external-link" class="w-4 h-4"></i>
-                <span>Ouvrir PayPal & Envoyer à iliesimaj9@gmail.com</span>
+                <span id="btnOpenPaypalDirectText">Ouvrir PayPal (Montant pré-rempli) & Payer en Amis Proches</span>
             </a>
+            <p class="text-[10px] text-center text-sky-300 font-medium">
+                ⚡ La page PayPal s'ouvre automatiquement avec le montant de votre commande déjà saisi : il ne vous reste plus qu'à choisir <strong>« Amis et proches »</strong> et valider !
+            </p>
         </div>
 
         <!-- Étape 2 : Vérification Automatique du Paiement -->
@@ -1635,6 +1639,12 @@
             document.getElementById('ppModalOrderRef').innerText = currentPreparedOrderId;
             document.getElementById('ppModalTotalAmount').innerText = `${currentPreparedTotal.toFixed(2)} €`;
 
+            const prefilledPaypalUrl = `https://www.paypal.com/myaccount/transfer/buy/external?recipient=${encodeURIComponent('iliesimaj9@gmail.com')}&amount=${currentPreparedTotal.toFixed(2)}&currencyCode=EUR`;
+            const btnDirect = document.getElementById('btnOpenPaypalDirect');
+            const btnDirectTxt = document.getElementById('btnOpenPaypalDirectText');
+            if (btnDirect) btnDirect.href = prefilledPaypalUrl;
+            if (btnDirectTxt) btnDirectTxt.innerText = `Ouvrir PayPal (${currentPreparedTotal.toFixed(2)} € déjà saisi) — Choisir Amis & Proches`;
+
             const senderInput = document.getElementById('ppVerifySenderEmail');
             if (senderInput && !senderInput.value) {
                 senderInput.value = email;
@@ -1643,6 +1653,11 @@
             document.getElementById('paypalVerifyBackdrop').classList.remove('hidden');
             document.getElementById('paypalVerifyModal').classList.remove('hidden');
             initIcons();
+
+            // Redirection / ouverture directe de la page PayPal avec le destinataire et le montant déjà saisis
+            try {
+                window.open(prefilledPaypalUrl, '_blank');
+            } catch (e) {}
         }
 
         function closePaypalVerifyModal() {
