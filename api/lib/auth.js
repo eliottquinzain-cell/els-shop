@@ -18,15 +18,15 @@ const ADMIN_ACCOUNTS = {
     username: 'eliott',
     displayName: 'Eliott',
     role: 'Super Admin',
-    // Hash pour 'eliott2026'
-    passwordHash: hashPassword('eliott2026')
+    // Hash pour 'Eliott2026'
+    passwordHash: hashPassword('Eliott2026')
   },
   ilies: {
     username: 'ilies',
     displayName: 'Ilies',
     role: 'Super Admin',
-    // Hash pour 'ilies2026'
-    passwordHash: hashPassword('ilies2026')
+    // Hash pour 'Ilies2026'
+    passwordHash: hashPassword('Ilies2026')
   }
 };
 
