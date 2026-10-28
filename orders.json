@@ -1,42 +1,5 @@
 [
   {
-    "id": "ELS-CMD-3140",
-    "customerName": "Client Test En Direct",
-    "customerEmail": "test.client.els@gmail.com",
-    "customerPhone": "06 12 34 56 78",
-    "customerAddress": "24 Rue de Rivoli, 75004 Paris",
-    "items": [
-      {
-        "id": "els-78068",
-        "name": "Veste Brésil Bleue",
-        "brand": "Nike",
-        "color": "",
-        "size": "M",
-        "image": "https://els-shop.vercel.app/api/products?productImg=els-78068",
-        "price": 50,
-        "quantity": 1
-      }
-    ],
-    "subtotal": 50,
-    "shippingCost": 4.9,
-    "total": 54.9,
-    "paymentMethod": "PayPal Amis & Proches (iliesimaj9@gmail.com)",
-    "paymentVerified": true,
-    "paymentVerifiedAt": "2026-10-28T23:02:05.928Z",
-    "paypalRecipient": "iliesimaj9@gmail.com",
-    "paypalSenderEmail": "test.client.els@gmail.com",
-    "paypalTransactionId": "TEST-LIVE-97663",
-    "paymentProofImage": "",
-    "paymentProofMeta": {},
-    "status": "en_preparation",
-    "statusLabel": "En préparation",
-    "trackingNumber": "",
-    "carrier": "Colissimo",
-    "notes": "Paiement PayPal Amis & Proches vérifié automatiquement (test.client.els@gmail.com • Réf: TEST-LIVE-97663)",
-    "createdAt": "2026-10-28T23:02:05.928Z",
-    "createdBy": "Boutique Web"
-  },
-  {
     "id": "ELS-CMD-6501",
     "customerName": "TEst Test",
     "customerEmail": "test@gmail.com",
