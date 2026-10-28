@@ -119,6 +119,33 @@ module.exports = async (req, res) => {
   const brand = searchParams.get('brand');
   const id = searchParams.get('id');
   const action = searchParams.get('action');
+  const proxyImg = searchParams.get('proxyImg');
+
+  // ==========================================
+  // GET: Proxy image externe (pour le recadrage 1:1 sans blocage CORS)
+  // ==========================================
+  if (req.method === 'GET' && proxyImg) {
+    try {
+      if (!/^https?:\/\//i.test(proxyImg)) {
+        return res.status(400).json({ success: false, error: 'URL invalide' });
+      }
+      const imgRes = await fetch(proxyImg, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+      });
+      if (!imgRes.ok) {
+        return res.status(400).json({ success: false, error: 'Impossible de récupérer l\'image' });
+      }
+      const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+      const arrayBuf = await imgRes.arrayBuffer();
+      const b64 = Buffer.from(arrayBuf).toString('base64');
+      return res.status(200).json({
+        success: true,
+        dataUrl: `data:${contentType};base64,${b64}`
+      });
+    } catch (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  }
 
   // ==========================================
   // GET: Consultation du catalogue (Public & Admin)
@@ -192,7 +219,7 @@ module.exports = async (req, res) => {
       let body = req.body;
       if (typeof body === 'string') body = JSON.parse(body || '{}');
 
-      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors, options, optionsTitle, unlimitedStock } = body;
+      const { name, brand, category, price, costPrice, image, images, description, sizes, stock, conditionGrade, badge, color, colors, options, optionsTitle, unlimitedStock } = body;
 
       if (!name || !price) {
         return res.status(400).json({ success: false, error: 'Nom et prix de vente obligatoires' });
@@ -200,6 +227,12 @@ module.exports = async (req, res) => {
 
       let allProducts = await getProducts();
       const newId = 'els-' + Date.now().toString().slice(-5);
+
+      const defaultImg = 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+      const imagesArr = Array.isArray(images) && images.filter(Boolean).length > 0
+        ? images.filter(Boolean)
+        : [image || defaultImg];
+      const primaryImage = imagesArr[0] || defaultImg;
 
       const isUnlimited = unlimitedStock === true;
       const sizeArr = Array.isArray(sizes) && sizes.length > 0 ? sizes : ["S", "M", "L", "XL"];
@@ -256,7 +289,8 @@ module.exports = async (req, res) => {
         optionsTitle: (optionsTitle || 'Garnissage & Matière').trim(),
         badge: badge || 'NOUVEAU 1:1',
         featured: body.featured === true,
-        image: image || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
+        image: primaryImage,
+        images: imagesArr,
         description: description || 'Qualité 1:1 supérieure avec finitions et étiquettes identiques.',
         createdAt: new Date().toISOString(),
         createdBy: admin.displayName
@@ -323,6 +357,15 @@ module.exports = async (req, res) => {
           });
           body.stock = newStock;
         }
+      }
+
+      if (Array.isArray(body.images) && body.images.filter(Boolean).length > 0) {
+        body.images = body.images.filter(Boolean);
+        body.image = body.images[0];
+      } else if (body.image) {
+        body.images = Array.isArray(allProducts[idx].images) && allProducts[idx].images.length > 1
+          ? [body.image, ...allProducts[idx].images.slice(1)]
+          : [body.image];
       }
 
       allProducts[idx] = {
