@@ -222,7 +222,7 @@ module.exports = async (req, res) => {
 
           for (const item of newOrder.items) {
             const product = products.find(p => p.id === item.id || (p.name.toLowerCase() === item.name.toLowerCase() && p.brand.toLowerCase() === item.brand.toLowerCase()));
-            if (product && product.stock && product.stock[item.size] !== undefined) {
+            if (product && !product.unlimitedStock && product.stock && product.stock[item.size] !== undefined) {
               const currentStock = parseInt(product.stock[item.size], 10) || 0;
               product.stock[item.size] = Math.max(0, currentStock - (item.quantity || 1));
               stockUpdated = true;
