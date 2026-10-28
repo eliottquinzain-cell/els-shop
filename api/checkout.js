@@ -96,12 +96,12 @@ module.exports = async (req, res) => {
         orders.unshift(newOrder);
         await saveOrders(orders, `Checkout Web (${orderNumber})`);
 
-        // Déduire le stock
+        // Déduire le stock (seulement si l'article n'est pas en stock illimité)
         const products = await getProducts();
         let stockChanged = false;
         for (const item of items) {
           const prod = products.find(p => p.id === item.id || (p.name.toLowerCase() === item.name.toLowerCase() && p.brand.toLowerCase() === item.brand.toLowerCase()));
-          if (prod) {
+          if (prod && !prod.unlimitedStock) {
             const qty = parseInt(item.quantity, 10) || 1;
             // 1. Déduction dans l'option spécifique si commandée (ex: Plume de canard en M)
             if (Array.isArray(prod.options) && prod.options.length > 0 && item.option) {
@@ -151,7 +151,7 @@ module.exports = async (req, res) => {
           product_data: {
             name: `${item.brand || 'ELS'} - ${item.name}`,
             description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''}${item.option ? ` | Option : ${item.option}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
-            images: item.image ? [item.image] : []
+            images: (item.image && /^https?:\/\//i.test(item.image) && item.image.length < 2000) ? [item.image] : []
           },
           unit_amount: Math.round(unitPrice * 100)
         },
