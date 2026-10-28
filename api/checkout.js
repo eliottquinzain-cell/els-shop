@@ -168,6 +168,7 @@ module.exports = async (req, res) => {
           color: sanitizeString(it.color || 'Standard', 40),
           size: sanitizeString(it.size || 'M', 20),
           option: it.option ? sanitizeString(it.option, 80) : undefined,
+          image: (it.image && /^https?:\/\//i.test(it.image)) ? it.image : `${origin}/api/products?productImg=${encodeURIComponent(it.id || 'els-001')}`,
           price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
           costPrice: it.costPrice !== undefined ? Number(it.costPrice) : undefined,
           quantity: parseInt(it.quantity, 10) || 1
