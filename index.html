@@ -601,12 +601,16 @@
             </p>
         </div>
 
-        <!-- Destinataire & Montant déjà pré-remplis + Bouton Direct PayPal -->
+        <!-- Destinataire & Montant + Bouton Direct PayPal Pour vos proches -->
         <div class="p-4 rounded-2xl bg-black border border-zinc-800 space-y-3">
+            <div class="p-2.5 rounded-xl bg-sky-500/15 border border-sky-400/50 text-center text-xs text-sky-200 font-bold">
+                📋 L'adresse <span class="text-white font-mono underline">iliesimaj9@gmail.com</span> est copiée automatiquement : faites simplement <strong>« Coller »</strong> sur PayPal !
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                 <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between gap-2">
                     <div class="min-w-0">
-                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Destinataire PayPal :</span>
+                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Destinataire (Copié ✓) :</span>
                         <span class="font-mono font-black text-sky-300 text-xs sm:text-sm truncate block select-all">iliesimaj9@gmail.com</span>
                     </div>
                     <button type="button" onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Email PayPal copié !')" class="px-2.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-black text-[10px] shrink-0 transition cursor-pointer">
@@ -616,7 +620,7 @@
 
                 <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between gap-2">
                     <div>
-                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Montant à régler :</span>
+                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Montant exact à envoyer :</span>
                         <span id="ppModalTotalAmount" class="font-mono font-black text-emerald-400 text-base sm:text-lg">0,00 €</span>
                     </div>
                     <button type="button" onclick="copyPaypalExactAmount()" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-[10px] border border-zinc-700 shrink-0 transition cursor-pointer">
@@ -627,14 +631,14 @@
 
             <a 
                 id="btnOpenPaypalDirect"
-                href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=iliesimaj9%40gmail.com&amount=0.00&currency_code=EUR&no_shipping=1&lc=FR" 
+                href="https://www.paypal.com/myaccount/transfer/homepage/pay" 
                 target="_blank" 
                 rel="noopener"
-                onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Ouverture de PayPal (iliesimaj9@gmail.com)...')"
+                onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Adresse iliesimaj9@gmail.com copiée ! Collez-la sur PayPal.')"
                 class="w-full py-4 px-4 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
             >
                 <i data-lucide="external-link" class="w-4 h-4"></i>
-                <span id="btnOpenPaypalDirectText">1. Ouvrir PayPal (Montant & Email déjà saisis)</span>
+                <span id="btnOpenPaypalDirectText">1. Ouvrir PayPal « Pour vos proches »</span>
             </a>
         </div>
 
@@ -726,10 +730,15 @@
             return 'bg-white';
         }
 
+        let PAYPAL_ME_SLUG = '';
+
         async function fetchProducts() {
             try {
                 const res = await fetch('/api/products?t=' + Date.now());
                 const data = await res.json();
+                if (data.paypalMeSlug) {
+                    PAYPAL_ME_SLUG = String(data.paypalMeSlug).trim();
+                }
                 if (data.success && Array.isArray(data.products)) {
                     PRODUCTS = data.products;
                 } else {
@@ -1588,13 +1597,21 @@
             document.getElementById('ppModalOrderRef').innerText = currentPreparedOrderId;
             document.getElementById('ppModalTotalAmount').innerText = `${currentPreparedTotal.toFixed(2)} €`;
 
-            // Lien PayPal direct avec destinataire (iliesimaj9@gmail.com) ET montant exact déjà pré-remplis
-            const prefilledPaypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent('iliesimaj9@gmail.com')}&item_name=${encodeURIComponent('Commande ELS.SHOP #' + currentPreparedOrderId)}&amount=${currentPreparedTotal.toFixed(2)}&currency_code=EUR&no_shipping=1&lc=FR&return=${encodeURIComponent(window.location.origin + '/confirmation.html?order=' + currentPreparedOrderId)}&cancel_return=${encodeURIComponent(window.location.origin + '/#panier')}`;
+            // Si un lien PayPal.Me est configuré, il pré-remplit directement le destinataire ET le montant exact en mode Pour vos proches.
+            // Sinon, ouvre la page officielle PayPal "Envoyer à un proche" (sans blocage marchand) et copie iliesimaj9@gmail.com.
+            let cleanSlug = (PAYPAL_ME_SLUG || '').replace(/^https?:\/\/(www\.)?paypal\.(me|com\/paypalme)\//i, '').split('/')[0].trim();
+            const prefilledPaypalUrl = cleanSlug
+                ? `https://www.paypal.com/paypalme/${encodeURIComponent(cleanSlug)}/${currentPreparedTotal.toFixed(2)}EUR`
+                : `https://www.paypal.com/myaccount/transfer/homepage/pay`;
 
             const btnDirect = document.getElementById('btnOpenPaypalDirect');
             const btnDirectTxt = document.getElementById('btnOpenPaypalDirectText');
             if (btnDirect) btnDirect.href = prefilledPaypalUrl;
-            if (btnDirectTxt) btnDirectTxt.innerText = `1. Ouvrir PayPal (${currentPreparedTotal.toFixed(2)} € déjà saisi)`;
+            if (btnDirectTxt) {
+                btnDirectTxt.innerText = cleanSlug
+                    ? `1. Ouvrir PayPal (${currentPreparedTotal.toFixed(2)} € pré-rempli) — Pour vos proches`
+                    : `1. Ouvrir PayPal « Pour vos proches » (${currentPreparedTotal.toFixed(2)} €)`;
+            }
 
             if (navigator.clipboard) {
                 navigator.clipboard.writeText('iliesimaj9@gmail.com').catch(() => {});
@@ -1604,7 +1621,6 @@
             document.getElementById('paypalVerifyModal').classList.remove('hidden');
             initIcons();
 
-            // Redirection / ouverture immédiate de la page PayPal avec iliesimaj9@gmail.com et le montant déjà saisis
             try {
                 window.open(prefilledPaypalUrl, '_blank');
             } catch (e) {}
