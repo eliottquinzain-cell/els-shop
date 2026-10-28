@@ -506,51 +506,48 @@
                 </div>
             </div>
 
-            <!-- Customer Delivery & Contact info -->
+            <!-- Customer Delivery & Contact info (Ultra-simple : 3 champs essentiels) -->
             <div class="border-t border-zinc-800 pt-3 space-y-2.5">
                 <div class="flex items-center justify-between text-[11px] font-bold uppercase text-zinc-300">
-                    <span>1. Vos Informations de Livraison</span>
+                    <span>Vos Coordonnées de Livraison</span>
                     <span class="text-[9px] text-sky-400 font-mono">Suivi envoyé par message</span>
                 </div>
 
-                <div class="space-y-1.5 text-xs">
+                <div class="space-y-2 text-xs">
                     <input 
                         type="text" 
                         id="cartCustName" 
                         placeholder="Nom & Prénom *" 
-                        class="w-full bg-black border border-zinc-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-white transition"
+                        class="w-full bg-black border border-zinc-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-white transition rounded-lg"
                     >
                     <input 
                         type="tel" 
                         id="cartCustPhone" 
-                        placeholder="Numéro de téléphone portable (pour recevoir le N° de suivi) *" 
-                        class="w-full bg-black border border-zinc-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-white transition"
+                        placeholder="Numéro de téléphone portable (pour le suivi) *" 
+                        class="w-full bg-black border border-zinc-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-white transition rounded-lg"
                     >
                     <div id="cartAddressContainer">
                         <input 
                             type="text" 
                             id="cartCustAddress" 
-                            placeholder="Adresse de livraison complète (Rue, Code Postal, Ville) *" 
-                            class="w-full bg-black border border-zinc-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-white transition"
+                            placeholder="Adresse complète (Rue, Code Postal, Ville) *" 
+                            class="w-full bg-black border border-zinc-800 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-white transition rounded-lg"
                         >
                     </div>
-                    <input 
-                        type="email" 
-                        id="cartCustEmail" 
-                        placeholder="Votre adresse Email *" 
-                        class="w-full bg-black border border-zinc-800 px-3 py-2 text-xs text-white focus:outline-none focus:border-white transition"
-                    >
+                    <input type="hidden" id="cartCustEmail" value="">
                 </div>
 
-                <!-- PayPal Payment Info & Reassurance -->
-                <div class="pt-1 space-y-2">
-                    <div class="p-3 bg-sky-950/40 border border-sky-400/50 space-y-1.5 text-[11px] text-sky-100 leading-relaxed">
-                        <div class="flex items-center justify-between font-bold text-sky-300 uppercase text-[10px]">
-                            <span>💳 Paiement PayPal Officiel</span>
-                            <span class="font-mono text-white select-all">iliesimaj9@gmail.com</span>
+                <!-- GROS AVERTISSEMENT IMPOSSIBLE À RATER : POUR VOS PROCHES -->
+                <div class="pt-1">
+                    <div class="p-3.5 rounded-xl bg-amber-500/15 border-2 border-amber-400 text-center space-y-1.5 shadow-lg">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-amber-300">
+                            ⚠️ OBLIGATOIRE SUR PAYPAL :
                         </div>
-                        <p class="text-[10px] text-zinc-200 leading-relaxed">
-                            🛡️ <strong>Information Livraison & Frontières :</strong> Lors de votre paiement PayPal à <strong class="text-white font-mono">iliesimaj9@gmail.com</strong>, sélectionnez obligatoirement <strong>« Envoyer à un proche (Amis et proches) »</strong> pour que la livraison se passe au mieux sans aucune perturbation au niveau des frontières.
+                        <div class="bg-amber-400 text-black font-black text-lg sm:text-xl uppercase tracking-tight py-2 px-3 rounded-lg shadow-md">
+                            CHOISIR « POUR VOS PROCHES »
+                        </div>
+                        <p class="text-[11px] text-zinc-100 leading-snug pt-0.5">
+                            Payez impérativement en mode <strong>« Pour vos proches »</strong> vers <strong class="font-mono text-white">iliesimaj9@gmail.com</strong> pour que la livraison passe sans aucune perturbation aux frontières.
                         </p>
                     </div>
                 </div>
@@ -560,10 +557,10 @@
             <button 
                 onclick="openPaypalVerifyModal()" 
                 id="checkoutBtn"
-                class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer"
+                class="w-full bg-[#0070ba] hover:bg-[#005ea6] text-white py-4 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition active:scale-[0.99] cursor-pointer"
             >
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span id="checkoutBtnText">Payer avec PayPal & Valider</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                <span id="checkoutBtnText">Payer sur PayPal</span>
             </button>
 
         </div>
@@ -571,19 +568,19 @@
     </aside>
 
     <!-- ============================================================== -->
-    <!-- 6b. MODAL DE PAIEMENT PAYPAL & VÉRIFICATION AUTOMATIQUE        -->
+    <!-- 6b. MODAL DE PAIEMENT PAYPAL ALLÉGÉE & SIMPLE                  -->
     <!-- ============================================================== -->
     <div id="paypalVerifyBackdrop" onclick="closePaypalVerifyModal()" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[60] hidden transition-opacity"></div>
-    <div id="paypalVerifyModal" class="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[94%] max-w-xl bg-zinc-950 border-t sm:border-2 border-sky-500/50 rounded-t-2xl sm:rounded-2xl z-[65] hidden max-h-[94vh] overflow-y-auto shadow-2xl p-4 sm:p-6 space-y-4">
+    <div id="paypalVerifyModal" class="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[94%] max-w-lg bg-zinc-950 border-t sm:border-2 border-amber-400/70 rounded-t-3xl sm:rounded-2xl z-[65] hidden max-h-[94vh] overflow-y-auto shadow-2xl p-4 sm:p-6 space-y-4">
         
         <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
             <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-sky-500 text-black font-black text-lg flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-[#0070ba] text-white font-black text-lg flex items-center justify-center shrink-0">
                     💳
                 </div>
                 <div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-sky-400 block">Vérification Automatique Instantanée</span>
-                    <h3 class="font-display font-bold text-base sm:text-lg text-white">Finaliser & Vérifier votre paiement PayPal</h3>
+                    <span id="ppModalOrderRef" class="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-400 block">ELS-CMD</span>
+                    <h3 class="font-display font-bold text-base sm:text-lg text-white">Paiement Rapide PayPal</h3>
                 </div>
             </div>
             <button type="button" onclick="closePaypalVerifyModal()" class="p-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-white">
@@ -591,40 +588,36 @@
             </button>
         </div>
 
-        <!-- Étape 1 : Instructions PayPal Amis & Proches -->
-        <div class="p-4 rounded-xl bg-black border border-sky-500/40 space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-black uppercase tracking-wider text-sky-400">Étape 1 — Envoyez le montant exact sur PayPal</span>
-                <span id="ppModalOrderRef" class="font-mono text-[10px] text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">ELS-CMD</span>
+        <!-- BANNIÈRE GÉANTE : POUR VOS PROCHES -->
+        <div class="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-400 text-center space-y-2 shadow-xl">
+            <div class="text-xs font-black uppercase tracking-widest text-amber-300">
+                ⚠️ ATTENTION — SUR PAYPAL SÉLECTIONNEZ :
             </div>
-
-            <!-- Reassurance Box: Amis et proches -> Frontières -->
-            <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 space-y-1">
-                <div class="text-[11px] font-black text-emerald-400 flex items-center gap-1.5">
-                    <i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i>
-                    <span>IMPORTANT : Choisissez « Amis et proches » sur PayPal</span>
-                </div>
-                <p class="text-[11px] text-zinc-200 leading-relaxed">
-                    Veuillez impérativement régler en tant qu'<strong>« Amis et proches » (Envoyer à un proche)</strong> sur PayPal. Cela permet d'expédier votre colis en envoi privé prioritaire <strong>pour que la livraison se passe au mieux sans aucune perturbation ni blocage au niveau des frontières</strong>.
-                </p>
+            <div class="bg-amber-400 text-black font-black text-2xl sm:text-3xl uppercase tracking-tight py-3 px-4 rounded-xl shadow-lg">
+                « POUR VOS PROCHES »
             </div>
+            <p class="text-xs text-white font-medium leading-relaxed">
+                Choisissez impérativement <strong>« Pour vos proches » (Amis et proches)</strong> afin que la livraison se passe au mieux sans aucune perturbation aux frontières.
+            </p>
+        </div>
 
-            <!-- PayPal Email & Amount Copy Boxes -->
+        <!-- Destinataire & Montant déjà pré-remplis + Bouton Direct PayPal -->
+        <div class="p-4 rounded-2xl bg-black border border-zinc-800 space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <div class="p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between gap-2">
+                <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between gap-2">
                     <div class="min-w-0">
-                        <span class="text-[9px] uppercase font-bold text-zinc-400 block">Adresse PayPal destinataire :</span>
+                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Destinataire PayPal :</span>
                         <span class="font-mono font-black text-sky-300 text-xs sm:text-sm truncate block select-all">iliesimaj9@gmail.com</span>
                     </div>
-                    <button type="button" onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Adresse PayPal copiée !')" class="px-2.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-black text-[10px] shrink-0 transition cursor-pointer">
+                    <button type="button" onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Email PayPal copié !')" class="px-2.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-black text-[10px] shrink-0 transition cursor-pointer">
                         Copier
                     </button>
                 </div>
 
-                <div class="p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between gap-2">
+                <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between gap-2">
                     <div>
-                        <span class="text-[9px] uppercase font-bold text-zinc-400 block">Montant total (Livraison incl.) :</span>
-                        <span id="ppModalTotalAmount" class="font-mono font-black text-emerald-400 text-sm sm:text-base">0,00 €</span>
+                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">Montant à régler :</span>
+                        <span id="ppModalTotalAmount" class="font-mono font-black text-emerald-400 text-base sm:text-lg">0,00 €</span>
                     </div>
                     <button type="button" onclick="copyPaypalExactAmount()" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-[10px] border border-zinc-700 shrink-0 transition cursor-pointer">
                         Copier
@@ -634,74 +627,35 @@
 
             <a 
                 id="btnOpenPaypalDirect"
-                href="https://www.paypal.com/myaccount/transfer/buy/external?recipient=iliesimaj9%40gmail.com&amount=0.00&currencyCode=EUR" 
+                href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=iliesimaj9%40gmail.com&amount=0.00&currency_code=EUR&no_shipping=1&lc=FR" 
                 target="_blank" 
                 rel="noopener"
-                class="w-full py-3.5 px-4 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                onclick="copyTextWithToast('iliesimaj9@gmail.com', 'Ouverture de PayPal (iliesimaj9@gmail.com)...')"
+                class="w-full py-4 px-4 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
             >
                 <i data-lucide="external-link" class="w-4 h-4"></i>
-                <span id="btnOpenPaypalDirectText">Ouvrir PayPal (Montant pré-rempli) & Payer en Amis Proches</span>
+                <span id="btnOpenPaypalDirectText">1. Ouvrir PayPal (Montant & Email déjà saisis)</span>
             </a>
-            <p class="text-[10px] text-center text-sky-300 font-medium">
-                ⚡ La page PayPal s'ouvre automatiquement avec le montant de votre commande déjà saisi : il ne vous reste plus qu'à choisir <strong>« Amis et proches »</strong> et valider !
-            </p>
         </div>
 
-        <!-- Étape 2 : Vérification Automatique du Paiement -->
-        <div class="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-black uppercase tracking-wider text-emerald-400">Étape 2 — Vérification Automatique de votre paiement</span>
-                <span class="text-[10px] font-mono text-zinc-400">Validation instantanée</span>
-            </div>
+        <!-- Confirmation ultra-simple en 1 clic -->
+        <div class="p-4 rounded-2xl bg-black border border-emerald-500/40 space-y-3">
+            <input type="hidden" id="ppVerifySenderEmail" value="">
+            <input type="hidden" id="ppVerifyTxId" value="">
 
-            <p class="text-[11px] text-zinc-400 leading-relaxed">
-                Une fois le paiement effectué vers <strong class="text-white font-mono">iliesimaj9@gmail.com</strong>, renseignez les éléments ci-dessous pour que notre système vérifie automatiquement votre règlement et valide votre commande :
-            </p>
-
-            <div class="space-y-2.5 text-xs">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-zinc-300 mb-1">Votre adresse E-mail PayPal (utilisée pour payer) *</label>
-                    <input 
-                        type="email" 
-                        id="ppVerifySenderEmail" 
-                        placeholder="Ex: votre.email@gmail.com" 
-                        class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400"
-                    >
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-zinc-300 mb-1">Capture d'écran du reçu PayPal (Vérification auto) *</label>
-                    <label class="flex flex-col items-center justify-center p-3.5 border-2 border-dashed border-sky-500/40 hover:border-sky-400 rounded-xl bg-zinc-900/60 cursor-pointer transition text-center space-y-1">
-                        <input type="file" id="ppVerifyProofFile" accept="image/*" class="hidden" onchange="handlePaypalProofUpload(event)">
-                        <div id="ppProofUploadPrompt" class="flex items-center gap-2 text-sky-400 font-bold text-xs">
-                            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                            <span>Joindre la capture d'écran du paiement PayPal</span>
-                        </div>
-                        <span id="ppProofStatusText" class="text-[10px] text-zinc-400 block">Analyse automatique du reçu de paiement</span>
-                    </label>
-                    <div id="ppProofPreviewBox" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/40 flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <img id="ppProofThumb" src="" alt="Preuve PayPal" class="w-10 h-10 object-cover rounded-lg border border-emerald-500/50 shrink-0">
-                            <div class="min-w-0">
-                                <div class="text-[11px] font-black text-emerald-400 flex items-center gap-1">
-                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 shrink-0"></i>
-                                    <span>Preuve PayPal analysée & conforme</span>
-                                </div>
-                                <span id="ppProofDetectedInfo" class="text-[10px] text-zinc-400 truncate block">Reçu vérifié automatiquement</span>
-                            </div>
-                        </div>
-                        <button type="button" onclick="clearPaypalProof()" class="text-[10px] text-zinc-400 hover:text-red-400 font-bold px-2 py-1">Changer</button>
+            <!-- Capture optionnelle en 1 tap -->
+            <div>
+                <label class="flex items-center justify-center gap-2 p-2.5 border border-dashed border-zinc-700 hover:border-sky-400 rounded-xl bg-zinc-900/50 cursor-pointer transition text-center">
+                    <input type="file" id="ppVerifyProofFile" accept="image/*" class="hidden" onchange="handlePaypalProofUpload(event)">
+                    <i data-lucide="camera" class="w-4 h-4 text-sky-400 shrink-0"></i>
+                    <span id="ppProofStatusText" class="text-[11px] font-bold text-zinc-300">📸 Joindre une capture du paiement (Optionnel)</span>
+                </label>
+                <div id="ppProofPreviewBox" class="hidden mt-2 p-2 rounded-xl bg-emerald-950/30 border border-emerald-500/40 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <img id="ppProofThumb" src="" alt="Preuve PayPal" class="w-9 h-9 object-cover rounded-lg border border-emerald-500/50 shrink-0">
+                        <span id="ppProofDetectedInfo" class="text-[11px] font-bold text-emerald-400 truncate block">Capture jointe ✓</span>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">N° de Transaction PayPal (ou laisser auto si capture jointe)</label>
-                    <input 
-                        type="text" 
-                        id="ppVerifyTxId" 
-                        placeholder="Ex: 8TR49201948..." 
-                        class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white uppercase focus:outline-none focus:border-sky-400"
-                    >
+                    <button type="button" onclick="clearPaypalProof()" class="text-[10px] text-zinc-400 hover:text-red-400 font-bold px-2 py-1">Retirer</button>
                 </div>
             </div>
 
@@ -709,10 +663,10 @@
                 type="button" 
                 id="btnConfirmVerifiedOrder"
                 onclick="submitVerifiedPaypalOrder()" 
-                class="w-full py-3.5 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition active:scale-[0.99] cursor-pointer"
+                class="w-full py-4 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition active:scale-[0.99] cursor-pointer"
             >
-                <i data-lucide="check-circle-2" class="w-4 h-4 stroke-[2.5]"></i>
-                <span id="btnConfirmVerifiedOrderText">Vérifier mon paiement & Confirmer ma commande</span>
+                <i data-lucide="check-circle-2" class="w-5 h-5 stroke-[2.5]"></i>
+                <span id="btnConfirmVerifiedOrderText">2. J'ai payé en « Pour vos proches » — Valider ma commande</span>
             </button>
         </div>
 
@@ -1601,26 +1555,21 @@
             const name = (document.getElementById('cartCustName').value || '').trim();
             const phone = (document.getElementById('cartCustPhone').value || '').trim();
             const address = (document.getElementById('cartCustAddress').value || '').trim();
-            const email = (document.getElementById('cartCustEmail').value || '').trim();
+            const email = (document.getElementById('cartCustEmail')?.value || '').trim();
 
             if (!name || name.length < 2) {
-                alert('Veuillez renseigner votre Nom et Prénom complets.');
+                alert('Veuillez renseigner votre Nom et Prénom.');
                 document.getElementById('cartCustName').focus();
                 return;
             }
             if (!phone || phone.replace(/\D/g, '').length < 8) {
-                alert('Veuillez renseigner votre numéro de téléphone portable (indispensable pour recevoir votre numéro de suivi par message).');
+                alert('Veuillez renseigner votre numéro de téléphone portable (pour recevoir votre numéro de suivi par message).');
                 document.getElementById('cartCustPhone').focus();
                 return;
             }
             if (!address || address.length < 5) {
-                alert('Veuillez renseigner votre adresse postale complète de livraison (Rue, Code Postal, Ville).');
+                alert('Veuillez renseigner votre adresse complète de livraison (Rue, Code Postal, Ville).');
                 document.getElementById('cartCustAddress').focus();
-                return;
-            }
-            if (!email || !email.includes('@')) {
-                alert('Veuillez renseigner votre adresse e-mail.');
-                document.getElementById('cartCustEmail').focus();
                 return;
             }
 
@@ -1639,22 +1588,23 @@
             document.getElementById('ppModalOrderRef').innerText = currentPreparedOrderId;
             document.getElementById('ppModalTotalAmount').innerText = `${currentPreparedTotal.toFixed(2)} €`;
 
-            const prefilledPaypalUrl = `https://www.paypal.com/myaccount/transfer/buy/external?recipient=${encodeURIComponent('iliesimaj9@gmail.com')}&amount=${currentPreparedTotal.toFixed(2)}&currencyCode=EUR`;
+            // Lien PayPal direct avec destinataire (iliesimaj9@gmail.com) ET montant exact déjà pré-remplis
+            const prefilledPaypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent('iliesimaj9@gmail.com')}&item_name=${encodeURIComponent('Commande ELS.SHOP #' + currentPreparedOrderId)}&amount=${currentPreparedTotal.toFixed(2)}&currency_code=EUR&no_shipping=1&lc=FR&return=${encodeURIComponent(window.location.origin + '/confirmation.html?order=' + currentPreparedOrderId)}&cancel_return=${encodeURIComponent(window.location.origin + '/#panier')}`;
+
             const btnDirect = document.getElementById('btnOpenPaypalDirect');
             const btnDirectTxt = document.getElementById('btnOpenPaypalDirectText');
             if (btnDirect) btnDirect.href = prefilledPaypalUrl;
-            if (btnDirectTxt) btnDirectTxt.innerText = `Ouvrir PayPal (${currentPreparedTotal.toFixed(2)} € déjà saisi) — Choisir Amis & Proches`;
+            if (btnDirectTxt) btnDirectTxt.innerText = `1. Ouvrir PayPal (${currentPreparedTotal.toFixed(2)} € déjà saisi)`;
 
-            const senderInput = document.getElementById('ppVerifySenderEmail');
-            if (senderInput && !senderInput.value) {
-                senderInput.value = email;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText('iliesimaj9@gmail.com').catch(() => {});
             }
 
             document.getElementById('paypalVerifyBackdrop').classList.remove('hidden');
             document.getElementById('paypalVerifyModal').classList.remove('hidden');
             initIcons();
 
-            // Redirection / ouverture directe de la page PayPal avec le destinataire et le montant déjà saisis
+            // Redirection / ouverture immédiate de la page PayPal avec iliesimaj9@gmail.com et le montant déjà saisis
             try {
                 window.open(prefilledPaypalUrl, '_blank');
             } catch (e) {}
@@ -1671,7 +1621,7 @@
             const fileInput = document.getElementById('ppVerifyProofFile');
             if (fileInput) fileInput.value = '';
             document.getElementById('ppProofPreviewBox').classList.add('hidden');
-            document.getElementById('ppProofStatusText').innerText = 'Analyse automatique du reçu de paiement';
+            document.getElementById('ppProofStatusText').innerText = '📸 Joindre une capture du paiement (Optionnel)';
         }
 
         function handlePaypalProofUpload(event) {
@@ -1684,19 +1634,12 @@
             }
 
             const statusText = document.getElementById('ppProofStatusText');
-            if (statusText) statusText.innerText = '🔍 Analyse automatique de la capture PayPal en cours...';
+            if (statusText) statusText.innerText = 'Chargement de la capture...';
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    if (img.width < 120 || img.height < 120) {
-                        alert('Capture d\'écran invalide ou trop petite. Veuillez importer la capture complète de votre reçu PayPal.');
-                        clearPaypalProof();
-                        return;
-                    }
-
-                    // Compression propre de la capture d'écran pour stockage et preuve Admin
                     const canvas = document.createElement('canvas');
                     const maxDim = 720;
                     let w = img.width;
@@ -1722,9 +1665,9 @@
                     };
 
                     document.getElementById('ppProofThumb').src = currentProofDataUrl;
-                    document.getElementById('ppProofDetectedInfo').innerText = `Capture validée (${img.width}x${img.height}px) • Destinataire : iliesimaj9@gmail.com`;
+                    document.getElementById('ppProofDetectedInfo').innerText = `Capture jointe ✓`;
                     document.getElementById('ppProofPreviewBox').classList.remove('hidden');
-                    if (statusText) statusText.innerText = '✅ Capture du reçu PayPal vérifiée avec succès';
+                    if (statusText) statusText.innerText = '✅ Capture du reçu PayPal ajoutée';
                     initIcons();
                 };
                 img.src = e.target.result;
@@ -1738,26 +1681,15 @@
             const name = (document.getElementById('cartCustName').value || '').trim();
             const phone = (document.getElementById('cartCustPhone').value || '').trim();
             const address = (document.getElementById('cartCustAddress').value || '').trim();
-            const email = (document.getElementById('cartCustEmail').value || '').trim();
+            const email = (document.getElementById('cartCustEmail')?.value || '').trim();
 
-            const paypalSenderEmail = (document.getElementById('ppVerifySenderEmail').value || '').trim();
-            const paypalTransactionId = (document.getElementById('ppVerifyTxId').value || '').trim();
-
-            if (!paypalSenderEmail || !paypalSenderEmail.includes('@')) {
-                alert('Veuillez indiquer l\'adresse e-mail de votre compte PayPal ayant servi au paiement.');
-                document.getElementById('ppVerifySenderEmail').focus();
-                return;
-            }
-
-            if (!currentProofDataUrl && paypalTransactionId.length < 6) {
-                alert('Pour la vérification automatique du paiement, veuillez joindre la capture d\'écran de votre reçu PayPal (ou saisir votre N° de transaction PayPal).');
-                return;
-            }
+            const paypalSenderEmail = (document.getElementById('ppVerifySenderEmail')?.value || '').trim();
+            const paypalTransactionId = (document.getElementById('ppVerifyTxId')?.value || '').trim();
 
             const btn = document.getElementById('btnConfirmVerifiedOrder');
             const btnTxt = document.getElementById('btnConfirmVerifiedOrderText');
             btn.disabled = true;
-            if (btnTxt) btnTxt.innerText = 'Vérification automatique du paiement en cours...';
+            if (btnTxt) btnTxt.innerText = 'Validation de votre commande en cours...';
 
             try {
                 const res = await fetch('/api/checkout', {
@@ -1779,9 +1711,9 @@
 
                 const data = await res.json();
                 if (!res.ok || !data.success) {
-                    alert(data.error || 'La vérification du paiement a échoué. Veuillez vérifier vos informations.');
+                    alert(data.error || 'Une erreur est survenue lors de la validation. Veuillez réessayer.');
                     btn.disabled = false;
-                    if (btnTxt) btnTxt.innerText = 'Vérifier mon paiement & Confirmer ma commande';
+                    if (btnTxt) btnTxt.innerText = '2. J\'ai payé en « Pour vos proches » — Valider ma commande';
                     return;
                 }
 
@@ -1789,9 +1721,9 @@
                 localStorage.removeItem('els_cart');
                 window.location.href = data.checkoutUrl || `/confirmation.html?order=${encodeURIComponent(data.orderNumber)}`;
             } catch (err) {
-                alert('Erreur réseau lors de la vérification. Veuillez réessayer.');
+                alert('Erreur réseau lors de la validation. Veuillez réessayer.');
                 btn.disabled = false;
-                if (btnTxt) btnTxt.innerText = 'Vérifier mon paiement & Confirmer ma commande';
+                if (btnTxt) btnTxt.innerText = '2. J\'ai payé en « Pour vos proches » — Valider ma commande';
             }
         }
 
