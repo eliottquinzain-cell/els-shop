@@ -120,6 +120,36 @@ module.exports = async (req, res) => {
   const id = searchParams.get('id');
   const action = searchParams.get('action');
   const proxyImg = searchParams.get('proxyImg');
+  const productImg = searchParams.get('productImg');
+
+  // ==========================================
+  // GET: Image directe d'un article (URL publique pour Ticket Groupe WhatsApp)
+  // ==========================================
+  if (req.method === 'GET' && productImg) {
+    try {
+      const allProducts = await getProducts();
+      const prod = allProducts.find(p => p.id === productImg);
+      const rawImg = (prod && Array.isArray(prod.images) && prod.images[0]) ? prod.images[0] : (prod ? prod.image : '');
+      if (rawImg && rawImg.startsWith('data:image/')) {
+        const match = rawImg.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+        if (match) {
+          const mimeType = match[1];
+          const imgBuffer = Buffer.from(match[2], 'base64');
+          res.setHeader('Content-Type', mimeType);
+          res.setHeader('Cache-Control', 'public, max-age=86400');
+          return res.status(200).send(imgBuffer);
+        }
+      }
+      if (rawImg && /^https?:\/\//i.test(rawImg)) {
+        res.writeHead(302, { Location: rawImg });
+        return res.end();
+      }
+      res.writeHead(302, { Location: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80' });
+      return res.end();
+    } catch (err) {
+      return res.status(500).end();
+    }
+  }
 
   // ==========================================
   // GET: Proxy image externe (pour le recadrage 1:1 sans blocage CORS)
