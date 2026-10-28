@@ -764,34 +764,43 @@
         </main>
 
         <!-- ============================================================== -->
-        <!-- 4. IPHONE BOTTOM NAVIGATION TAB BAR                            -->
+        <!-- 4. IPHONE BOTTOM NAVIGATION TAB BAR & FLOATING ACTION          -->
         <!-- ============================================================== -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 px-1.5 py-2 flex items-center justify-around text-center">
+        <!-- Bouton flottant rapide sur mobile pour ajouter un article en 1 tap -->
+        <button 
+            onclick="openNewProductModal()" 
+            class="md:hidden fixed bottom-[calc(env(safe-area-inset-bottom)+72px)] right-4 z-40 bg-emerald-500 hover:bg-emerald-400 text-black font-black px-4 py-3 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center gap-2 text-xs active:scale-95 transition border border-emerald-300"
+        >
+            <i data-lucide="plus" class="w-4 h-4 stroke-[3]"></i>
+            <span>Nouvel Article</span>
+        </button>
+
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800 px-1 pt-2 pb-[calc(env(safe-area-inset-bottom)+6px)] flex items-center justify-around text-center">
             
-            <button onclick="switchTab('articles')" id="bottomTab-articles" class="bottom-tab-btn active flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+            <button onclick="switchTab('articles')" id="bottomTab-articles" class="bottom-tab-btn active flex-1 py-1.5 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="package" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold">Articles</span>
+                <span class="text-[10px] font-bold">Articles</span>
             </button>
 
-            <button onclick="switchTab('stocks')" id="bottomTab-stocks" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+            <button onclick="switchTab('stocks')" id="bottomTab-stocks" class="bottom-tab-btn flex-1 py-1.5 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="layers" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold">Stocks</span>
+                <span class="text-[10px] font-bold">Stocks</span>
             </button>
 
-            <button onclick="switchTab('orders')" id="bottomTab-orders" class="bottom-tab-btn relative flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+            <button onclick="switchTab('orders')" id="bottomTab-orders" class="bottom-tab-btn relative flex-1 py-1.5 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold">Commandes</span>
-                <span id="tabOrderCountBadgeMobile" class="absolute top-0 right-3 w-4 h-4 rounded-full bg-emerald-500 text-black font-black text-[9px] flex items-center justify-center hidden">0</span>
+                <span class="text-[10px] font-bold">Commandes</span>
+                <span id="tabOrderCountBadgeMobile" class="absolute top-0.5 right-3 w-4 h-4 rounded-full bg-emerald-500 text-black font-black text-[9px] flex items-center justify-center hidden">0</span>
             </button>
 
-            <button onclick="switchTab('stats')" id="bottomTab-stats" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+            <button onclick="switchTab('stats')" id="bottomTab-stats" class="bottom-tab-btn flex-1 py-1.5 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold">Stats</span>
+                <span class="text-[10px] font-bold">Stats</span>
             </button>
 
-            <button onclick="switchTab('profit')" id="bottomTab-profit" class="bottom-tab-btn flex-1 py-1 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
+            <button onclick="switchTab('profit')" id="bottomTab-profit" class="bottom-tab-btn flex-1 py-1.5 flex flex-col items-center gap-1 text-zinc-400 transition cursor-pointer">
                 <i data-lucide="trending-up" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold">Bénéfices</span>
+                <span class="text-[10px] font-bold">Bénéfices</span>
             </button>
 
         </nav>
@@ -804,66 +813,132 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 5. MODAL: PUBLIER / MODIFIER UN PRODUIT                        -->
+    <!-- 5. MODAL: PUBLIER / MODIFIER UN PRODUIT (OPTIMISÉ MOBILE)       -->
     <!-- ============================================================== -->
-    <div id="newProductBackdrop" onclick="closeNewProductModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-    <div id="newProductModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] max-w-2xl bg-els-card border border-els-border rounded-2xl z-50 hidden max-h-[92vh] overflow-y-auto p-5 sm:p-8 shadow-2xl">
+    <div id="newProductBackdrop" onclick="closeNewProductModal()" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="newProductModal" class="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[92%] max-w-2xl bg-els-card border-t sm:border border-els-border rounded-t-3xl sm:rounded-2xl z-50 hidden max-h-[94vh] flex flex-col shadow-2xl overflow-hidden">
         
-        <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
-            <div class="flex items-center gap-2">
-                <i data-lucide="package-plus" class="w-5 h-5 text-emerald-400"></i>
-                <h3 id="modalTitle" class="font-display font-bold text-base sm:text-lg text-white">Publier un Nouveau Produit 1:1</h3>
+        <!-- Sticky Modal Header -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-md shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i data-lucide="package-plus" class="w-4 h-4"></i>
+                </div>
+                <h3 id="modalTitle" class="font-display font-bold text-sm sm:text-base text-white">Publier un Nouveau Produit 1:1</h3>
             </div>
-            <button onclick="closeNewProductModal()" class="p-1 rounded text-zinc-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
+            <button type="button" onclick="closeNewProductModal()" class="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
 
-        <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="space-y-4">
+        <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             <input type="hidden" id="editProductId" value="">
 
-            <!-- Article Name & Brand -->
-            <div class="grid sm:grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Nom de l'article *</label>
-                    <input type="text" id="newProdName" required placeholder="Ex: Wyndham Parka, Alcatraz Hoodie..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+            <!-- 1. PHOTO DE L'ARTICLE (ULTRA SIMPLE SUR MOBILE) -->
+            <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-[11px] font-bold text-white uppercase flex items-center gap-1.5">
+                        <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        <span>1. Photo de l'article</span>
+                    </label>
+                    <span id="photoStatusBadge" class="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Optionnel ou Galerie</span>
                 </div>
+
+                <!-- Aperçu Photo Grand Format (visible dès qu'une photo est choisie ou collée) -->
+                <div id="photoPreviewContainer" class="hidden flex items-center gap-3.5 p-3 bg-zinc-900/90 rounded-2xl border border-emerald-500/40">
+                    <img id="photoPreviewImg" src="" alt="Aperçu" onerror="this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-20 h-20 rounded-xl object-cover bg-black border border-zinc-700 shrink-0 shadow-md">
+                    <div class="flex-1 min-w-0 space-y-2">
+                        <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i>
+                            <span id="photoPreviewStatusText">Photo prête à être publiée</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" id="btnReopenCropper" onclick="reopenCropper()" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sky-400 font-bold text-[11px] flex items-center gap-1 transition">
+                                <i data-lucide="crop" class="w-3.5 h-3.5"></i>
+                                <span>Recadrer</span>
+                            </button>
+                            <button type="button" onclick="clearProductPhoto()" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-[11px] flex items-center gap-1 transition">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <span>Supprimer</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bouton Import Galerie/Appareil Photo + Champ Lien URL -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <label onclick="markFilePickerOpening()" class="w-full py-3 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 font-black text-xs flex items-center justify-center gap-2 cursor-pointer transition active:scale-[0.98]">
+                        <i data-lucide="image-plus" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Choisir Photo / Appareil Photo</span>
+                        <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                    </label>
+
+                    <div class="flex items-center gap-1.5">
+                        <input 
+                            type="text" 
+                            id="newProdImageUrl" 
+                            placeholder="Ou coller un lien image (https://...)" 
+                            oninput="updateImagePreview(this.value)"
+                            class="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 w-full"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. NOM, MARQUE & CATÉGORIE -->
+            <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-3">
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-[11px] font-bold text-zinc-400 uppercase">Marque *</label>
-                        <button type="button" onclick="toggleNewBrandInput(true)" id="toggleBrandBtn" class="text-[10px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition">
-                            <i data-lucide="plus-circle" class="w-3 h-3"></i> + Ajouter marque
+                    <label class="block text-[11px] font-bold text-zinc-300 uppercase mb-1.5">2. Nom de l'article *</label>
+                    <input type="text" id="newProdName" required placeholder="Ex: Wyndham Parka, Veste Brasil, Alcatraz Hoodie..." class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-semibold focus:outline-none focus:border-emerald-400">
+                </div>
+
+                <!-- Sélection rapide de la Marque en 1 tap -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-[11px] font-bold text-zinc-300 uppercase">Marque *</label>
+                        <button type="button" onclick="toggleNewBrandInput(true)" id="toggleBrandBtn" class="text-[11px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition">
+                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> + Créer une marque
                         </button>
                     </div>
+
+                    <!-- Raccourcis Marques 1-Tap pour Mobile -->
+                    <div class="flex flex-wrap gap-1.5 pb-1">
+                        <button type="button" onclick="setBrandValue('Nike')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Nike</button>
+                        <button type="button" onclick="setBrandValue('Canada Goose')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Canada Goose</button>
+                        <button type="button" onclick="setBrandValue('Corteiz')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Corteiz</button>
+                        <button type="button" onclick="setBrandValue('Arc\'teryx')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Arc'teryx</button>
+                        <button type="button" onclick="setBrandValue('Jordan')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Jordan</button>
+                        <button type="button" onclick="setBrandValue('Stüssy')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Stüssy</button>
+                        <button type="button" onclick="setBrandValue('Moncler')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Moncler</button>
+                        <button type="button" onclick="setBrandValue('Ralph Lauren')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-zinc-300 active:scale-95 transition">Ralph Lauren</button>
+                    </div>
                     
-                    <select id="brandSelect" onchange="handleBrandSelectChange(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <select id="brandSelect" onchange="handleBrandSelectChange(this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-zinc-400">
                         <option value="">Sélectionner une marque...</option>
                         <option value="__NEW__">➕ Autre marque (créer nouvelle)...</option>
                     </select>
 
-                    <div id="newBrandInputContainer" class="hidden mt-2 flex items-center gap-2 bg-zinc-900/90 p-2 rounded-xl border border-sky-500/40">
+                    <div id="newBrandInputContainer" class="hidden mt-2 flex items-center gap-2 bg-zinc-900 p-2 rounded-xl border border-sky-500/40">
                         <input 
                             type="text" 
                             id="newCustomBrandInput" 
-                            placeholder="Nom marque (ex: Canada Goose)..." 
+                            placeholder="Nom marque (ex: Stone Island)..." 
                             onkeydown="if(event.key==='Enter'){event.preventDefault();confirmCustomBrand();}"
-                            class="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
+                            class="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400"
                         >
-                        <button type="button" onclick="confirmCustomBrand()" class="px-3 py-1.5 rounded-lg bg-sky-400 hover:bg-sky-300 text-black font-black text-xs transition">
-                            Ajouter
+                        <button type="button" onclick="confirmCustomBrand()" class="px-3 py-2 rounded-lg bg-sky-400 hover:bg-sky-300 text-black font-black text-xs transition">
+                            Valider
                         </button>
-                        <button type="button" onclick="toggleNewBrandInput(false)" class="p-1 text-zinc-400 hover:text-white text-xs">✕</button>
+                        <button type="button" onclick="toggleNewBrandInput(false)" class="p-1.5 text-zinc-400 hover:text-white text-xs">✕</button>
                     </div>
 
                     <input type="hidden" id="newProdBrand" required>
                 </div>
-            </div>
 
-            <!-- Category & Locked 1:1 Badge (Standard Automatique) -->
-            <div class="grid sm:grid-cols-2 gap-3 items-center">
+                <!-- Catégorie -->
                 <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Catégorie *</label>
-                    <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-400">
+                    <label class="block text-[11px] font-bold text-zinc-300 uppercase mb-1.5">Catégorie *</label>
+                    <select id="newProdCategory" onchange="switchSizesByCategory(this.value)" class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-zinc-400">
                         <option value="vestes">Vestes & Manteaux</option>
                         <option value="sweats">Sweats & Hoodies</option>
                         <option value="chaussures">Chaussures / Sneakers</option>
@@ -872,115 +947,69 @@
                         <option value="accessoires">Accessoires</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Norme de Fabrication</label>
-                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold flex items-center gap-2">
-                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                        <span>Qualité 1:1 Miroir (Standard Garanti)</span>
-                    </div>
-                </div>
             </div>
 
-            <!-- MULTI-COLORIS -->
-            <div class="space-y-2 p-3 bg-zinc-950 rounded-xl border border-zinc-800">
+            <!-- 3. MULTI-COLORIS -->
+            <div class="space-y-2.5 p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800">
                 <div class="flex items-center justify-between">
                     <label class="text-[11px] font-bold text-zinc-200 uppercase flex items-center gap-1.5">
                         <i data-lucide="palette" class="w-3.5 h-3.5 text-emerald-400"></i>
-                        Coloris disponibles (Multi-coloris pour l'article)
+                        <span>3. Coloris disponibles</span>
                     </label>
                     <span id="colorCountBadge" class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">
                         0 coloris
                     </span>
                 </div>
 
-                <div id="activeColorsContainer" class="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-black/80 border border-zinc-800 rounded-lg items-center"></div>
+                <div id="activeColorsContainer" class="flex flex-wrap gap-1.5 min-h-[38px] p-2 bg-black/80 border border-zinc-800 rounded-xl items-center"></div>
 
-                <div class="flex items-center gap-2 pt-1">
+                <div class="flex items-center gap-2">
                     <input 
                         type="text" 
                         id="newColorInput" 
-                        placeholder="Tapez un coloris (ex: Noir Mat, Gris Graphite, Baby Blue)..." 
+                        placeholder="Ajouter un coloris (ex: Vert, Noir Mat)..." 
                         onkeydown="if(event.key==='Enter'){event.preventDefault();addColorTag(this.value);}"
-                        class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
+                        class="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                     >
                     <button 
                         type="button" 
                         onclick="addColorTag(document.getElementById('newColorInput').value)" 
-                        class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg font-bold text-xs flex items-center gap-1 transition shrink-0"
+                        class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold text-xs flex items-center gap-1 transition shrink-0"
                     >
                         <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                         <span>Ajouter</span>
                     </button>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-1 pt-1 text-[11px]">
-                    <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis :</span>
-                    <button type="button" onclick="addColorTag('Noir Mat')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Noir Mat</button>
-                    <button type="button" onclick="addColorTag('Gris Graphite')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Gris Graphite</button>
-                    <button type="button" onclick="addColorTag('Bleu Marine')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Bleu Marine</button>
-                    <button type="button" onclick="addColorTag('Blanc')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Blanc</button>
-                    <button type="button" onclick="addColorTag('Kaki')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Kaki</button>
-                    <button type="button" onclick="addColorTag('Triple Black')" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Triple Black</button>
+                <div class="flex flex-wrap items-center gap-1.5 pt-0.5 text-[11px]">
+                    <button type="button" onclick="addColorTag('Noir')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Noir</button>
+                    <button type="button" onclick="addColorTag('Blanc')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Blanc</button>
+                    <button type="button" onclick="addColorTag('Gris')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Gris</button>
+                    <button type="button" onclick="addColorTag('Bleu Marine')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Bleu Marine</button>
+                    <button type="button" onclick="addColorTag('Vert')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Vert</button>
+                    <button type="button" onclick="addColorTag('Beige')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">+ Beige</button>
                 </div>
             </div>
 
-            <!-- Photo Import with Camera / Gallery -->
-            <div class="space-y-2">
-                <label class="block text-[11px] font-bold text-zinc-400 uppercase">
-                    Photo de l'article (Importer ou Coller URL)
-                </label>
-                
-                <div class="flex flex-col sm:flex-row items-center gap-2">
-                    <label class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition">
-                        <i data-lucide="camera" class="w-4 h-4 text-emerald-400"></i>
-                        <span>Prendre photo / Photothèque</span>
-                        <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-                    </label>
-
-                    <input 
-                        type="url" 
-                        id="newProdImageUrl" 
-                        placeholder="ou coller URL photo..." 
-                        oninput="updateImagePreview(this.value)"
-                        class="flex-1 bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none w-full"
-                    >
-                </div>
-
-                <div id="photoPreviewContainer" class="hidden items-center gap-3 p-2 bg-zinc-950 rounded-xl border border-zinc-800">
-                    <img id="photoPreviewImg" src="" alt="Aperçu" class="w-14 h-14 rounded-lg object-cover bg-black border border-zinc-700">
-                    <div class="text-xs space-y-0.5">
-                        <div class="text-emerald-400 font-bold flex items-center gap-1">
-                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Photo recadrée 1:1 Carré
-                        </div>
-                        <button type="button" onclick="reopenCropper()" class="text-sky-400 hover:underline text-[11px]">
-                            Modifier le cadrage
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DÉCLINAISONS, PRIX & GESTION DES STOCKS (STANDARD VS MULTI-MATIÈRES) -->
+            <!-- 4. PRIX, DÉCLINAISONS & GESTION DU STOCK (AVEC OPTION DÉSACTIVER LE STOCK) -->
             <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-3.5">
                 <!-- Mode Switcher Header -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-zinc-900">
                     <div>
                         <div class="flex items-center gap-2">
                             <i data-lucide="layers" class="w-4 h-4 text-sky-400"></i>
-                            <span class="text-xs font-black text-white uppercase tracking-wider">Déclinaisons, Prix & Stocks</span>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">4. Prix & Système de Stock</span>
                             <span id="productModeBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-mono">Standard</span>
                         </div>
-                        <p class="text-[10px] text-zinc-500 mt-0.5">
-                            Gérez un prix et stock unique, ou personnalisez les prix, coûts d'achat et stocks par matière (ex: Plume de canard vs Coton).
-                        </p>
                     </div>
 
                     <!-- Mode Toggle Buttons -->
-                    <div class="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800 self-start sm:self-auto shrink-0">
+                    <div class="grid grid-cols-2 sm:flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800 w-full sm:w-auto shrink-0">
                         <button 
                             type="button" 
                             id="btnModeStandard" 
                             onclick="setProductMode('standard')" 
-                            class="px-3 py-1 rounded-lg text-xs font-bold transition bg-white text-black shadow"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-black shadow text-center"
                         >
                             Article Standard
                         </button>
@@ -988,42 +1017,84 @@
                             type="button" 
                             id="btnModeMulti" 
                             onclick="setProductMode('multi')" 
-                            class="px-3 py-1 rounded-lg text-xs font-bold transition text-zinc-400 hover:text-white"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-zinc-400 hover:text-white text-center"
                         >
-                            Multi-Matières (Canada Goose, Cuir...)
+                            Multi-Matières
                         </button>
+                    </div>
+                </div>
+
+                <!-- INTERRUPTEUR : DÉSACTIVER LE SYSTÈME DE STOCK POUR CET ARTICLE -->
+                <div 
+                    id="unlimitedStockCard"
+                    onclick="toggleModalUnlimitedStock()" 
+                    class="p-3 rounded-xl border border-zinc-800 bg-zinc-900/70 hover:border-emerald-500/40 flex items-center justify-between gap-3 cursor-pointer transition select-none"
+                >
+                    <div class="flex items-center gap-3">
+                        <div id="unlimitedStockIconBox" class="w-9 h-9 rounded-xl bg-zinc-800 text-zinc-400 flex items-center justify-center font-black text-base shrink-0 transition">
+                            ♾️
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <span>Désactiver le système de stock (Stock illimité)</span>
+                            </div>
+                            <p id="unlimitedStockSubtext" class="text-[11px] text-zinc-400">
+                                L'article sera toujours affichable et commandable sans limite de quantité ni rupture.
+                            </p>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="newProdUnlimitedStock" class="hidden">
+                    <div id="unlimitedStockSwitchUI" class="w-12 h-7 rounded-full bg-zinc-800 border border-zinc-700 p-1 flex items-center transition shrink-0">
+                        <div id="unlimitedStockSwitchKnob" class="w-5 h-5 rounded-full bg-zinc-400 transition-transform"></div>
                     </div>
                 </div>
 
                 <!-- 1. SECTION STANDARD: Prix Unique & Grille Simple -->
                 <div id="standardConfigSection" class="space-y-3">
-                    <div class="grid sm:grid-cols-3 gap-2.5 p-3 bg-zinc-900/60 rounded-xl border border-zinc-800/80">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3 bg-zinc-900/60 rounded-xl border border-zinc-800/80">
                         <div>
-                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente public (€) *</label>
-                            <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-sky-400">
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Prix vente (€) *</label>
+                            <input type="number" id="newProdPrice" required placeholder="120" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-sky-400">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût d'achat fournisseur (€)</label>
-                            <input type="number" id="newProdCost" placeholder="40" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-sky-400">
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase mb-1">Coût d'achat (€)</label>
+                            <input type="number" id="newProdCost" placeholder="40" oninput="calculateMargin()" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-sky-400">
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire Réel</label>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Bénéfice Unitaire</label>
                             <div id="newProdMarginDisplay" class="text-xs font-black text-emerald-400 py-1.5">+0 € (0% marge)</div>
                         </div>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <label class="block text-[11px] font-bold text-zinc-400 uppercase">Stocks par Taille</label>
-                            <span id="standardTotalPiecesLabel" class="text-[10px] text-zinc-500 font-mono">Quantité par taille</span>
+                    <!-- Quand le système de stock est ACTIVÉ -->
+                    <div id="standardStockSectionActive" class="space-y-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <label class="block text-[11px] font-bold text-zinc-300 uppercase">Stocks par Taille</label>
+                            <div class="flex items-center gap-1.5 text-[10px]">
+                                <span class="text-zinc-500">Remplir tout :</span>
+                                <button type="button" onclick="setAllStandardStocks(0)" class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-bold">0</button>
+                                <button type="button" onclick="setAllStandardStocks(3)" class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white font-bold">3</button>
+                                <button type="button" onclick="setAllStandardStocks(5)" class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white font-bold">5</button>
+                                <button type="button" onclick="setAllStandardStocks(10)" class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400 hover:text-white font-bold">10</button>
+                            </div>
                         </div>
-                        <div id="sizesStockGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-2"></div>
+                        <div id="sizesStockGrid" class="grid grid-cols-3 sm:grid-cols-7 gap-2"></div>
+                    </div>
+
+                    <!-- Quand le système de stock est DÉSACTIVÉ (Stock illimité) -->
+                    <div id="standardStockSectionUnlimited" class="hidden p-3 bg-emerald-950/20 border border-emerald-500/30 rounded-xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                                <span>♾️ Tailles proposées en stock illimité :</span>
+                            </span>
+                            <span class="text-[10px] text-zinc-400">Touchez une taille pour l'activer/désactiver</span>
+                        </div>
+                        <div id="unlimitedSizesPills" class="flex flex-wrap gap-2"></div>
                     </div>
                 </div>
 
-                <!-- 2. SECTION MULTI-MATIÈRES: Déclinaisons Indépendantes (Prix, Coût Achat & Stock par taille) -->
+                <!-- 2. SECTION MULTI-MATIÈRES -->
                 <div id="multiMaterialConfigSection" class="hidden space-y-3.5">
-                    <!-- Option Group Title & Presets -->
                     <div class="space-y-2 p-3 bg-zinc-900/40 rounded-xl border border-zinc-800">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
@@ -1041,29 +1112,27 @@
                             </span>
                         </div>
 
-                        <!-- 1-Click Presets -->
                         <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-zinc-800/80 text-[11px]">
-                            <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis matières :</span>
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase mr-1">Raccourcis :</span>
                             <button type="button" onclick="applyMaterialPreset('canada_goose')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
-                                🧥 Canada Goose: Plume de canard (320€ / 110€) vs Coton (210€ / 70€)
+                                🧥 Plume de canard vs Coton
                             </button>
                             <button type="button" onclick="applyMaterialPreset('fourrure')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
-                                🦊 Parka: Fourrure coyote (340€ / 130€) vs Sans fourrure (290€ / 95€)
+                                🦊 Fourrure vs Sans fourrure
                             </button>
                             <button type="button" onclick="applyMaterialPreset('cuir')" class="px-2.5 py-1 rounded-lg bg-zinc-950 text-sky-300 border border-zinc-800 hover:border-sky-500 text-[10px] font-bold cursor-pointer transition">
-                                👜 Veste Cuir: Cuir pleine fleur (260€ / 90€) vs Simili (180€ / 50€)
+                                👜 Cuir véritable vs Simili
                             </button>
                         </div>
                     </div>
 
-                    <!-- Material Tabs Header Bar -->
                     <div class="space-y-1.5">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Sélectionnez la matière à configurer :</span>
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Matières :</span>
                             <button 
                                 type="button" 
                                 onclick="addNewMaterialOption()" 
-                                class="text-[10px] font-bold text-sky-400 hover:text-sky-300 bg-sky-500/10 border border-sky-500/30 px-2.5 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer transition"
+                                class="text-[10px] font-bold text-sky-400 hover:text-sky-300 bg-sky-500/10 border border-sky-500/30 px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer transition"
                             >
                                 <i data-lucide="plus" class="w-3 h-3"></i>
                                 <span>Ajouter une matière</span>
@@ -1072,15 +1141,13 @@
                         <div id="materialTabsBar" class="flex flex-wrap gap-2 items-center"></div>
                     </div>
 
-                    <!-- Active Material Card (Price, Cost, Live Profit & Size Stock Grid) -->
                     <div id="activeMaterialCard" class="p-3.5 bg-zinc-900/90 rounded-2xl border border-sky-500/30 space-y-3.5 relative"></div>
 
-                    <!-- Global Recap of all Materials (Summary Table) -->
                     <div class="p-3 bg-black/60 rounded-xl border border-zinc-800/80 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
                                 <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                Récapitulatif global des matières & stocks
+                                Récapitulatif global
                             </span>
                             <span id="multiTotalAllUnitsBadge" class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
                                 Total: 0 pièces
@@ -1091,10 +1158,10 @@
                 </div>
             </div>
 
-            <!-- AI Streetwear Description -->
-            <div class="space-y-1.5">
+            <!-- 5. DESCRIPTION QUALITÉ 1:1 -->
+            <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-2">
                 <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-bold text-zinc-400 uppercase">Description Qualité 1:1</label>
+                    <label class="block text-[11px] font-bold text-zinc-300 uppercase">5. Description de l'article</label>
                     <button 
                         type="button" 
                         onclick="triggerAIDescription()" 
@@ -1102,24 +1169,24 @@
                         class="text-[11px] font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg transition"
                     >
                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                        <span>Générer IA Streetwear</span>
+                        <span>Générer Texte IA</span>
                     </button>
                 </div>
                 <textarea 
                     id="newProdDescription" 
-                    rows="3" 
-                    required
-                    placeholder="Détails finitions 1:1, grammage coton, hologramme..." 
-                    class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                    rows="2" 
+                    placeholder="Détails finitions 1:1, coupe, matières (optionnel, généré automatiquement si vide)..." 
+                    class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                 ></textarea>
             </div>
 
-            <div class="pt-2 border-t border-zinc-800 flex items-center justify-end gap-2">
-                <button type="button" onclick="closeNewProductModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white">
+            <!-- Sticky Bottom Bar Inside Form for Mobile Ergonomics -->
+            <div class="sticky bottom-0 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-3.5 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 flex items-center justify-between gap-3 z-10">
+                <button type="button" onclick="closeNewProductModal()" class="px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-300 hover:text-white">
                     Annuler
                 </button>
-                <button type="submit" id="saveProductBtn" class="bg-white hover:bg-zinc-200 text-black px-5 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 transition active:scale-95 shadow-md">
-                    <i data-lucide="check" class="w-4 h-4"></i>
+                <button type="submit" id="saveProductBtn" class="flex-1 sm:flex-initial bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-lg shadow-emerald-500/20">
+                    <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
                     <span id="saveBtnText">Enregistrer & Publier</span>
                 </button>
             </div>
@@ -1534,7 +1601,7 @@
     <!-- ============================================================== -->
     <!-- 9. MODAL: RECADRAGE IMAGE 1:1 CARRÉ                             -->
     <!-- ============================================================== -->
-    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[80] hidden flex items-center justify-center p-4">
         <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-5 shadow-2xl space-y-3">
             
             <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
@@ -1542,13 +1609,13 @@
                     <i data-lucide="crop" class="w-4 h-4 text-sky-400"></i>
                     <h4 class="font-bold text-sm text-white">Recadrage Photo 1:1 Carré</h4>
                 </div>
-                <button onclick="closeCropper()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <button type="button" onclick="closeCropper()" class="p-1 rounded text-zinc-400 hover:text-white">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
             <div class="crop-container" id="cropBox">
-                <canvas id="cropCanvas" width="280" height="280" class="w-full h-full"></canvas>
+                <canvas id="cropCanvas" width="500" height="500" class="w-full h-full"></canvas>
                 <div class="crop-overlay-grid"></div>
             </div>
 
@@ -1578,9 +1645,9 @@
             </div>
 
             <div class="pt-2 border-t border-zinc-800 flex justify-end gap-2">
-                <button onclick="closeCropper()" class="px-3 py-1.5 text-xs text-zinc-400 hover:text-white">Annuler</button>
-                <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center gap-1 transition">
-                    <i data-lucide="check" class="w-4 h-4"></i> Valider 1:1
+                <button type="button" onclick="closeCropper()" class="px-3 py-2 text-xs text-zinc-400 hover:text-white">Garder tel quel</button>
+                <button type="button" onclick="applyCrop()" class="px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center gap-1 transition">
+                    <i data-lucide="check" class="w-4 h-4"></i> Appliquer le cadrage
                 </button>
             </div>
 
@@ -1588,9 +1655,9 @@
     </div>
 
     <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed bottom-20 md:bottom-6 right-6 bg-zinc-950 border border-emerald-500 text-white px-4 py-2.5 rounded-xl z-50 text-xs font-bold uppercase tracking-wider shadow-2xl translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-2">
-        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
-        <span id="toastMessage">Action effectuée</span>
+    <div id="toast" class="fixed bottom-24 md:bottom-6 right-4 md:right-6 left-4 md:left-auto bg-zinc-950 border border-emerald-500 text-white px-4 py-3 rounded-xl z-[90] text-xs font-bold uppercase tracking-wider shadow-2xl translate-y-24 opacity-0 transition-all duration-300 flex items-center justify-center md:justify-start gap-2 pointer-events-none">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+        <span id="toastMessage" class="truncate">Action effectuée</span>
     </div>
 
     <!-- ============================================================== -->
@@ -1721,6 +1788,17 @@
                 select.value = selectedVal;
                 document.getElementById('newProdBrand').value = selectedVal;
             }
+            renderBrandQuickPills(selectedVal || document.getElementById('newProdBrand')?.value || '');
+        }
+
+        function renderBrandQuickPills(activeBrand = '') {
+            const container = document.getElementById('brandQuickPills');
+            if (!container) return;
+            const quickList = ["Canada Goose", "Corteiz", "Arc'teryx", "Moncler", "Trapstar", "Stüssy", "Jordan", "Nike"];
+            container.innerHTML = quickList.map(b => {
+                const isSelected = activeBrand.toLowerCase() === b.toLowerCase();
+                return `<button type="button" onclick="setBrandValue('${b.replace(/'/g, "\\'")}')" class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition cursor-pointer ${isSelected ? 'bg-white text-black border-white shadow' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'}">${b}</button>`;
+            }).join('');
         }
 
         function handleBrandSelectChange(val) {
@@ -1729,6 +1807,7 @@
             } else {
                 toggleNewBrandInput(false);
                 document.getElementById('newProdBrand').value = val;
+                renderBrandQuickPills(val);
             }
         }
 
@@ -1847,13 +1926,29 @@
             window.addEventListener(evt, resetIdleTimer, { passive: true });
         });
 
-        // Détection quand l'admin quitte l'app (multitâche iPhone, écran verrouillé, changement d'onglet)
+        let isPickingFile = false;
+        let bgLockTimer = null;
+        const BG_GRACE_MS = 3 * 60 * 1000; // 3 min de tolérance en arrière-plan (pour choisir une photo ou copier un lien)
+
+        function markFilePickerOpening() {
+            isPickingFile = true;
+            setTimeout(() => { isPickingFile = false; }, 60000);
+        }
+
+        // Détection quand l'admin quitte l'app (avec tolérance pour le sélecteur de photos iOS/Android)
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
-                // Verrouillage instantané dès que l'app est en arrière-plan
-                lockAdminSession(false);
+                if (isPickingFile) return;
+                if (bgLockTimer) clearTimeout(bgLockTimer);
+                bgLockTimer = setTimeout(() => {
+                    lockAdminSession(false);
+                }, BG_GRACE_MS);
             } else if (document.visibilityState === 'visible') {
-                // Dès que l'admin revient, on invite au déverrouillage
+                isPickingFile = false;
+                if (bgLockTimer) {
+                    clearTimeout(bgLockTimer);
+                    bgLockTimer = null;
+                }
                 if (!isSessionUnlocked) {
                     promptSessionUnlock();
                 }
@@ -2279,6 +2374,7 @@
             if (mobileGrid) {
                 mobileGrid.innerHTML = filtered.map(p => {
                     const stockObj = p.stock || {};
+                    const isUnlimited = p.unlimitedStock === true;
                     const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
                     const cost = Number(p.costPrice || Math.round(p.price * 0.35));
                     const unitProfit = Number(p.price) - cost;
@@ -2288,12 +2384,13 @@
                     return `
                     <div class="bg-els-card border border-els-border rounded-2xl p-4 space-y-3 shadow-lg">
                         <div class="flex gap-3">
-                            <img src="${p.image}" alt="${p.name}" class="w-20 h-20 rounded-xl object-cover bg-black border border-zinc-800 shrink-0">
+                            <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-20 h-20 rounded-xl object-cover bg-black border border-zinc-800 shrink-0">
                             <div class="flex-1 min-w-0">
                                 <div class="text-[10px] font-black uppercase text-zinc-400 tracking-wider">${p.brand}</div>
                                 <h4 class="font-bold text-sm text-white truncate">${p.name}</h4>
-                                <div class="flex items-center gap-1.5 mt-1">
+                                <div class="flex flex-wrap items-center gap-1.5 mt-1">
                                     <span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded">1:1 Miroir</span>
+                                    ${isUnlimited ? `<span class="text-[9px] font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 rounded">♾️ Stock Illimité</span>` : ''}
                                     <span class="text-[10px] text-zinc-400 capitalize">${p.category}</span>
                                 </div>
                                 <div class="flex items-baseline gap-2 mt-1.5">
@@ -2319,27 +2416,38 @@
 
                         <!-- Sizes / Quick Stock Pills -->
                         <div class="flex flex-wrap gap-1.5 items-center">
-                            ${(p.sizes || []).map(sz => {
-                                const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
-                                return `
-                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${count === 0 ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-zinc-900 border-zinc-800 text-zinc-300'}">
-                                        <strong>${sz}</strong>: ${count}
+                            ${isUnlimited ? `
+                                ${(p.sizes || []).map(sz => `
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded border bg-emerald-500/10 border-emerald-500/30 text-emerald-300">
+                                        <strong>${sz}</strong>: ∞
                                     </span>
-                                `;
-                            }).join('')}
-                            <span class="ml-auto text-[10px] font-black px-2 py-0.5 rounded ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
-                                Total: ${totalUnits}
-                            </span>
+                                `).join('')}
+                                <span class="ml-auto text-[10px] font-black px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                                    ♾️ Sans limite
+                                </span>
+                            ` : `
+                                ${(p.sizes || []).map(sz => {
+                                    const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                    return `
+                                        <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${count === 0 ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-zinc-900 border-zinc-800 text-zinc-300'}">
+                                            <strong>${sz}</strong>: ${count}
+                                        </span>
+                                    `;
+                                }).join('')}
+                                <span class="ml-auto text-[10px] font-black px-2 py-0.5 rounded ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                                    Total: ${totalUnits}
+                                </span>
+                            `}
                         </div>
 
                         <!-- Card Action Buttons -->
-                        <div class="pt-2 border-t border-zinc-900 flex items-center justify-between">
-                            <button onclick="switchTab('stocks')" class="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1">
-                                <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-                                <span>Ajuster stocks</span>
+                        <div class="pt-2 border-t border-zinc-900 flex items-center justify-between gap-2">
+                            <button onclick="toggleProductUnlimitedStock('${p.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${isUnlimited ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'}">
+                                <span>♾️</span>
+                                <span>${isUnlimited ? 'Stock illimité ON' : 'Stock illimité OFF'}</span>
                             </button>
                             <div class="flex items-center gap-2">
-                                <button onclick="editProduct('${p.id}')" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-bold hover:text-white flex items-center gap-1">
+                                <button onclick="editProduct('${p.id}')" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-extrabold hover:bg-zinc-200 flex items-center gap-1 shadow">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                     <span>Modifier</span>
                                 </button>
@@ -2357,6 +2465,7 @@
             if (tbody) {
                 tbody.innerHTML = filtered.map(p => {
                     const stockObj = p.stock || {};
+                    const isUnlimited = p.unlimitedStock === true;
                     const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
                     const cost = Number(p.costPrice || Math.round(p.price * 0.35));
                     const unitProfit = Number(p.price) - cost;
@@ -2367,12 +2476,13 @@
                     <tr class="hover:bg-zinc-900/50 transition">
                         <td class="py-3.5 px-4">
                             <div class="flex items-center gap-3">
-                                <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
+                                <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-12 h-12 rounded-lg object-cover bg-zinc-950 shrink-0 border border-zinc-800">
                                 <div>
                                     <span class="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider">${p.brand}</span>
                                     <div class="font-bold text-white">${p.name}</div>
                                     <div class="flex flex-wrap items-center gap-1 mt-1">
                                         <span class="text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.2 rounded">1:1 Miroir</span>
+                                        ${isUnlimited ? `<span class="text-[9px] text-amber-300 font-mono font-bold bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 rounded">♾️ Illimité</span>` : ''}
                                         ${pColors.map(c => `
                                             <span class="text-[9px] bg-zinc-800/90 text-zinc-300 border border-zinc-700 px-1.5 py-0.2 rounded font-mono">${c}</span>
                                         `).join('')}
@@ -2393,27 +2503,43 @@
                             <span class="text-[10px] text-emerald-500 font-bold">${marginPct}% marge</span>
                         </td>
                         <td class="py-3.5 px-4">
-                            <div class="flex flex-wrap gap-1.5 items-center max-w-sm">
-                                ${(p.sizes || []).map(sz => {
-                                    const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
-                                    return `
-                                        <div class="flex items-center border border-zinc-800 rounded bg-zinc-950 px-1.5 py-0.5 text-[11px]">
-                                            <span class="font-bold text-zinc-400 mr-1">${sz}:</span>
-                                            <button onclick="updateStockDelta('${p.id}', '${sz}', -1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">-</button>
-                                            <span class="font-mono font-bold ${count === 0 ? 'text-red-400' : 'text-white'} px-1">${count}</span>
-                                            <button onclick="updateStockDelta('${p.id}', '${sz}', 1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">+</button>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
+                            ${isUnlimited ? `
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="text-xs font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-lg">♾️ Stock désactivé (commandable en continu)</span>
+                                    <button onclick="toggleProductUnlimitedStock('${p.id}')" class="text-[10px] font-bold text-zinc-400 hover:text-white underline ml-1">Réactiver stock</button>
+                                </div>
+                            ` : `
+                                <div class="flex flex-wrap gap-1.5 items-center max-w-sm">
+                                    ${(p.sizes || []).map(sz => {
+                                        const count = stockObj[sz] !== undefined ? stockObj[sz] : 0;
+                                        return `
+                                            <div class="flex items-center border border-zinc-800 rounded bg-zinc-950 px-1.5 py-0.5 text-[11px]">
+                                                <span class="font-bold text-zinc-400 mr-1">${sz}:</span>
+                                                <button onclick="updateStockDelta('${p.id}', '${sz}', -1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">-</button>
+                                                <span class="font-mono font-bold ${count === 0 ? 'text-red-400' : 'text-white'} px-1">${count}</span>
+                                                <button onclick="updateStockDelta('${p.id}', '${sz}', 1)" class="text-zinc-500 hover:text-white px-1 font-mono font-bold">+</button>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `}
                         </td>
                         <td class="py-3.5 px-4 text-center">
-                            <span class="px-2 py-0.5 rounded text-[11px] font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
-                                ${totalUnits} pcs
-                            </span>
+                            ${isUnlimited ? `
+                                <span class="px-2 py-0.5 rounded text-[11px] font-black bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                                    ♾️ Illimité
+                                </span>
+                            ` : `
+                                <span class="px-2 py-0.5 rounded text-[11px] font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                                    ${totalUnits} pcs
+                                </span>
+                            `}
                         </td>
                         <td class="py-3.5 px-4 text-right">
                             <div class="flex items-center justify-end gap-2">
+                                <button onclick="toggleProductUnlimitedStock('${p.id}')" class="px-2 py-1.5 rounded-lg border text-[10px] font-bold transition ${isUnlimited ? 'bg-amber-500/15 border-amber-500/40 text-amber-300' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'}" title="Activer/Désactiver le système de stock">
+                                    ♾️
+                                </button>
                                 <button onclick="editProduct('${p.id}')" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white" title="Modifier">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </button>
@@ -2455,6 +2581,7 @@
             let list = adminProducts;
             if (stockFilterMode === 'low') {
                 list = list.filter(p => {
+                    if (p.unlimitedStock) return false;
                     const stockObj = p.stock || {};
                     return (p.sizes || []).some(sz => (stockObj[sz] || 0) <= 2);
                 });
@@ -2471,14 +2598,15 @@
 
             container.innerHTML = list.map(p => {
                 const stockObj = p.stock || {};
+                const isUnlimited = p.unlimitedStock === true;
                 const totalUnits = Object.values(stockObj).reduce((a, b) => a + Number(b || 0), 0);
                 const hasOptions = Array.isArray(p.options) && p.options.length > 0;
 
                 return `
                 <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-zinc-800">
                         <div class="flex items-center gap-3">
-                            <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-xl object-cover bg-black border border-zinc-700">
+                            <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-12 h-12 rounded-xl object-cover bg-black border border-zinc-700">
                             <div>
                                 <span class="text-[10px] font-black uppercase text-zinc-400 tracking-wider">${p.brand}</span>
                                 <h3 class="font-bold text-sm text-white">${p.name}</h3>
@@ -2487,12 +2615,29 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 rounded-xl text-xs font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
-                            ${totalUnits} en stock total
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleProductUnlimitedStock('${p.id}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-extrabold transition cursor-pointer flex items-center gap-1.5 ${isUnlimited ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-zinc-500'}">
+                                <span>♾️</span>
+                                <span>${isUnlimited ? 'Stock illimité ACTIF' : 'Désactiver stock'}</span>
+                            </button>
+                            ${!isUnlimited ? `
+                                <span class="px-2.5 py-1 rounded-xl text-xs font-black ${totalUnits === 0 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : totalUnits <= 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}">
+                                    ${totalUnits} en stock total
+                                </span>
+                            ` : ''}
+                        </div>
                     </div>
 
-                    ${hasOptions ? `
+                    ${isUnlimited ? `
+                        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="text-xs text-amber-200">
+                                <span class="font-black">♾️ Système de stock désactivé pour cet article :</span> toutes les tailles (${(p.sizes || []).join(', ')}) sont affichées disponibles en continu sur la boutique.
+                            </div>
+                            <button onclick="toggleProductUnlimitedStock('${p.id}')" class="shrink-0 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-xs font-bold hover:bg-zinc-800 cursor-pointer">
+                                Réactiver le compteur de stock
+                            </button>
+                        </div>
+                    ` : hasOptions ? `
                         <!-- Sub-sections per material option -->
                         <div class="space-y-3">
                             ${p.options.map((opt, optIdx) => {
@@ -3882,8 +4027,119 @@
         }
 
         // ==========================================
-        // PRODUITS: CREATION & ÉDITION
+        // PRODUITS: CREATION & ÉDITION + STOCK ILLIMITÉ
         // ==========================================
+        let isModalUnlimitedStock = false;
+        let activeUnlimitedSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+
+        function toggleModalUnlimitedStock(forceVal) {
+            if (typeof forceVal === 'boolean') {
+                isModalUnlimitedStock = forceVal;
+            } else {
+                isModalUnlimitedStock = !isModalUnlimitedStock;
+            }
+            const hiddenInp = document.getElementById('newProdUnlimitedStock');
+            if (hiddenInp) hiddenInp.value = isModalUnlimitedStock ? 'true' : 'false';
+            updateUnlimitedStockUI();
+        }
+
+        function updateUnlimitedStockUI() {
+            const track = document.getElementById('unlimitedStockSwitchTrack');
+            const thumb = document.getElementById('unlimitedStockSwitchThumb');
+            const card = document.getElementById('unlimitedStockCard');
+            const stdCounted = document.getElementById('standardStockSectionCounted');
+            const stdUnlimited = document.getElementById('standardStockSectionUnlimited');
+
+            if (isModalUnlimitedStock) {
+                if (track) track.className = 'w-12 h-7 rounded-full bg-emerald-500 border border-emerald-400 transition-colors relative shrink-0';
+                if (thumb) thumb.className = 'w-5 h-5 rounded-full bg-black shadow-md absolute top-0.5 left-0.5 transition-transform translate-x-5';
+                if (card) card.className = 'p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-between gap-3 cursor-pointer select-none active:scale-[0.99] transition';
+                if (stdCounted) stdCounted.classList.add('hidden');
+                if (stdUnlimited) stdUnlimited.classList.remove('hidden');
+            } else {
+                if (track) track.className = 'w-12 h-7 rounded-full bg-zinc-800 border border-zinc-700 transition-colors relative shrink-0';
+                if (thumb) thumb.className = 'w-5 h-5 rounded-full bg-zinc-400 shadow-md absolute top-0.5 left-0.5 transition-transform translate-x-0';
+                if (card) card.className = 'p-3.5 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between gap-3 cursor-pointer select-none active:scale-[0.99] transition';
+                if (stdCounted) stdCounted.classList.remove('hidden');
+                if (stdUnlimited) stdUnlimited.classList.add('hidden');
+            }
+            renderUnlimitedSizesPills();
+        }
+
+        function renderUnlimitedSizesPills() {
+            const container = document.getElementById('unlimitedSizesPills');
+            if (!container) return;
+            container.innerHTML = currentCategorySizes.map(sz => {
+                const isActive = activeUnlimitedSizes.includes(sz);
+                return `
+                    <button type="button" onclick="toggleSizeActive('${sz}')" class="px-3.5 py-2 rounded-xl text-xs font-black border transition cursor-pointer flex items-center gap-1.5 ${isActive ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow' : 'bg-zinc-950 border-zinc-800 text-zinc-500 line-through'}">
+                        <span>${sz}</span>
+                        <span class="text-[10px]">${isActive ? '✓' : '✕'}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function toggleSizeActive(sz) {
+            if (activeUnlimitedSizes.includes(sz)) {
+                if (activeUnlimitedSizes.length <= 1) {
+                    showToast('Au moins une taille doit rester active');
+                    return;
+                }
+                activeUnlimitedSizes = activeUnlimitedSizes.filter(s => s !== sz);
+            } else {
+                activeUnlimitedSizes.push(sz);
+            }
+            renderUnlimitedSizesPills();
+        }
+
+        function setAllStandardStocks(val) {
+            document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
+                inp.value = val;
+            });
+            showToast(`Toutes les tailles réglées à ${val} pcs`);
+        }
+
+        function stepStandardStock(sz, delta) {
+            const inp = document.getElementById(`stockSize_${sz}`);
+            if (!inp) return;
+            const cur = parseInt(inp.value, 10) || 0;
+            inp.value = Math.max(0, cur + delta);
+        }
+
+        async function toggleProductUnlimitedStock(prodId) {
+            const p = adminProducts.find(it => it.id === prodId);
+            if (!p) return;
+            p.unlimitedStock = !p.unlimitedStock;
+
+            // Si on active le stock illimité et qu'aucun stock n'était présent, s'assurer que chaque taille a au moins 10 en fallback
+            if (p.unlimitedStock) {
+                if (!p.stock) p.stock = {};
+                (p.sizes || []).forEach(sz => {
+                    if (!p.stock[sz] || p.stock[sz] <= 0) p.stock[sz] = 10;
+                });
+            }
+
+            renderProductsList();
+            renderTactileStocks();
+            calculateKPIs();
+            showToast(p.unlimitedStock ? `♾️ Stock illimité activé pour ${p.name}` : `Système de stock réactivé pour ${p.name}`);
+
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                await fetch('/api/products', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(p)
+                });
+            } catch (err) {
+                console.warn('Erreur sync unlimitedStock:', err);
+            }
+        }
+
         function openNewProductModal() {
             document.getElementById('newProductForm').reset();
             document.getElementById('editProductId').value = '';
@@ -3898,18 +4154,24 @@
             if (optionsTitleInput) optionsTitleInput.value = 'Garnissage & Matière';
 
             finalCroppedDataUrl = '';
+            rawImage = null;
             document.getElementById('photoPreviewContainer').classList.add('hidden');
             document.getElementById('newProdImageUrl').value = '';
+            const fileInp = document.getElementById('photoFileInput');
+            if (fileInp) fileInp.value = '';
             
             document.getElementById('newProdPrice').value = '120';
             document.getElementById('newProdCost').value = '40';
 
             switchSizesByCategory('vestes');
+            toggleModalUnlimitedStock(false);
             setProductMode('standard');
+            populateBrandSelect('');
             calculateMargin();
 
             document.getElementById('newProductBackdrop').classList.remove('hidden');
             document.getElementById('newProductModal').classList.remove('hidden');
+            initIcons();
         }
 
         function closeNewProductModal() {
@@ -3936,6 +4198,10 @@
             renderColorTags();
 
             switchSizesByCategory(p.category);
+            if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                activeUnlimitedSizes = [...p.sizes];
+            }
+            toggleModalUnlimitedStock(p.unlimitedStock === true);
 
             // Charger les options si elles existent
             const hasOptions = Array.isArray(p.options) && p.options.length > 0;
@@ -3956,23 +4222,34 @@
                 setProductMode('standard');
 
                 const stockObj = p.stock || {};
-                (p.sizes || []).forEach(sz => {
+                currentCategorySizes.forEach(sz => {
                     const input = document.getElementById(`stockSize_${sz}`);
                     if (input) input.value = stockObj[sz] !== undefined ? stockObj[sz] : 0;
                 });
             }
 
-            if (p.image) {
+            rawImage = null;
+            const fileInp = document.getElementById('photoFileInput');
+            if (fileInp) fileInp.value = '';
+
+            const isValidImg = p.image && (p.image.startsWith('http://') || p.image.startsWith('https://') || p.image.startsWith('data:image/') || p.image.startsWith('/'));
+            if (isValidImg) {
                 finalCroppedDataUrl = p.image;
-                document.getElementById('newProdImageUrl').value = p.image;
+                // Ne pas injecter une longue chaîne base64 dans le champ texte URL
+                document.getElementById('newProdImageUrl').value = p.image.startsWith('data:') ? '' : p.image;
                 document.getElementById('photoPreviewImg').src = p.image;
                 document.getElementById('photoPreviewContainer').classList.remove('hidden');
+            } else {
+                finalCroppedDataUrl = '';
+                document.getElementById('newProdImageUrl').value = '';
+                document.getElementById('photoPreviewContainer').classList.add('hidden');
             }
 
             calculateMargin();
 
             document.getElementById('newProductBackdrop').classList.remove('hidden');
             document.getElementById('newProductModal').classList.remove('hidden');
+            initIcons();
         }
 
         function setBrandValue(brandName) {
@@ -3983,6 +4260,7 @@
             }
             populateBrandSelect(trimmed);
             document.getElementById('newProdBrand').value = trimmed;
+            renderBrandQuickPills(trimmed);
         }
 
         function switchSizesByCategory(cat) {
@@ -3995,22 +4273,29 @@
                 sizes = ['Unique'];
             }
             currentCategorySizes = sizes;
+            activeUnlimitedSizes = [...sizes];
 
             const grid = document.getElementById('sizesStockGrid');
             if (grid) {
                 grid.innerHTML = sizes.map(sz => `
-                    <div class="bg-zinc-950 p-2 rounded-xl border border-zinc-800 text-center space-y-1">
+                    <div class="bg-zinc-950 p-2 rounded-xl border border-zinc-800 text-center space-y-1.5">
                         <span class="block text-[11px] font-black uppercase text-zinc-300">${sz}</span>
-                        <input 
-                            type="number" 
-                            id="stockSize_${sz}" 
-                            value="3" 
-                            min="0"
-                            class="w-full bg-zinc-900 border border-zinc-700 rounded-lg text-center py-1 text-xs text-white font-bold focus:outline-none"
-                        >
+                        <div class="flex items-center justify-center gap-1">
+                            <button type="button" onclick="stepStandardStock('${sz}', -1)" class="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white font-black text-xs flex items-center justify-center active:scale-90 transition cursor-pointer">-</button>
+                            <input 
+                                type="number" 
+                                id="stockSize_${sz}" 
+                                value="3" 
+                                min="0"
+                                class="w-10 bg-zinc-900 border border-zinc-700 rounded-lg text-center py-1 text-xs text-white font-bold focus:outline-none"
+                            >
+                            <button type="button" onclick="stepStandardStock('${sz}', 1)" class="w-6 h-6 rounded-lg bg-white text-black font-black text-xs flex items-center justify-center active:scale-90 transition shadow cursor-pointer">+</button>
+                        </div>
                     </div>
                 `).join('');
             }
+
+            renderUnlimitedSizesPills();
 
             // Sync multi-material options stock structure if needed
             if (currentProductMode === 'multi' && materialOptions.length > 0) {
@@ -4050,7 +4335,9 @@
             const category = document.getElementById('newProdCategory').value;
             const conditionGrade = '1:1 Miroir';
             const description = document.getElementById('newProdDescription').value;
-            const image = finalCroppedDataUrl || document.getElementById('newProdImageUrl').value || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+            const urlFieldVal = (document.getElementById('newProdImageUrl').value || '').trim();
+            const validUrlField = (urlFieldVal.startsWith('http://') || urlFieldVal.startsWith('https://') || urlFieldVal.startsWith('data:image/') || urlFieldVal.startsWith('/')) ? urlFieldVal : '';
+            const image = finalCroppedDataUrl || validUrlField || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
 
             if (!brand) {
                 alert('Veuillez sélectionner ou ajouter une marque.');
@@ -4062,6 +4349,7 @@
             let stock = {};
             let options = [];
             let optionsTitle = 'Garnissage & Matière';
+            let finalSizes = [...currentCategorySizes];
 
             if (currentProductMode === 'multi') {
                 if (materialOptions.length === 0) {
@@ -4084,12 +4372,20 @@
                     }
                 }
 
-                options = materialOptions.map(opt => ({
-                    name: opt.name.trim(),
-                    price: Number(opt.price),
-                    costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : Math.round(Number(opt.price) * 0.35)),
-                    stock: { ...opt.stock }
-                }));
+                options = materialOptions.map(opt => {
+                    const optStock = { ...opt.stock };
+                    if (isModalUnlimitedStock) {
+                        currentCategorySizes.forEach(sz => {
+                            optStock[sz] = Math.max(Number(optStock[sz]) || 0, 99);
+                        });
+                    }
+                    return {
+                        name: opt.name.trim(),
+                        price: Number(opt.price),
+                        costPrice: Number(opt.costPrice !== undefined ? opt.costPrice : Math.round(Number(opt.price) * 0.35)),
+                        stock: optStock
+                    };
+                });
 
                 price = options[0].price;
                 costPrice = options[0].costPrice;
@@ -4108,10 +4404,18 @@
                     return;
                 }
 
-                document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
-                    const sz = inp.id.replace('stockSize_', '');
-                    stock[sz] = parseInt(inp.value, 10) || 0;
-                });
+                if (isModalUnlimitedStock) {
+                    finalSizes = currentCategorySizes.filter(sz => activeUnlimitedSizes.includes(sz));
+                    if (finalSizes.length === 0) finalSizes = [...currentCategorySizes];
+                    finalSizes.forEach(sz => {
+                        stock[sz] = 99;
+                    });
+                } else {
+                    document.querySelectorAll('[id^="stockSize_"]').forEach(inp => {
+                        const sz = inp.id.replace('stockSize_', '');
+                        stock[sz] = parseInt(inp.value, 10) || 0;
+                    });
+                }
             }
 
             const productData = {
@@ -4124,8 +4428,9 @@
                 costPrice,
                 color: activeColors[0] || 'Standard',
                 colors: activeColors.length > 0 ? activeColors : ['Standard'],
-                sizes: currentCategorySizes,
+                sizes: finalSizes,
                 stock,
+                unlimitedStock: isModalUnlimitedStock,
                 options,
                 optionsTitle,
                 image,
@@ -4134,11 +4439,15 @@
             };
 
             const token = localStorage.getItem('els_admin_jwt');
+            const saveBtnText = document.getElementById('saveBtnText');
+            const origText = saveBtnText ? saveBtnText.innerText : 'Enregistrer & Publier';
+            if (saveBtnText) saveBtnText.innerText = 'Sauvegarde en cours...';
 
             try {
+                let res;
                 if (editId) {
                     productData.id = editId;
-                    await fetch('/api/products', {
+                    res = await fetch('/api/products', {
                         method: 'PUT',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -4146,9 +4455,8 @@
                         },
                         body: JSON.stringify(productData)
                     });
-                    showToast('Article et déclinaisons modifiés avec succès');
                 } else {
-                    await fetch('/api/products', {
+                    res = await fetch('/api/products', {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -4156,14 +4464,21 @@
                         },
                         body: JSON.stringify(productData)
                     });
-                    showToast('Nouvel article publié avec succès');
                 }
 
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || data.error) {
+                    throw new Error(data.error || `Erreur serveur (${res.status})`);
+                }
+
+                showToast(editId ? 'Article modifié avec succès !' : 'Nouvel article publié avec succès !');
                 closeNewProductModal();
                 await loadProducts();
                 calculateKPIs();
             } catch (err) {
                 alert('Erreur lors de la sauvegarde : ' + err.message);
+            } finally {
+                if (saveBtnText) saveBtnText.innerText = origText;
             }
         }
 
@@ -4227,10 +4542,31 @@
         }
 
         // ==========================================
-        // IMAGE CROPPER ENGINE (1:1 CARRÉ)
+        // IMAGE UPLOAD & CROPPER ENGINE (1:1 CARRÉ)
         // ==========================================
+        function generateSquareImageDataUrl(img, size = 600, quality = 0.82) {
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = size;
+            offCanvas.height = size;
+            const ctx = offCanvas.getContext('2d');
+            ctx.fillStyle = '#09090b';
+            ctx.fillRect(0, 0, size, size);
+
+            const aspect = img.width / img.height;
+            let drawW = size;
+            let drawH = size;
+            if (aspect > 1) {
+                drawW = size * aspect;
+            } else {
+                drawH = size / aspect;
+            }
+            ctx.drawImage(img, (size - drawW) / 2, (size - drawH) / 2, drawW, drawH);
+            return offCanvas.toDataURL('image/jpeg', quality);
+        }
+
         function handleFileSelect(e) {
-            const file = e.target.files[0];
+            isPickingFile = false;
+            const file = e.target.files && e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
@@ -4238,11 +4574,40 @@
                 const img = new Image();
                 img.onload = function() {
                     rawImage = img;
-                    openCropper();
+                    // Appliquer immédiatement la photo centrée et compressée (600x600 JPEG)
+                    // pour que la photo fonctionne dès la sélection sans étape bloquante !
+                    finalCroppedDataUrl = generateSquareImageDataUrl(img, 600, 0.82);
+                    const previewImg = document.getElementById('photoPreviewImg');
+                    const previewContainer = document.getElementById('photoPreviewContainer');
+                    const urlInp = document.getElementById('newProdImageUrl');
+                    if (previewImg) previewImg.src = finalCroppedDataUrl;
+                    if (previewContainer) previewContainer.classList.remove('hidden');
+                    if (urlInp) urlInp.value = '';
+                    showToast('📸 Photo chargée avec succès !');
+                    initIcons();
+                };
+                img.onerror = function() {
+                    alert('Impossible de lire ce format d\'image. Essayez une photo JPG ou PNG.');
                 };
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
+            // Réinitialiser l'input pour permettre de re-sélectionner la même photo
+            e.target.value = '';
+        }
+
+        function clearProductPhoto() {
+            finalCroppedDataUrl = '';
+            rawImage = null;
+            const previewImg = document.getElementById('photoPreviewImg');
+            const previewContainer = document.getElementById('photoPreviewContainer');
+            const urlInp = document.getElementById('newProdImageUrl');
+            const fileInp = document.getElementById('photoFileInput');
+            if (previewImg) previewImg.src = '';
+            if (previewContainer) previewContainer.classList.add('hidden');
+            if (urlInp) urlInp.value = '';
+            if (fileInp) fileInp.value = '';
+            showToast('Photo retirée');
         }
 
         function openCropper() {
@@ -4258,8 +4623,18 @@
 
         function reopenCropper() {
             if (rawImage) {
-                document.getElementById('cropModalBackdrop').classList.remove('hidden');
-                drawCrop();
+                openCropper();
+            } else if (finalCroppedDataUrl) {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    rawImage = img;
+                    openCropper();
+                };
+                img.onerror = function() {
+                    showToast('Recadrage disponible uniquement sur les photos importées depuis l\'appareil');
+                };
+                img.src = finalCroppedDataUrl;
             }
         }
 
@@ -4291,7 +4666,8 @@
             const w = canvas.width;
             const h = canvas.height;
 
-            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = '#09090b';
+            ctx.fillRect(0, 0, w, h);
             ctx.save();
             ctx.translate(w / 2 + cropPanX, h / 2 + cropPanY);
             ctx.rotate((cropRotation * Math.PI) / 180);
@@ -4346,17 +4722,24 @@
             const canvas = document.getElementById('cropCanvas');
             if (!canvas) return;
 
-            finalCroppedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            document.getElementById('photoPreviewImg').src = finalCroppedDataUrl;
-            document.getElementById('photoPreviewContainer').classList.remove('hidden');
-            document.getElementById('newProdImageUrl').value = '';
+            try {
+                finalCroppedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                document.getElementById('photoPreviewImg').src = finalCroppedDataUrl;
+                document.getElementById('photoPreviewContainer').classList.remove('hidden');
+                document.getElementById('newProdImageUrl').value = '';
+                showToast('Recadrage appliqué !');
+            } catch (e) {
+                console.warn('Crop export error:', e);
+            }
             closeCropper();
         }
 
         function updateImagePreview(url) {
-            if (url) {
-                finalCroppedDataUrl = url;
-                document.getElementById('photoPreviewImg').src = url;
+            const trimmed = (url || '').trim();
+            if (!trimmed) return;
+            if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:image/') || trimmed.startsWith('/')) {
+                finalCroppedDataUrl = trimmed;
+                document.getElementById('photoPreviewImg').src = trimmed;
                 document.getElementById('photoPreviewContainer').classList.remove('hidden');
             }
         }
