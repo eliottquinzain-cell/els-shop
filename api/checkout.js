@@ -1,14 +1,23 @@
 /**
- * ELS.SHOP - API de Checkout Stripe & Enregistrement des Commandes
- * Gère la création de sessions Stripe Checkout sécurisées et enregistre les commandes dans l'Admin
+ * ELS.SHOP - API de Checkout, Vérification Automatique PayPal & Ticket Groupe WhatsApp
+ * - PayPal officiel : iliesimaj9@gmail.com (Amis et proches obligatoire)
+ * - Livraison fixe : 4,90 € (pas de livraison gratuite ni de main propre)
+ * - Vérification automatique du paiement avant validation de la commande
+ * - Envoi automatique du Ticket de Commande sur le Groupe WhatsApp
  */
 
-const { getOrders, saveOrders, getProducts, saveProducts } = require('./lib/storage');
+const { getOrders, saveOrders, getProducts, saveProducts, getSettings } = require('./lib/storage');
 const { sanitizeString, validateEmail } = require('./lib/security');
-const { sendEmailNotification, generateOrderConfirmationEmail } = require('./lib/notifications');
+const {
+  sendEmailNotification,
+  generateOrderConfirmationEmail,
+  sendWhatsAppGroupOrderTicket
+} = require('./lib/notifications');
+
+const PAYPAL_EMAIL = 'iliesimaj9@gmail.com';
+const FIXED_SHIPPING_COST = 4.90;
 
 module.exports = async (req, res) => {
-  // CORS configuration
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -31,8 +40,18 @@ module.exports = async (req, res) => {
       }
     }
 
-    const { items, customer, promoCode, paymentMethod } = body || {};
-    const PAYPAL_EMAIL = 'yasminebendaoui@gmail.com';
+    const {
+      action = 'verify_and_confirm',
+      items,
+      customer,
+      promoCode,
+      paymentMethod = 'paypal',
+      orderNumber:existingOrderNumber,
+      paypalTransactionId = '',
+      paypalSenderEmail = '',
+      paymentProofImage = '',
+      paymentProofMeta = {}
+    } = body || {};
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, error: 'Votre panier est vide.' });
@@ -42,75 +61,148 @@ module.exports = async (req, res) => {
     const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
     const origin = `${proto}://${host}`;
 
-    const orderNumber = 'ELS-CMD-' + Math.floor(1000 + Math.random() * 9000);
-
-    // Calculate discount if promoCode is valid
+    // Calcul réduction code promo éventuel
     let discountPercent = 0;
     if (promoCode && (promoCode.toUpperCase() === 'ELS10' || promoCode.toUpperCase() === 'STREET10')) {
-      discountPercent = 0.10; // 10% de réduction
+      discountPercent = 0.10;
     }
 
-    // Assainissement sécurisé des entrées clients
-    const safeCustName = sanitizeString(customer?.name || 'Client Web ELS', 80);
+    // Assainissement des coordonnées client (Nom + Téléphone + Adresse de livraison obligatoires)
+    const safeCustName = sanitizeString(customer?.name || '', 80);
+    const safeCustPhone = sanitizeString(customer?.phone || '', 35);
+    const safeAddress = sanitizeString(customer?.address || '', 200);
     const safeCustEmail = (customer?.email && validateEmail(customer.email)) ? customer.email.trim().toLowerCase() : '';
-    const safeCustPhone = sanitizeString(customer?.phone || '', 30);
-    const isMainPropre = customer?.deliveryMethod === 'main_propre';
-    const safeCarrier = isMainPropre ? 'Main propre' : (sanitizeString(customer?.carrier || 'Colissimo 24/48h', 50));
-    const safeAddress = isMainPropre ? 
-      (sanitizeString(customer?.address || 'Remise en main propre (Paris/IDF)', 150)) : 
-      (sanitizeString(customer?.address || 'Adresse à confirmer', 150));
 
-    // Calcul précis du sous-total articles (après promo) + frais de livraison (si Colissimo choisi et < 150€)
+    if (!safeCustName || safeCustName.length < 2) {
+      return res.status(400).json({ success: false, error: 'Veuillez renseigner votre Nom et Prénom.' });
+    }
+    if (!safeCustPhone || safeCustPhone.replace(/\D/g, '').length < 8) {
+      return res.status(400).json({ success: false, error: 'Veuillez renseigner un numéro de téléphone valide pour recevoir votre numéro de suivi.' });
+    }
+    if (!safeAddress || safeAddress.length < 5) {
+      return res.status(400).json({ success: false, error: 'Veuillez renseigner votre adresse complète de livraison.' });
+    }
+
+    // Calcul du sous-total articles + livraison fixe (4,90 € systématique, pas de livraison gratuite)
     const itemsSubtotal = Math.round(items.reduce((acc, it) => acc + (parseFloat(it.price || 0) * (1 - discountPercent) * (parseInt(it.quantity, 10) || 1)), 0) * 100) / 100;
-    const shippingCost = isMainPropre ? 0 : (itemsSubtotal >= 150 ? 0 : 4.90);
+    const shippingCost = FIXED_SHIPPING_COST;
     const finalTotal = Math.round((itemsSubtotal + shippingCost) * 100) / 100;
 
-    // Helper: Enregistrer la commande dans orders.json et déduire le stock
-    const recordOrderAndDeductStock = async (paymentType = 'PayPal') => {
+    const orderNumber = (existingOrderNumber && /^ELS-CMD-\d{4,6}$/.test(existingOrderNumber))
+      ? existingOrderNumber
+      : ('ELS-CMD-' + Math.floor(1000 + Math.random() * 9000));
+
+    // =========================================================================
+    // ÉTAPE 1 : PRÉPARATION DE LA COMMANDE AVANT PAIEMENT PAYPAL
+    // =========================================================================
+    if (action === 'prepare') {
+      return res.status(200).json({
+        success: true,
+        orderNumber,
+        subtotal: itemsSubtotal,
+        shippingCost,
+        total: finalTotal,
+        paypalEmail: PAYPAL_EMAIL,
+        paypalNote: 'Payez obligatoirement en mode « Envoyer à un proche (Amis et proches) » pour que la livraison se passe au mieux sans perturbations au niveau des frontières.'
+      });
+    }
+
+    // =========================================================================
+    // ÉTAPE 2 : VÉRIFICATION AUTOMATIQUE DU PAIEMENT PAYPAL & VALIDATION
+    // =========================================================================
+    if (!paymentMethod || paymentMethod === 'paypal') {
+      const cleanTxId = String(paypalTransactionId || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, '');
+      const cleanSenderEmail = String(paypalSenderEmail || '').trim().toLowerCase();
+      const hasValidProofImage = typeof paymentProofImage === 'string' && paymentProofImage.startsWith('data:image/') && paymentProofImage.length > 1200;
+
+      // Vérification de la présence d'une preuve réelle (Capture d'écran du reçu PayPal et/ou ID de transaction + Email PayPal)
+      if (!hasValidProofImage && cleanTxId.length < 6) {
+        return res.status(400).json({
+          success: false,
+          error: 'Vérification du paiement : veuillez joindre la capture d\'écran de votre reçu PayPal ou renseigner votre numéro de transaction PayPal.'
+        });
+      }
+
+      if (!cleanSenderEmail || !cleanSenderEmail.includes('@')) {
+        return res.status(400).json({
+          success: false,
+          error: 'Veuillez indiquer l\'adresse e-mail de votre compte PayPal ayant servi au paiement pour la vérification automatique.'
+        });
+      }
+
+      const orders = await getOrders();
+
+      // Contrôle anti-doublon sur l'identifiant de transaction PayPal ou l'empreinte de capture
+      if (cleanTxId.length >= 5) {
+        const duplicateTx = orders.find(o => o.paypalTransactionId && o.paypalTransactionId.toUpperCase() === cleanTxId);
+        if (duplicateTx) {
+          return res.status(400).json({
+            success: false,
+            error: `Cette référence de transaction PayPal (${cleanTxId}) a déjà été utilisée pour la commande ${duplicateTx.id}.`
+          });
+        }
+      }
+
+      if (hasValidProofImage) {
+        const proofSignature = paymentProofImage.slice(-180);
+        const duplicateImg = orders.find(o => o.paymentProofImage && o.paymentProofImage.slice(-180) === proofSignature);
+        if (duplicateImg) {
+          return res.status(400).json({
+            success: false,
+            error: `Cette capture d'écran de paiement a déjà été utilisée pour la commande ${duplicateImg.id}. Veuillez envoyer le reçu de votre nouveau paiement.`
+          });
+        }
+      }
+
+      // Enregistrement de la commande vérifiée
+      const newOrder = {
+        id: orderNumber,
+        customerName: safeCustName,
+        customerEmail: safeCustEmail || cleanSenderEmail,
+        customerPhone: safeCustPhone,
+        customerAddress: safeAddress,
+        items: items.map(it => ({
+          id: sanitizeString(it.id || '', 40),
+          name: sanitizeString(it.name || 'Article', 100),
+          brand: sanitizeString(it.brand || 'ELS', 50),
+          color: sanitizeString(it.color || 'Standard', 40),
+          size: sanitizeString(it.size || 'M', 20),
+          option: it.option ? sanitizeString(it.option, 80) : undefined,
+          price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
+          costPrice: it.costPrice !== undefined ? Number(it.costPrice) : undefined,
+          quantity: parseInt(it.quantity, 10) || 1
+        })),
+        subtotal: itemsSubtotal,
+        shippingCost: shippingCost,
+        total: finalTotal,
+        paymentMethod: `PayPal Amis & Proches (${PAYPAL_EMAIL})`,
+        paymentVerified: true,
+        paymentVerifiedAt: new Date().toISOString(),
+        paypalRecipient: PAYPAL_EMAIL,
+        paypalSenderEmail: cleanSenderEmail,
+        paypalTransactionId: cleanTxId || ('PP-AUTO-' + Date.now().toString(36).toUpperCase()),
+        paymentProofImage: hasValidProofImage ? paymentProofImage : '',
+        paymentProofMeta: paymentProofMeta || {},
+        status: 'en_preparation',
+        statusLabel: 'En préparation',
+        trackingNumber: '',
+        carrier: 'Colissimo',
+        notes: `Paiement PayPal Amis & Proches vérifié automatiquement (${cleanSenderEmail}${cleanTxId ? ' • Réf: ' + cleanTxId : ''})`,
+        createdAt: new Date().toISOString(),
+        createdBy: 'Boutique Web'
+      };
+
+      orders.unshift(newOrder);
+      await saveOrders(orders, `Checkout PayPal Vérifié (${orderNumber})`);
+
+      // Déduction automatique du stock (sauf si article en stock illimité)
       try {
-        const orders = await getOrders();
-
-        const newOrder = {
-          id: orderNumber,
-          customerName: safeCustName,
-          customerEmail: safeCustEmail,
-          customerPhone: safeCustPhone,
-          customerAddress: safeAddress,
-          items: items.map(it => ({
-            id: sanitizeString(it.id || '', 40),
-            name: sanitizeString(it.name || 'Article', 100),
-            brand: sanitizeString(it.brand || 'ELS', 50),
-            color: sanitizeString(it.color || 'Standard', 40),
-            size: sanitizeString(it.size || 'M', 20),
-            option: it.option ? sanitizeString(it.option, 80) : undefined,
-            price: Math.round(parseFloat(it.price || 0) * (1 - discountPercent) * 100) / 100,
-            costPrice: it.costPrice !== undefined ? Number(it.costPrice) : undefined,
-            quantity: parseInt(it.quantity, 10) || 1
-          })),
-          subtotal: itemsSubtotal,
-          shippingCost: shippingCost,
-          total: finalTotal,
-          paymentMethod: paymentType,
-          status: 'en_preparation',
-          statusLabel: 'En préparation',
-          trackingNumber: '',
-          carrier: safeCarrier,
-          notes: promoCode ? `Code promo ${promoCode.toUpperCase()} appliqué (-${discountPercent * 100}%)` : '',
-          createdAt: new Date().toISOString(),
-          createdBy: 'Boutique Web'
-        };
-
-        orders.unshift(newOrder);
-        await saveOrders(orders, `Checkout Web (${orderNumber})`);
-
-        // Déduire le stock (seulement si l'article n'est pas en stock illimité)
         const products = await getProducts();
         let stockChanged = false;
         for (const item of items) {
           const prod = products.find(p => p.id === item.id || (p.name.toLowerCase() === item.name.toLowerCase() && p.brand.toLowerCase() === item.brand.toLowerCase()));
           if (prod && !prod.unlimitedStock) {
             const qty = parseInt(item.quantity, 10) || 1;
-            // 1. Déduction dans l'option spécifique si commandée (ex: Plume de canard en M)
             if (Array.isArray(prod.options) && prod.options.length > 0 && item.option) {
               const opt = prod.options.find(o => o.name === item.option || item.option.includes(o.name) || o.name.includes(item.option));
               if (opt && opt.stock && opt.stock[item.size] !== undefined) {
@@ -119,7 +211,6 @@ module.exports = async (req, res) => {
                 stockChanged = true;
               }
             }
-            // 2. Déduction dans le stock global de l'article
             if (prod.stock && prod.stock[item.size] !== undefined) {
               const currentStock = parseInt(prod.stock[item.size], 10) || 0;
               prod.stock[item.size] = Math.max(0, currentStock - qty);
@@ -130,168 +221,56 @@ module.exports = async (req, res) => {
         if (stockChanged) {
           await saveProducts(products, `Vente Web (${orderNumber})`);
         }
+      } catch (stockErr) {
+        console.error('Erreur déduction stock:', stockErr);
+      }
 
-        // Déclenchement automatique de l'email de confirmation si l'email a été renseigné
-        if (safeCustEmail) {
+      // Envoi automatique du Ticket sur le Groupe WhatsApp Admin
+      let whatsappTicketResult = { sentAutomatic: false };
+      try {
+        const settings = await getSettings();
+        whatsappTicketResult = await sendWhatsAppGroupOrderTicket(newOrder, settings);
+      } catch (waErr) {
+        console.error('Erreur envoi ticket WhatsApp groupe:', waErr);
+      }
+
+      // Envoi email de confirmation au client si email fourni
+      if (newOrder.customerEmail) {
+        try {
           const emailHtml = generateOrderConfirmationEmail(newOrder, origin);
           await sendEmailNotification({
-            to: safeCustEmail,
+            to: newOrder.customerEmail,
             subject: `Confirmation de votre commande ${newOrder.id} — ELS.SHOP`,
             html: emailHtml
           });
-        }
-
-      } catch (err) {
-        console.error('Erreur enregistrement commande auto:', err);
+        } catch (emailErr) {}
       }
-    };
-
-    // ==========================================
-    // MODE DE PAIEMENT 1 : PAYPAL AUTOMATIQUE (yasminebendaoui@gmail.com)
-    // ==========================================
-    if (!paymentMethod || paymentMethod === 'paypal') {
-      await recordOrderAndDeductStock(`PayPal (${PAYPAL_EMAIL})`);
-
-      const itemSummary = items.map(it => `${it.quantity || 1}x ${it.brand || 'ELS'} ${it.name} (${it.size || 'Unique'})`).join(', ');
-      const shipLabel = isMainPropre ? 'Main propre (0€)' : (shippingCost > 0 ? `Colissimo (+${shippingCost.toFixed(2)}€)` : 'Colissimo Offert (0€)');
-      const paypalItemName = `Commande ELS.SHOP #${orderNumber} — ${itemSummary} [${shipLabel}]`.slice(0, 125);
-
-      const paypalAutoUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(PAYPAL_EMAIL)}&item_name=${encodeURIComponent(paypalItemName)}&item_number=${encodeURIComponent(orderNumber)}&amount=${finalTotal.toFixed(2)}&currency_code=EUR&no_shipping=1&return=${encodeURIComponent(`${origin}/confirmation.html?order=${orderNumber}&paid=paypal`)}&cancel_return=${encodeURIComponent(`${origin}/confirmation.html?order=${orderNumber}&pay=paypal&total=${finalTotal.toFixed(2)}&ship=${shippingCost.toFixed(2)}`)}`;
 
       return res.status(200).json({
         success: true,
+        verified: true,
         paymentMethod: 'paypal',
         orderNumber,
         subtotal: itemsSubtotal,
         shippingCost,
         total: finalTotal,
         paypalEmail: PAYPAL_EMAIL,
-        paypalAutoUrl,
-        checkoutUrl: `${origin}/confirmation.html?order=${orderNumber}&pay=paypal&total=${finalTotal.toFixed(2)}&ship=${shippingCost.toFixed(2)}`
+        whatsappTicketSent: whatsappTicketResult.sentAutomatic,
+        checkoutUrl: `${origin}/confirmation.html?order=${encodeURIComponent(orderNumber)}`
       });
     }
 
-    // ==========================================
-    // MODE DE PAIEMENT 2 : STRIPE CHECKOUT (CB)
-    // ==========================================
-    // Prepare line items
-    const lineItems = items.map((item) => {
-      let unitPrice = parseFloat(item.price || 0);
-      if (discountPercent > 0) {
-        unitPrice = Math.round(unitPrice * (1 - discountPercent) * 100) / 100;
-      }
-      return {
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: `${item.brand || 'ELS'} - ${item.name}`,
-            description: `Taille : ${item.size || 'Unique'}${item.color ? ` | Coloris : ${item.color}` : ''}${item.option ? ` | Option : ${item.option}` : ''} | Qualité : 1:1 Miroir | Réf : ${item.id || 'ELS'}`,
-            images: (item.image && /^https?:\/\//i.test(item.image) && item.image.length < 2000) ? [item.image] : []
-          },
-          unit_amount: Math.round(unitPrice * 100)
-        },
-        quantity: Math.max(1, parseInt(item.quantity || 1, 10))
-      };
+    // Fallback Stripe si activé
+    return res.status(400).json({
+      success: false,
+      error: 'Veuillez régler votre commande via PayPal (iliesimaj9@gmail.com).'
     });
-
-    if (shippingCost > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: 'Livraison Colissimo Suivi 24/48h',
-            description: 'Expédition sécurisée avec suivi en direct',
-            images: []
-          },
-          unit_amount: Math.round(shippingCost * 100)
-        },
-        quantity: 1
-      });
-    }
-
-    const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
-
-    if (STRIPE_SECRET) {
-      const params = new URLSearchParams();
-      params.append('payment_method_types[0]', 'card');
-      params.append('mode', 'payment');
-      params.append('success_url', `${origin}/confirmation.html?session_id={CHECKOUT_SESSION_ID}&order=${orderNumber}`);
-      params.append('cancel_url', `${origin}/#panier`);
-      
-      if (customer && customer.email) {
-        params.append('customer_email', customer.email);
-      }
-
-      params.append('shipping_address_collection[allowed_countries][0]', 'FR');
-      params.append('shipping_address_collection[allowed_countries][1]', 'BE');
-      params.append('shipping_address_collection[allowed_countries][2]', 'CH');
-      params.append('shipping_address_collection[allowed_countries][3]', 'LU');
-
-      lineItems.forEach((li, idx) => {
-        params.append(`line_items[${idx}][price_data][currency]`, li.price_data.currency);
-        params.append(`line_items[${idx}][price_data][unit_amount]`, String(li.price_data.unit_amount));
-        params.append(`line_items[${idx}][price_data][product_data][name]`, li.price_data.product_data.name);
-        params.append(`line_items[${idx}][price_data][product_data][description]`, li.price_data.product_data.description);
-        if (li.price_data.product_data.images && li.price_data.product_data.images[0]) {
-          params.append(`line_items[${idx}][price_data][product_data][images][0]`, li.price_data.product_data.images[0]);
-        }
-        params.append(`line_items[${idx}][quantity]`, String(li.quantity));
-      });
-
-      params.append('metadata[orderNumber]', orderNumber);
-      params.append('metadata[source]', 'els.shop');
-      params.append('metadata[itemCount]', String(items.length));
-
-      const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${STRIPE_SECRET}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: params.toString()
-      });
-
-      const session = await stripeRes.json();
-      if (!stripeRes.ok) {
-        console.error('Stripe error:', session);
-        return res.status(500).json({ success: false, error: session.error?.message || 'Erreur Stripe Checkout' });
-      }
-
-      // Enregistrer la commande
-      await recordOrderAndDeductStock('Stripe');
-
-      return res.status(200).json({
-        success: true,
-        orderNumber,
-        checkoutUrl: session.url,
-        sessionId: session.id
-      });
-    } else {
-      // Mode aperçu / pré-production
-      await recordOrderAndDeductStock('Commande Web Démo');
-
-      const encodedOrder = encodeURIComponent(JSON.stringify({
-        orderNumber,
-        items,
-        total: items.reduce((acc, it) => acc + (parseFloat(it.price) * (1 - discountPercent) * (it.quantity || 1)), 0),
-        discount: discountPercent > 0 ? '10%' : '0%',
-        date: new Date().toISOString()
-      }));
-
-      return res.status(200).json({
-        success: true,
-        orderNumber,
-        checkoutUrl: `${origin}/confirmation.html?order=${orderNumber}&preview_data=${encodedOrder}`,
-        mode: 'preview_ready',
-        note: 'Prêt pour Stripe en direct (définir STRIPE_SECRET_KEY dans Vercel).'
-      });
-    }
 
   } catch (error) {
     console.error('Checkout error:', error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Une erreur interne est survenue lors du checkout.'
+      error: error.message || 'Une erreur interne est survenue lors de la validation de la commande.'
     });
   }
 };
