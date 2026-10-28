@@ -3,7 +3,7 @@
  * Synchronisation instantanée entre la Vitrine et le Back-Office Admin
  */
 
-const { getProducts, saveProducts } = require('./lib/storage');
+const { getProducts, saveProducts, getSettings } = require('./lib/storage');
 const { requireAdmin } = require('./lib/auth');
 
 // Catalogue de démonstration 1:1 de secours
@@ -209,11 +209,19 @@ module.exports = async (req, res) => {
     }
 
     const uniqueBrands = [...new Set(allProducts.map(p => p.brand).filter(Boolean))].sort();
+    let paypalMeSlug = '';
+    try {
+      const settings = await getSettings();
+      if (settings && settings.paypalMeSlug) {
+        paypalMeSlug = String(settings.paypalMeSlug).trim();
+      }
+    } catch (e) {}
 
     return res.status(200).json({
       success: true,
       count: filtered.length,
       brands: uniqueBrands,
+      paypalMeSlug,
       products: filtered
     });
   }
