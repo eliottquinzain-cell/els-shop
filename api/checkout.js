@@ -112,27 +112,12 @@ module.exports = async (req, res) => {
     // =========================================================================
     if (!paymentMethod || paymentMethod === 'paypal') {
       const cleanTxId = String(paypalTransactionId || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, '');
-      const cleanSenderEmail = String(paypalSenderEmail || '').trim().toLowerCase();
-      const hasValidProofImage = typeof paymentProofImage === 'string' && paymentProofImage.startsWith('data:image/') && paymentProofImage.length > 1200;
-
-      // Vérification de la présence d'une preuve réelle (Capture d'écran du reçu PayPal et/ou ID de transaction + Email PayPal)
-      if (!hasValidProofImage && cleanTxId.length < 6) {
-        return res.status(400).json({
-          success: false,
-          error: 'Vérification du paiement : veuillez joindre la capture d\'écran de votre reçu PayPal ou renseigner votre numéro de transaction PayPal.'
-        });
-      }
-
-      if (!cleanSenderEmail || !cleanSenderEmail.includes('@')) {
-        return res.status(400).json({
-          success: false,
-          error: 'Veuillez indiquer l\'adresse e-mail de votre compte PayPal ayant servi au paiement pour la vérification automatique.'
-        });
-      }
+      const cleanSenderEmail = String(paypalSenderEmail || safeCustEmail || '').trim().toLowerCase();
+      const hasValidProofImage = typeof paymentProofImage === 'string' && paymentProofImage.startsWith('data:image/') && paymentProofImage.length > 500;
 
       const orders = await getOrders();
 
-      // Contrôle anti-doublon sur l'identifiant de transaction PayPal ou l'empreinte de capture
+      // Contrôle anti-doublon si un identifiant de transaction ou une capture est fourni
       if (cleanTxId.length >= 5) {
         const duplicateTx = orders.find(o => o.paypalTransactionId && o.paypalTransactionId.toUpperCase() === cleanTxId);
         if (duplicateTx) {
@@ -149,7 +134,7 @@ module.exports = async (req, res) => {
         if (duplicateImg) {
           return res.status(400).json({
             success: false,
-            error: `Cette capture d'écran de paiement a déjà été utilisée pour la commande ${duplicateImg.id}. Veuillez envoyer le reçu de votre nouveau paiement.`
+            error: `Cette capture d'écran de paiement a déjà été utilisée pour la commande ${duplicateImg.id}.`
           });
         }
       }
@@ -176,19 +161,19 @@ module.exports = async (req, res) => {
         subtotal: itemsSubtotal,
         shippingCost: shippingCost,
         total: finalTotal,
-        paymentMethod: `PayPal Amis & Proches (${PAYPAL_EMAIL})`,
+        paymentMethod: `PayPal Pour vos proches (${PAYPAL_EMAIL})`,
         paymentVerified: true,
         paymentVerifiedAt: new Date().toISOString(),
         paypalRecipient: PAYPAL_EMAIL,
-        paypalSenderEmail: cleanSenderEmail,
-        paypalTransactionId: cleanTxId || ('PP-AUTO-' + Date.now().toString(36).toUpperCase()),
+        paypalSenderEmail: cleanSenderEmail || 'PayPal Direct',
+        paypalTransactionId: cleanTxId || ('PP-' + Date.now().toString(36).toUpperCase()),
         paymentProofImage: hasValidProofImage ? paymentProofImage : '',
         paymentProofMeta: paymentProofMeta || {},
         status: 'en_preparation',
         statusLabel: 'En préparation',
         trackingNumber: '',
         carrier: 'Colissimo',
-        notes: `Paiement PayPal Amis & Proches vérifié automatiquement (${cleanSenderEmail}${cleanTxId ? ' • Réf: ' + cleanTxId : ''})`,
+        notes: `Paiement PayPal « Pour vos proches » validé (${PAYPAL_EMAIL} • ${finalTotal.toFixed(2)} €)`,
         createdAt: new Date().toISOString(),
         createdBy: 'Boutique Web'
       };
