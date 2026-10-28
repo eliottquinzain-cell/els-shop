@@ -499,11 +499,35 @@
                             <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Green-API : apiTokenInstance</label>
                             <input type="password" id="cfgGreenApiToken" placeholder="Votre token Green-API..." class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-sky-400">
                         </div>
-                        <div class="flex items-end">
+                        <div class="flex items-end gap-2">
                             <button type="button" onclick="fetchWhatsAppGroupsFromGreenApi()" id="btnFetchWaGroups" class="w-full py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-black border border-sky-400/50 text-sky-300 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
                                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                                 <span>Charger mes Groupes WhatsApp</span>
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Connexion directe depuis iPhone (Code 8 lettres sans QR Code) ou QR Code intégré -->
+                    <div class="p-3.5 rounded-xl bg-black/70 border border-zinc-800 space-y-2.5 text-xs">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="font-bold text-emerald-400 text-[11px] uppercase">📲 Connecter votre WhatsApp directement depuis cet iPhone (sans 2e écran) :</span>
+                            <button type="button" onclick="showWhatsAppQrInAdmin()" class="text-[11px] font-bold text-sky-400 hover:underline cursor-pointer">
+                                Ou afficher le QR Code ici
+                            </button>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="tel" id="cfgAdminWaPhone" placeholder="Votre numéro WhatsApp (ex: 06 12 34 56 78)" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400">
+                            <button type="button" onclick="requestWhatsAppPairingCode()" id="btnWaPairingCode" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-300 font-black text-xs shrink-0 transition cursor-pointer">
+                                Obtenir le code à 8 lettres (iPhone)
+                            </button>
+                        </div>
+                        <div id="waPairingResultBox" class="hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-center space-y-1">
+                            <div class="text-[10px] uppercase font-bold text-emerald-300">Entrez ce code dans WhatsApp → Appareils connectés → Connecter avec un numéro :</div>
+                            <div id="waPairingCodeValue" class="font-mono font-black text-2xl tracking-widest text-white select-all">----</div>
+                        </div>
+                        <div id="waQrCodeResultBox" class="hidden p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-center space-y-2">
+                            <div id="waQrCodeStatus" class="text-xs font-bold text-sky-300">Scannez ce QR Code avec WhatsApp :</div>
+                            <img id="waQrCodeImg" src="" alt="QR WhatsApp" class="w-44 h-44 mx-auto rounded-xl bg-white p-2 hidden">
                         </div>
                     </div>
 
@@ -2927,6 +2951,94 @@
             if (!panel) return;
             panel.classList.toggle('hidden');
             initIcons();
+        }
+
+        async function requestWhatsAppPairingCode() {
+            const greenApiInstanceId = (document.getElementById('cfgGreenInstanceId').value || '').trim();
+            const greenApiToken = (document.getElementById('cfgGreenApiToken').value || '').trim();
+            const phoneNumber = (document.getElementById('cfgAdminWaPhone').value || '').trim();
+            if (!greenApiInstanceId || !greenApiToken || !phoneNumber) {
+                alert('Veuillez renseigner votre idInstance, apiTokenInstance et votre numéro de téléphone WhatsApp.');
+                return;
+            }
+            const btn = document.getElementById('btnWaPairingCode');
+            if (btn) btn.innerText = 'Génération du code...';
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        action: 'get_whatsapp_pairing_code',
+                        greenApiInstanceId,
+                        greenApiToken,
+                        phoneNumber
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.code) {
+                    const box = document.getElementById('waPairingResultBox');
+                    const val = document.getElementById('waPairingCodeValue');
+                    if (box && val) {
+                        val.innerText = data.code;
+                        box.classList.remove('hidden');
+                    }
+                    showToast(`Code généré : ${data.code}`);
+                } else {
+                    alert(data.error || 'Impossible de générer le code.');
+                }
+            } catch (e) {
+                alert('Erreur réseau lors de la demande du code.');
+            } finally {
+                if (btn) btn.innerText = 'Obtenir le code à 8 lettres (iPhone)';
+            }
+        }
+
+        async function showWhatsAppQrInAdmin() {
+            const greenApiInstanceId = (document.getElementById('cfgGreenInstanceId').value || '').trim();
+            const greenApiToken = (document.getElementById('cfgGreenApiToken').value || '').trim();
+            if (!greenApiInstanceId || !greenApiToken) {
+                alert('Veuillez d\'abord renseigner votre idInstance et votre apiTokenInstance Green-API ci-dessus.');
+                return;
+            }
+            const box = document.getElementById('waQrCodeResultBox');
+            const status = document.getElementById('waQrCodeStatus');
+            const img = document.getElementById('waQrCodeImg');
+            if (box) box.classList.remove('hidden');
+            if (status) status.innerText = 'Vérification de la connexion WhatsApp...';
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        action: 'get_whatsapp_qr',
+                        greenApiInstanceId,
+                        greenApiToken
+                    })
+                });
+                const data = await res.json();
+                if (data.stateInstance === 'authorized') {
+                    if (status) status.innerText = '✅ Votre WhatsApp est déjà connecté et actif 24h/24 ! Cliquez sur « Charger mes Groupes WhatsApp ».';
+                    if (img) img.classList.add('hidden');
+                } else if (data.qrMessage) {
+                    if (status) status.innerText = 'Scannez ce QR Code avec WhatsApp (Appareils connectés) :';
+                    if (img) {
+                        img.src = `data:image/png;base64,${data.qrMessage}`;
+                        img.classList.remove('hidden');
+                    }
+                } else {
+                    if (status) status.innerText = data.error || 'QR Code non disponible pour le moment.';
+                }
+            } catch (e) {
+                if (status) status.innerText = 'Erreur lors du chargement du QR Code.';
+            }
         }
 
         async function fetchWhatsAppGroupsFromGreenApi() {
