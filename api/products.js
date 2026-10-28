@@ -192,19 +192,20 @@ module.exports = async (req, res) => {
       let body = req.body;
       if (typeof body === 'string') body = JSON.parse(body || '{}');
 
-      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors, options, optionsTitle } = body;
+      const { name, brand, category, price, costPrice, image, description, sizes, stock, conditionGrade, badge, color, colors, options, optionsTitle, unlimitedStock } = body;
 
       if (!name || !price) {
         return res.status(400).json({ success: false, error: 'Nom et prix de vente obligatoires' });
       }
 
       let allProducts = await getProducts();
-      const newId = 'els-' + (allProducts.length + 1).toString().padStart(3, '0');
+      const newId = 'els-' + Date.now().toString().slice(-5);
 
+      const isUnlimited = unlimitedStock === true;
       const sizeArr = Array.isArray(sizes) && sizes.length > 0 ? sizes : ["S", "M", "L", "XL"];
       const stockObj = stock || {};
       sizeArr.forEach(s => {
-        if (stockObj[s] === undefined) stockObj[s] = 3;
+        if (stockObj[s] === undefined) stockObj[s] = isUnlimited ? 999 : 3;
       });
 
       const colorsArr = Array.isArray(colors) && colors.length > 0 
@@ -217,7 +218,7 @@ module.exports = async (req, res) => {
         const optStock = opt.stock && typeof opt.stock === 'object' ? opt.stock : {};
         optSizes.forEach(s => {
           if (optStock[s] === undefined) {
-            optStock[s] = (stockObj && stockObj[s] !== undefined) ? stockObj[s] : 3;
+            optStock[s] = isUnlimited ? 999 : ((stockObj && stockObj[s] !== undefined) ? stockObj[s] : 3);
           } else {
             optStock[s] = Number(optStock[s]) || 0;
           }
@@ -231,7 +232,7 @@ module.exports = async (req, res) => {
       }).filter(opt => opt.name) : [];
 
       // Si l'article possède des options, synchroniser le stock global avec la somme des options
-      if (optionsArr.length > 0) {
+      if (optionsArr.length > 0 && !isUnlimited) {
         sizeArr.forEach(s => {
           stockObj[s] = optionsArr.reduce((sum, o) => sum + (o.stock[s] || 0), 0);
         });
@@ -250,6 +251,7 @@ module.exports = async (req, res) => {
         colors: colorsArr,
         sizes: sizeArr,
         stock: stockObj,
+        unlimitedStock: isUnlimited,
         options: optionsArr,
         optionsTitle: (optionsTitle || 'Garnissage & Matière').trim(),
         badge: badge || 'NOUVEAU 1:1',
