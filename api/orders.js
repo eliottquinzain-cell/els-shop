@@ -216,7 +216,7 @@ module.exports = async (req, res) => {
             paypalTransactionId: 'TEST-PP-99281',
             shippingCost: 4.90,
             total: 124.90,
-            items: [{ brand: 'Corteiz', name: 'Ensemble Alcatraz (Test Ticket)', size: 'M', color: 'Noir', price: 120, quantity: 1 }],
+            items: [{ id: 'els-001', brand: 'Corteiz', name: 'Alcatraz Pullover Hoodie (Test Ticket)', size: 'M', color: 'Triple Black', price: 120, quantity: 1 }],
             createdAt: new Date().toISOString()
           };
           testResult = await sendWhatsAppGroupOrderTicket(sampleOrder, saved.settings);
