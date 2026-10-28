@@ -1,0 +1,16 @@
+{
+  "paypalEmail": "iliesimaj9@gmail.com",
+  "shippingCost": 4.9,
+  "greenApiInstanceId": "710722784164",
+  "greenApiToken": "1c715abb7f30457d8c243884b60280ac310bd2096cf14f38bf",
+  "greenApiHost": "https://api.green-api.com",
+  "whatsappGroupId": "120363430241490083@g.us",
+  "whatsappGroupName": "",
+  "smsWebhookUrl": "",
+  "smsApiKey": "",
+  "customWebhookUrl": "",
+  "autoSendTrackingWhatsApp": true,
+  "autoSendTrackingSms": true,
+  "updatedAt": "2026-10-28T22:50:58.242Z",
+  "updatedBy": "Eliott"
+}
