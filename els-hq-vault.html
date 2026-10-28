@@ -84,10 +84,18 @@
             width: 280px;
             height: 280px;
             overflow: hidden;
-            background: #000;
+            background: #09090b;
             border-radius: 12px;
             margin: 0 auto;
             border: 2px dashed #38bdf8;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+        }
+        .crop-container:active {
+            cursor: grabbing;
+        }
             cursor: grab;
             user-select: none;
             touch-action: none;
@@ -834,53 +842,54 @@
         <form id="newProductForm" onsubmit="handleProductFormSubmit(event)" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             <input type="hidden" id="editProductId" value="">
 
-            <!-- 1. PHOTO DE L'ARTICLE (ULTRA SIMPLE SUR MOBILE) -->
+            <!-- 1. PHOTOS DE L'ARTICLE (MULTI-PHOTOS + RECADRAGE 1:1) -->
             <div class="p-3.5 bg-zinc-950 rounded-2xl border border-zinc-800 space-y-3">
                 <div class="flex items-center justify-between">
                     <label class="text-[11px] font-bold text-white uppercase flex items-center gap-1.5">
                         <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i>
-                        <span>1. Photo de l'article</span>
+                        <span>1. Photos de l'article (1 ou plusieurs)</span>
                     </label>
-                    <span id="photoStatusBadge" class="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Optionnel ou Galerie</span>
+                    <span id="photoStatusBadge" class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">0 photo</span>
                 </div>
 
-                <!-- Aperçu Photo Grand Format (visible dès qu'une photo est choisie ou collée) -->
-                <div id="photoPreviewContainer" class="hidden flex items-center gap-3.5 p-3 bg-zinc-900/90 rounded-2xl border border-emerald-500/40">
-                    <img id="photoPreviewImg" src="" alt="Aperçu" onerror="this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-20 h-20 rounded-xl object-cover bg-black border border-zinc-700 shrink-0 shadow-md">
-                    <div class="flex-1 min-w-0 space-y-2">
+                <!-- Galerie des photos ajoutées (avec boutons Recadrer / Principale / Supprimer sur chaque photo) -->
+                <div id="photoPreviewContainer" class="hidden space-y-2.5 p-3 bg-zinc-900/90 rounded-2xl border border-emerald-500/40">
+                    <div class="flex items-center justify-between">
                         <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i>
-                            <span id="photoPreviewStatusText">Photo prête à être publiée</span>
+                            <i data-lucide="images" class="w-4 h-4 shrink-0"></i>
+                            <span id="photoPreviewStatusText">Galerie de l'article</span>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btnReopenCropper" onclick="reopenCropper()" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sky-400 font-bold text-[11px] flex items-center gap-1 transition">
-                                <i data-lucide="crop" class="w-3.5 h-3.5"></i>
-                                <span>Recadrer</span>
-                            </button>
-                            <button type="button" onclick="clearProductPhoto()" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-[11px] flex items-center gap-1 transition">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                <span>Supprimer</span>
-                            </button>
-                        </div>
+                        <button type="button" onclick="clearProductPhoto()" class="text-[10px] font-bold text-red-400 hover:text-red-300 underline">
+                            Tout supprimer
+                        </button>
                     </div>
+                    <div id="photosGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <!-- Peuplé dynamiquement par renderProductPhotosGallery() -->
+                    </div>
+                    <p class="text-[10px] text-zinc-400">
+                        💡 Astuce : Cliquez sur <strong>✂️ Recadrer</strong> sous n'importe quelle photo pour ajuster le zoom ou le cadrage.
+                    </p>
                 </div>
                 
-                <!-- Bouton Import Galerie/Appareil Photo + Champ Lien URL -->
+                <!-- Bouton Import Galerie/Appareil Photo (Multiple) + Champ Lien URL -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <label onclick="markFilePickerOpening()" class="w-full py-3 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 font-black text-xs flex items-center justify-center gap-2 cursor-pointer transition active:scale-[0.98]">
                         <i data-lucide="image-plus" class="w-4 h-4 text-emerald-400"></i>
-                        <span>Choisir Photo / Appareil Photo</span>
-                        <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                        <span>+ Ajouter Photo(s) / Galerie</span>
+                        <input type="file" id="imageFileInput" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
                     </label>
 
                     <div class="flex items-center gap-1.5">
                         <input 
                             type="text" 
                             id="newProdImageUrl" 
-                            placeholder="Ou coller un lien image (https://...)" 
-                            oninput="updateImagePreview(this.value)"
+                            placeholder="Coller un lien image (https://...)" 
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();addPhotoFromUrlInput();}"
                             class="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 w-full"
                         >
+                        <button type="button" onclick="addPhotoFromUrlInput()" class="shrink-0 px-3 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-bold text-xs transition cursor-pointer">
+                            + Ajouter
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1601,53 +1610,64 @@
     <!-- ============================================================== -->
     <!-- 9. MODAL: RECADRAGE IMAGE 1:1 CARRÉ                             -->
     <!-- ============================================================== -->
-    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[80] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-5 shadow-2xl space-y-3">
+    <div id="cropModalBackdrop" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[80] hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3">
             
             <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
                 <div class="flex items-center gap-2">
                     <i data-lucide="crop" class="w-4 h-4 text-sky-400"></i>
-                    <h4 class="font-bold text-sm text-white">Recadrage Photo 1:1 Carré</h4>
+                    <h4 class="font-bold text-sm text-white">Recadrer & Ajuster la Photo</h4>
                 </div>
-                <button type="button" onclick="closeCropper()" class="p-1 rounded text-zinc-400 hover:text-white">
+                <button type="button" onclick="closeCropper()" class="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
+            <p class="text-[11px] text-zinc-400 text-center">
+                Glissez la photo avec le doigt (ou la souris) pour la centrer.
+            </p>
+
             <div class="crop-container" id="cropBox">
-                <canvas id="cropCanvas" width="500" height="500" class="w-full h-full"></canvas>
-                <div class="crop-overlay-grid"></div>
+                <canvas id="cropCanvas" width="600" height="600" class="w-full h-full pointer-events-none"></canvas>
+                <div class="crop-overlay-grid pointer-events-none"></div>
             </div>
 
-            <div class="space-y-2 pt-1 text-xs">
-                <div class="flex items-center justify-between text-zinc-400">
-                    <span>Zoom</span>
-                    <span id="zoomValText" class="font-mono">100%</span>
+            <div class="space-y-2.5 pt-1 text-xs">
+                <div class="flex items-center justify-between text-zinc-300">
+                    <span class="font-bold">Zoom / Taille</span>
+                    <span id="zoomValText" class="font-mono font-bold text-sky-400">100%</span>
                 </div>
                 <input 
                     type="range" 
                     id="zoomSlider" 
-                    min="1" 
+                    min="0.4" 
                     max="3" 
-                    step="0.05" 
+                    step="0.02" 
                     value="1" 
                     oninput="handleZoomChange(this.value)"
-                    class="w-full accent-sky-400 cursor-pointer"
+                    class="w-full accent-sky-400 cursor-pointer h-2 bg-zinc-800 rounded-lg"
                 >
-                <div class="flex items-center justify-between gap-2 pt-1">
-                    <button type="button" onclick="rotateImage()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs flex items-center gap-1">
-                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Pivoter 90°
+                <div class="grid grid-cols-3 gap-1.5 pt-1">
+                    <button type="button" onclick="fitCropImage()" class="px-2 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer">
+                        <i data-lucide="minimize-2" class="w-3.5 h-3.5 text-sky-400"></i>
+                        <span>Entier</span>
                     </button>
-                    <button type="button" onclick="resetCropTransform()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs">
-                        Réinitialiser
+                    <button type="button" onclick="fillCropImage()" class="px-2 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer">
+                        <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        <span>Remplir</span>
+                    </button>
+                    <button type="button" onclick="rotateImage()" class="px-2 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer">
+                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Pivoter</span>
                     </button>
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-zinc-800 flex justify-end gap-2">
-                <button type="button" onclick="closeCropper()" class="px-3 py-2 text-xs text-zinc-400 hover:text-white">Garder tel quel</button>
-                <button type="button" onclick="applyCrop()" class="px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center gap-1 transition">
-                    <i data-lucide="check" class="w-4 h-4"></i> Appliquer le cadrage
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-between gap-2">
+                <button type="button" onclick="closeCropper()" class="px-3 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white cursor-pointer">Annuler</button>
+                <button type="button" onclick="applyCrop()" class="flex-1 py-2.5 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 text-black font-black text-xs flex items-center justify-center gap-1.5 transition shadow-lg cursor-pointer">
+                    <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
+                    <span>Valider ce cadrage</span>
                 </button>
             </div>
 
@@ -2391,6 +2411,7 @@
                                 <div class="flex flex-wrap items-center gap-1.5 mt-1">
                                     <span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded">1:1 Miroir</span>
                                     ${isUnlimited ? `<span class="text-[9px] font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 rounded">♾️ Stock Illimité</span>` : ''}
+                                    ${Array.isArray(p.images) && p.images.length > 1 ? `<span class="text-[9px] font-bold text-sky-300 bg-sky-500/15 border border-sky-500/30 px-1.5 py-0.5 rounded">📸 ${p.images.length} photos</span>` : ''}
                                     <span class="text-[10px] text-zinc-400 capitalize">${p.category}</span>
                                 </div>
                                 <div class="flex items-baseline gap-2 mt-1.5">
@@ -4140,6 +4161,91 @@
             }
         }
 
+        let productImages = []; // Array of { url: string, origUrl: string }
+        let croppingPhotoIndex = 0;
+
+        function renderProductPhotosGallery() {
+            const container = document.getElementById('photoPreviewContainer');
+            const grid = document.getElementById('photosGalleryGrid');
+            const badge = document.getElementById('photoStatusBadge');
+            const statusTxt = document.getElementById('photoPreviewStatusText');
+
+            if (badge) {
+                badge.innerText = `${productImages.length} photo${productImages.length > 1 ? 's' : ''}`;
+            }
+
+            if (!productImages || productImages.length === 0) {
+                if (container) container.classList.add('hidden');
+                if (grid) grid.innerHTML = '';
+                finalCroppedDataUrl = '';
+                return;
+            }
+
+            finalCroppedDataUrl = productImages[0].url;
+            if (container) container.classList.remove('hidden');
+            if (statusTxt) statusTxt.innerText = `${productImages.length} photo${productImages.length > 1 ? 's' : ''} prête${productImages.length > 1 ? 's' : ''} à être publiée${productImages.length > 1 ? 's' : ''}`;
+
+            if (grid) {
+                grid.innerHTML = productImages.map((imgObj, idx) => `
+                    <div class="relative bg-black rounded-xl border ${idx === 0 ? 'border-emerald-500 ring-1 ring-emerald-500/40' : 'border-zinc-700'} p-2 flex flex-col gap-2 shadow-md">
+                        <div class="relative aspect-square rounded-lg overflow-hidden bg-zinc-950">
+                            <img src="${imgObj.url}" alt="Photo ${idx + 1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover">
+                            ${idx === 0 ? `
+                                <span class="absolute top-1.5 left-1.5 bg-emerald-500 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
+                                    ★ Principale
+                                </span>
+                            ` : `
+                                <button type="button" onclick="setMainProductPhoto(${idx})" class="absolute top-1.5 left-1.5 bg-black/85 hover:bg-white hover:text-black text-zinc-200 border border-zinc-600 font-bold text-[9px] uppercase px-1.5 py-0.5 rounded shadow cursor-pointer transition">
+                                    ★ Mettre 1er
+                                </button>
+                            `}
+                            <button type="button" onclick="removeProductPhoto(${idx})" class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/85 hover:bg-red-500 text-white border border-zinc-700 flex items-center justify-center text-xs font-black cursor-pointer transition" title="Supprimer cette photo">
+                                ✕
+                            </button>
+                        </div>
+                        <button type="button" onclick="openCropperForIndex(${idx})" class="w-full py-1.5 px-2 rounded-lg bg-zinc-800 hover:bg-sky-500 hover:text-black text-sky-400 font-bold text-[11px] flex items-center justify-center gap-1 transition cursor-pointer">
+                            <i data-lucide="crop" class="w-3.5 h-3.5"></i>
+                            <span>Recadrer</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            initIcons();
+        }
+
+        function setMainProductPhoto(idx) {
+            if (idx <= 0 || idx >= productImages.length) return;
+            const [chosen] = productImages.splice(idx, 1);
+            productImages.unshift(chosen);
+            renderProductPhotosGallery();
+            showToast('Photo définie comme image principale !');
+        }
+
+        function removeProductPhoto(idx) {
+            if (idx < 0 || idx >= productImages.length) return;
+            productImages.splice(idx, 1);
+            renderProductPhotosGallery();
+            showToast('Photo retirée');
+        }
+
+        function addPhotoFromUrlInput() {
+            const urlInp = document.getElementById('newProdImageUrl');
+            if (!urlInp) return;
+            const trimmed = (urlInp.value || '').trim();
+            if (!trimmed) {
+                alert('Veuillez coller un lien d\'image (commençant par https://...).');
+                return;
+            }
+            if (!(trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:image/') || trimmed.startsWith('/'))) {
+                alert('Lien d\'image invalide. Le lien doit commencer par https:// ou http://');
+                return;
+            }
+            productImages.push({ url: trimmed, origUrl: trimmed });
+            urlInp.value = '';
+            renderProductPhotosGallery();
+            showToast('📸 Photo ajoutée à la galerie !');
+        }
+
         function openNewProductModal() {
             document.getElementById('newProductForm').reset();
             document.getElementById('editProductId').value = '';
@@ -4153,11 +4259,12 @@
             const optionsTitleInput = document.getElementById('newProdOptionsTitle');
             if (optionsTitleInput) optionsTitleInput.value = 'Garnissage & Matière';
 
+            productImages = [];
             finalCroppedDataUrl = '';
             rawImage = null;
-            document.getElementById('photoPreviewContainer').classList.add('hidden');
+            renderProductPhotosGallery();
             document.getElementById('newProdImageUrl').value = '';
-            const fileInp = document.getElementById('photoFileInput');
+            const fileInp = document.getElementById('imageFileInput');
             if (fileInp) fileInp.value = '';
             
             document.getElementById('newProdPrice').value = '120';
@@ -4229,21 +4336,14 @@
             }
 
             rawImage = null;
-            const fileInp = document.getElementById('photoFileInput');
+            const fileInp = document.getElementById('imageFileInput');
             if (fileInp) fileInp.value = '';
+            document.getElementById('newProdImageUrl').value = '';
 
-            const isValidImg = p.image && (p.image.startsWith('http://') || p.image.startsWith('https://') || p.image.startsWith('data:image/') || p.image.startsWith('/'));
-            if (isValidImg) {
-                finalCroppedDataUrl = p.image;
-                // Ne pas injecter une longue chaîne base64 dans le champ texte URL
-                document.getElementById('newProdImageUrl').value = p.image.startsWith('data:') ? '' : p.image;
-                document.getElementById('photoPreviewImg').src = p.image;
-                document.getElementById('photoPreviewContainer').classList.remove('hidden');
-            } else {
-                finalCroppedDataUrl = '';
-                document.getElementById('newProdImageUrl').value = '';
-                document.getElementById('photoPreviewContainer').classList.add('hidden');
-            }
+            const rawImgs = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+            const validImgs = rawImgs.filter(u => u && (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:image/') || u.startsWith('/')));
+            productImages = validImgs.map(u => ({ url: u, origUrl: u }));
+            renderProductPhotosGallery();
 
             calculateMargin();
 
@@ -4335,9 +4435,18 @@
             const category = document.getElementById('newProdCategory').value;
             const conditionGrade = '1:1 Miroir';
             const description = document.getElementById('newProdDescription').value;
+
+            // Si un lien a été collé dans le champ URL sans cliquer sur "+ Ajouter", on l'inclut automatiquement
             const urlFieldVal = (document.getElementById('newProdImageUrl').value || '').trim();
-            const validUrlField = (urlFieldVal.startsWith('http://') || urlFieldVal.startsWith('https://') || urlFieldVal.startsWith('data:image/') || urlFieldVal.startsWith('/')) ? urlFieldVal : '';
-            const image = finalCroppedDataUrl || validUrlField || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+            if (urlFieldVal && (urlFieldVal.startsWith('http://') || urlFieldVal.startsWith('https://') || urlFieldVal.startsWith('data:image/') || urlFieldVal.startsWith('/'))) {
+                if (!productImages.some(it => it.url === urlFieldVal)) {
+                    productImages.push({ url: urlFieldVal, origUrl: urlFieldVal });
+                }
+            }
+
+            const defaultFallbackImg = 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+            const imagesList = productImages.length > 0 ? productImages.map(it => it.url) : [defaultFallbackImg];
+            const image = imagesList[0];
 
             if (!brand) {
                 alert('Veuillez sélectionner ou ajouter une marque.');
@@ -4434,6 +4543,7 @@
                 options,
                 optionsTitle,
                 image,
+                images: imagesList,
                 description,
                 badge: '1:1 BEST-SELLER'
             };
@@ -4542,9 +4652,31 @@
         }
 
         // ==========================================
-        // IMAGE UPLOAD & CROPPER ENGINE (1:1 CARRÉ)
+        // MULTI-IMAGE UPLOAD & 1:1 CROPPER ENGINE
         // ==========================================
-        function generateSquareImageDataUrl(img, size = 600, quality = 0.82) {
+        function compressOriginalImage(img, maxDim = 900, quality = 0.82) {
+            const offCanvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                }
+            }
+            offCanvas.width = w;
+            offCanvas.height = h;
+            const ctx = offCanvas.getContext('2d');
+            ctx.fillStyle = '#09090b';
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+            return offCanvas.toDataURL('image/jpeg', quality);
+        }
+
+        function generateSquareImageDataUrl(img, size = 550, quality = 0.80) {
             const offCanvas = document.createElement('canvas');
             offCanvas.width = size;
             offCanvas.height = size;
@@ -4566,48 +4698,87 @@
 
         function handleFileSelect(e) {
             isPickingFile = false;
-            const file = e.target.files && e.target.files[0];
-            if (!file) return;
+            const files = e.target.files ? Array.from(e.target.files) : [];
+            if (files.length === 0) return;
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    rawImage = img;
-                    // Appliquer immédiatement la photo centrée et compressée (600x600 JPEG)
-                    // pour que la photo fonctionne dès la sélection sans étape bloquante !
-                    finalCroppedDataUrl = generateSquareImageDataUrl(img, 600, 0.82);
-                    const previewImg = document.getElementById('photoPreviewImg');
-                    const previewContainer = document.getElementById('photoPreviewContainer');
-                    const urlInp = document.getElementById('newProdImageUrl');
-                    if (previewImg) previewImg.src = finalCroppedDataUrl;
-                    if (previewContainer) previewContainer.classList.remove('hidden');
-                    if (urlInp) urlInp.value = '';
-                    showToast('📸 Photo chargée avec succès !');
-                    initIcons();
+            let loadedCount = 0;
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const origCompressed = compressOriginalImage(img, 900, 0.82);
+                        const squareDataUrl = generateSquareImageDataUrl(img, 550, 0.80);
+                        productImages.push({
+                            url: squareDataUrl,
+                            origUrl: origCompressed
+                        });
+                        loadedCount++;
+                        renderProductPhotosGallery();
+                        if (loadedCount === files.length) {
+                            showToast(`📸 ${files.length} photo${files.length > 1 ? 's' : ''} ajoutée${files.length > 1 ? 's' : ''} !`);
+                        }
+                    };
+                    img.onerror = function() {
+                        alert('Impossible de lire ce format d\'image. Essayez une photo JPG ou PNG.');
+                    };
+                    img.src = event.target.result;
                 };
-                img.onerror = function() {
-                    alert('Impossible de lire ce format d\'image. Essayez une photo JPG ou PNG.');
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            });
+
             // Réinitialiser l'input pour permettre de re-sélectionner la même photo
             e.target.value = '';
         }
 
         function clearProductPhoto() {
+            productImages = [];
             finalCroppedDataUrl = '';
             rawImage = null;
-            const previewImg = document.getElementById('photoPreviewImg');
-            const previewContainer = document.getElementById('photoPreviewContainer');
+            renderProductPhotosGallery();
             const urlInp = document.getElementById('newProdImageUrl');
-            const fileInp = document.getElementById('photoFileInput');
-            if (previewImg) previewImg.src = '';
-            if (previewContainer) previewContainer.classList.add('hidden');
+            const fileInp = document.getElementById('imageFileInput');
             if (urlInp) urlInp.value = '';
             if (fileInp) fileInp.value = '';
-            showToast('Photo retirée');
+            showToast('Toutes les photos ont été retirées');
+        }
+
+        async function openCropperForIndex(idx) {
+            if (idx < 0 || idx >= productImages.length) return;
+            croppingPhotoIndex = idx;
+            const targetObj = productImages[idx];
+            const srcToLoad = targetObj.origUrl || targetObj.url;
+
+            const loadAndOpen = (src, useCors = false) => new Promise((resolve, reject) => {
+                const img = new Image();
+                if (useCors) img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Image load error'));
+                img.src = src;
+            });
+
+            try {
+                if (srcToLoad.startsWith('data:')) {
+                    rawImage = await loadAndOpen(srcToLoad, false);
+                } else {
+                    try {
+                        rawImage = await loadAndOpen(srcToLoad, true);
+                    } catch (corsErr) {
+                        showToast('Chargement de l\'image pour le recadrage...');
+                        const proxyRes = await fetch(`/api/products?proxyImg=${encodeURIComponent(srcToLoad)}`);
+                        const proxyData = await proxyRes.json();
+                        if (proxyData.success && proxyData.dataUrl) {
+                            targetObj.origUrl = proxyData.dataUrl;
+                            rawImage = await loadAndOpen(proxyData.dataUrl, false);
+                        } else {
+                            throw new Error('Impossible de charger cette image externe');
+                        }
+                    }
+                }
+                openCropper();
+            } catch (err) {
+                alert('Impossible d\'ouvrir le recadrage pour cette image : ' + err.message);
+            }
         }
 
         function openCropper() {
@@ -4615,6 +4786,7 @@
             document.getElementById('cropModalBackdrop').classList.remove('hidden');
             initCropperTouchDrag();
             drawCrop();
+            initIcons();
         }
 
         function closeCropper() {
@@ -4622,19 +4794,8 @@
         }
 
         function reopenCropper() {
-            if (rawImage) {
-                openCropper();
-            } else if (finalCroppedDataUrl) {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = function() {
-                    rawImage = img;
-                    openCropper();
-                };
-                img.onerror = function() {
-                    showToast('Recadrage disponible uniquement sur les photos importées depuis l\'appareil');
-                };
-                img.src = finalCroppedDataUrl;
+            if (productImages.length > 0) {
+                openCropperForIndex(0);
             }
         }
 
@@ -4643,8 +4804,39 @@
             cropRotation = 0;
             cropPanX = 0;
             cropPanY = 0;
-            document.getElementById('zoomSlider').value = 1;
-            document.getElementById('zoomValText').innerText = '100%';
+            const slider = document.getElementById('zoomSlider');
+            if (slider) slider.value = 1;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.innerText = '100%';
+            drawCrop();
+        }
+
+        function fitCropImage() {
+            if (!rawImage) return;
+            const isRotated = (cropRotation % 180) !== 0;
+            const imgW = isRotated ? rawImage.height : rawImage.width;
+            const imgH = isRotated ? rawImage.width : rawImage.height;
+            const aspect = imgW / imgH;
+            // En mode drawCrop de base (scale=1), le côté le plus court fait 600px et le côté le plus long fait 600 * max(aspect, 1/aspect)
+            const ratio = aspect > 1 ? (1 / aspect) : aspect;
+            cropScale = Math.max(0.4, Math.round(ratio * 100) / 100);
+            cropPanX = 0;
+            cropPanY = 0;
+            const slider = document.getElementById('zoomSlider');
+            if (slider) slider.value = cropScale;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.innerText = `${Math.round(cropScale * 100)}%`;
+            drawCrop();
+        }
+
+        function fillCropImage() {
+            cropScale = 1;
+            cropPanX = 0;
+            cropPanY = 0;
+            const slider = document.getElementById('zoomSlider');
+            if (slider) slider.value = 1;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.innerText = '100%';
             drawCrop();
         }
 
@@ -4669,6 +4861,7 @@
             ctx.fillStyle = '#09090b';
             ctx.fillRect(0, 0, w, h);
             ctx.save();
+            // Appliquer le déplacement (pan) en coordonnées écran avant la rotation !
             ctx.translate(w / 2 + cropPanX, h / 2 + cropPanY);
             ctx.rotate((cropRotation * Math.PI) / 180);
             ctx.scale(cropScale, cropScale);
@@ -4686,36 +4879,52 @@
             ctx.restore();
         }
 
+        let cropperEventsBound = false;
         function initCropperTouchDrag() {
             const box = document.getElementById('cropBox');
-            if (!box) return;
+            const canvas = document.getElementById('cropCanvas');
+            if (!box || !canvas || cropperEventsBound) return;
+            cropperEventsBound = true;
+
+            let lastClientX = 0;
+            let lastClientY = 0;
+
+            const getScaleRatio = () => {
+                const rect = box.getBoundingClientRect();
+                return rect.width > 0 ? (canvas.width / rect.width) : 2;
+            };
 
             const onStart = (e) => {
+                if (e.cancelable) e.preventDefault();
                 isDraggingCrop = true;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                startDragX = clientX - cropPanX;
-                startDragY = clientY - cropPanY;
+                lastClientX = e.touches ? e.touches[0].clientX : e.clientX;
+                lastClientY = e.touches ? e.touches[0].clientY : e.clientY;
             };
 
             const onMove = (e) => {
                 if (!isDraggingCrop) return;
+                if (e.cancelable) e.preventDefault();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                cropPanX = clientX - startDragX;
-                cropPanY = clientY - startDragY;
+                const ratio = getScaleRatio();
+                cropPanX += (clientX - lastClientX) * ratio;
+                cropPanY += (clientY - lastClientY) * ratio;
+                lastClientX = clientX;
+                lastClientY = clientY;
                 drawCrop();
             };
 
-            const onEnd = () => { isDraggingCrop = false; };
+            const onEnd = () => {
+                isDraggingCrop = false;
+            };
 
-            box.onmousedown = onStart;
-            window.onmousemove = onMove;
-            window.onmouseup = onEnd;
+            box.addEventListener('mousedown', onStart);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onEnd);
 
-            box.ontouchstart = onStart;
-            box.ontouchmove = onMove;
-            box.ontouchend = onEnd;
+            box.addEventListener('touchstart', onStart, { passive: false });
+            window.addEventListener('touchmove', onMove, { passive: false });
+            window.addEventListener('touchend', onEnd);
         }
 
         function applyCrop() {
@@ -4723,25 +4932,23 @@
             if (!canvas) return;
 
             try {
-                finalCroppedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
-                document.getElementById('photoPreviewImg').src = finalCroppedDataUrl;
-                document.getElementById('photoPreviewContainer').classList.remove('hidden');
-                document.getElementById('newProdImageUrl').value = '';
-                showToast('Recadrage appliqué !');
+                const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                if (productImages[croppingPhotoIndex]) {
+                    productImages[croppingPhotoIndex].url = croppedDataUrl;
+                } else {
+                    productImages.push({ url: croppedDataUrl, origUrl: croppedDataUrl });
+                }
+                renderProductPhotosGallery();
+                showToast('✂️ Recadrage appliqué avec succès !');
             } catch (e) {
                 console.warn('Crop export error:', e);
+                alert('Erreur lors du recadrage : ' + e.message);
             }
             closeCropper();
         }
 
         function updateImagePreview(url) {
-            const trimmed = (url || '').trim();
-            if (!trimmed) return;
-            if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:image/') || trimmed.startsWith('/')) {
-                finalCroppedDataUrl = trimmed;
-                document.getElementById('photoPreviewImg').src = trimmed;
-                document.getElementById('photoPreviewContainer').classList.remove('hidden');
-            }
+            // Conservé pour compatibilité : l'ajout par URL utilise désormais addPhotoFromUrlInput()
         }
 
         // ==========================================
