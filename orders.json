@@ -1,5 +1,45 @@
 [
   {
+    "id": "ELS-CMD-6501",
+    "customerName": "TEst Test",
+    "customerEmail": "test@gmail.com",
+    "customerPhone": "0781505946",
+    "customerAddress": "154 rue Gaston baratte Villeneuve d'ascq",
+    "items": [
+      {
+        "id": "els-54865",
+        "name": "Veste Brésil Noir",
+        "brand": "Nike",
+        "color": "Noir",
+        "size": "L",
+        "price": 50,
+        "costPrice": 30,
+        "quantity": 1
+      },
+      {
+        "id": "els-24238",
+        "name": "Veste Brésil rose",
+        "brand": "Nike",
+        "color": "Standard",
+        "size": "M",
+        "price": 50,
+        "costPrice": 20,
+        "quantity": 1
+      }
+    ],
+    "subtotal": 100,
+    "shippingCost": 4.9,
+    "total": 104.9,
+    "paymentMethod": "PayPal (yasminebendaoui@gmail.com)",
+    "status": "en_preparation",
+    "statusLabel": "En préparation",
+    "trackingNumber": "",
+    "carrier": "Colissimo 24/48h",
+    "notes": "",
+    "createdAt": "2026-10-28T21:41:30.986Z",
+    "createdBy": "Boutique Web"
+  },
+  {
     "id": "ELS-CMD-1084",
     "customerName": "Yanis D.",
     "customerEmail": "yanis.d@gmail.com",
