@@ -28,17 +28,17 @@
       "L": 3,
       "XL": 3,
       "XXL": 3,
-      "3XL": 0
+      "3XL": 10
     },
     "badge": "1:1 BEST-SELLER",
     "featured": false,
-    "unlimitedStock": false,
+    "unlimitedStock": true,
     "image": "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80",
     "description": "Veste Brasil verte, qualite 1.1 parfaite ",
     "createdAt": "2026-10-09T22:31:02.005Z",
     "createdBy": "Ilies",
-    "updatedAt": "2026-10-26T18:17:01.165Z",
-    "updatedBy": "Ilies",
+    "updatedAt": "2026-10-28T21:20:59.909Z",
+    "updatedBy": "Eliott",
     "options": [],
     "optionsTitle": "Garnissage & Matière"
   },
