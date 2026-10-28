@@ -299,6 +299,11 @@
 
             <!-- Header Quick Actions -->
             <div class="flex items-center gap-2">
+                <button onclick="openWhatsAppSetupDirect()" class="px-2.5 py-1.5 rounded-xl bg-sky-500/20 border border-sky-400/50 text-sky-300 hover:bg-sky-500 hover:text-black text-xs font-black flex items-center gap-1.5 transition active:scale-95 cursor-pointer" title="Configurer le Groupe WhatsApp & Code à 8 lettres">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i>
+                    <span>WhatsApp Auto</span>
+                </button>
+
                 <button onclick="lockAdminSession(true)" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:text-amber-300 hover:bg-zinc-800 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 cursor-pointer" title="Verrouiller l'accès immédiatement">
                     <i data-lucide="lock" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Verrouiller</span>
@@ -457,16 +462,16 @@
                     </div>
                 </div>
 
-                <!-- Panneau de Configuration : Ticket Groupe WhatsApp & Suivi Message Automatique -->
-                <div id="waGroupConfigPanel" class="hidden bg-gradient-to-b from-sky-950/30 to-zinc-950 border-2 border-sky-500/40 rounded-2xl p-4 sm:p-6 space-y-4 shadow-2xl">
+                <!-- Panneau de Configuration : Ticket Groupe WhatsApp & Suivi Message Automatique (OUVERT PAR DÉFAUT) -->
+                <div id="waGroupConfigPanel" class="bg-gradient-to-b from-sky-950/30 to-zinc-950 border-2 border-sky-500/50 rounded-2xl p-4 sm:p-6 space-y-4 shadow-2xl">
                     <div class="flex items-start justify-between gap-3 pb-3 border-b border-zinc-800">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase">Système 100% Automatique & Gratuit</span>
-                                <h3 class="font-display font-bold text-sm sm:text-base text-white">Connexion Groupe WhatsApp & Envoi Suivi Client (Green-API)</h3>
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase">Système 100% Automatique 24h/24</span>
+                                <h3 class="font-display font-bold text-sm sm:text-base text-white">Connexion Groupe WhatsApp (Code à 8 lettres iPhone) & PayPal</h3>
                             </div>
                             <p class="text-xs text-zinc-300 leading-relaxed">
-                                Ce système envoie <strong>automatiquement le Ticket de chaque commande dans votre Groupe WhatsApp</strong> (Nom + Téléphone + Adresse de livraison + Articles) ET envoie <strong>automatiquement le numéro de suivi par message WhatsApp/SMS au numéro du client</strong> dès que vous le saisissez sur une commande !
+                                Reliez votre WhatsApp une seule fois ci-dessous : chaque nouvelle commande enverra <strong>automatiquement le Ticket (avec photo du produit et sans prix) dans votre Groupe WhatsApp</strong>, et le numéro de suivi sera envoyé par message au client dès sa saisie.
                             </p>
                         </div>
                         <button type="button" onclick="toggleWaConfigPanel()" class="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white">
@@ -474,56 +479,41 @@
                         </button>
                     </div>
 
-                    <!-- Guide rapide en 3 étapes -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
-                            <div class="font-black text-sky-400">1. Créez un compte gratuit Green-API</div>
-                            <p class="text-[11px] text-zinc-400">Allez sur <a href="https://console.green-api.com" target="_blank" class="text-white underline font-bold">console.green-api.com</a> (Plan Developer 0€/mois), créez une instance et scannez le QR Code avec votre WhatsApp.</p>
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
-                            <div class="font-black text-sky-400">2. Collez idInstance & apiTokenInstance</div>
-                            <p class="text-[11px] text-zinc-400">Copiez votre <code class="text-white">idInstance</code> et votre <code class="text-white">apiTokenInstance</code> ci-dessous puis cliquez sur <strong>« Charger mes Groupes WhatsApp »</strong>.</p>
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
-                            <div class="font-black text-emerald-400">3. Sélectionnez votre Groupe & Testez !</div>
-                            <p class="text-[11px] text-zinc-400">Choisissez votre groupe WhatsApp dans la liste et cliquez sur <strong>« Enregistrer & Tester »</strong> : vous recevrez immédiatement un ticket test dans le groupe.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Green-API : idInstance</label>
-                            <input type="text" id="cfgGreenInstanceId" placeholder="Ex: 7103123456" class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-sky-400">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Green-API : apiTokenInstance</label>
-                            <input type="password" id="cfgGreenApiToken" placeholder="Votre token Green-API..." class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-sky-400">
-                        </div>
-                        <div class="flex items-end gap-2">
-                            <button type="button" onclick="fetchWhatsAppGroupsFromGreenApi()" id="btnFetchWaGroups" class="w-full py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-black border border-sky-400/50 text-sky-300 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                                <span>Charger mes Groupes WhatsApp</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Connexion directe depuis iPhone (Code 8 lettres sans QR Code) ou QR Code intégré -->
-                    <div class="p-3.5 rounded-xl bg-black/70 border border-zinc-800 space-y-2.5 text-xs">
+                    <!-- OPTION 1 : CONNEXION DIRECTE DEPUIS IPHONE PAR CODE À 8 LETTRES (MISE EN AVANT EN HAUT) -->
+                    <div class="p-4 rounded-2xl bg-emerald-950/25 border-2 border-emerald-500/50 space-y-3 text-xs">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <span class="font-bold text-emerald-400 text-[11px] uppercase">📲 Connecter votre WhatsApp directement depuis cet iPhone (sans 2e écran) :</span>
-                            <button type="button" onclick="showWhatsAppQrInAdmin()" class="text-[11px] font-bold text-sky-400 hover:underline cursor-pointer">
-                                Ou afficher le QR Code ici
+                            <div class="font-black text-emerald-400 text-xs sm:text-sm uppercase flex items-center gap-2">
+                                <span>📲 1. Relier votre WhatsApp sur iPhone avec le Code à 8 lettres (Sans QR Code)</span>
+                            </div>
+                            <button type="button" onclick="showWhatsAppQrInAdmin()" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-sky-500/40 text-[11px] font-bold text-sky-400 hover:bg-sky-500 hover:text-black transition cursor-pointer">
+                                Ou afficher le QR Code
                             </button>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="tel" id="cfgAdminWaPhone" placeholder="Votre numéro WhatsApp (ex: 06 12 34 56 78)" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400">
-                            <button type="button" onclick="requestWhatsAppPairingCode()" id="btnWaPairingCode" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-300 font-black text-xs shrink-0 transition cursor-pointer">
-                                Obtenir le code à 8 lettres (iPhone)
+                        <p class="text-[11px] text-zinc-300 leading-relaxed">
+                            Créez une instance gratuite sur <a href="https://console.green-api.com" target="_blank" class="text-sky-400 underline font-bold">console.green-api.com</a> (0€), collez votre <code class="text-white">idInstance</code> et <code class="text-white">apiTokenInstance</code> ci-dessous, puis entrez votre numéro de téléphone pour recevoir le <strong>code à 8 lettres</strong> à saisir dans <em>WhatsApp → Appareils connectés → Connecter avec un numéro de téléphone</em> :
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-zinc-300 mb-1">idInstance (Green-API)</label>
+                                <input type="text" id="cfgGreenInstanceId" placeholder="Ex: 7103123456" class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-emerald-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-zinc-300 mb-1">apiTokenInstance (Green-API)</label>
+                                <input type="text" id="cfgGreenApiToken" placeholder="Collez votre apiTokenInstance..." class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-emerald-400">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                            <input type="tel" id="cfgAdminWaPhone" placeholder="Votre numéro WhatsApp (ex: 06 12 34 56 78)" class="flex-1 bg-black border border-emerald-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:outline-none focus:border-emerald-400">
+                            <button type="button" onclick="requestWhatsAppPairingCode()" id="btnWaPairingCode" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs uppercase tracking-wider shrink-0 transition cursor-pointer shadow-lg">
+                                🔑 Obtenir le code à 8 lettres (iPhone)
                             </button>
                         </div>
-                        <div id="waPairingResultBox" class="hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-center space-y-1">
-                            <div class="text-[10px] uppercase font-bold text-emerald-300">Entrez ce code dans WhatsApp → Appareils connectés → Connecter avec un numéro :</div>
-                            <div id="waPairingCodeValue" class="font-mono font-black text-2xl tracking-widest text-white select-all">----</div>
+
+                        <div id="waPairingResultBox" class="hidden p-3.5 rounded-xl bg-black border-2 border-emerald-400 text-center space-y-1.5">
+                            <div class="text-[11px] uppercase font-bold text-emerald-300">Entrez ce code dans WhatsApp → Appareils connectés → Connecter avec un numéro :</div>
+                            <div id="waPairingCodeValue" class="font-mono font-black text-2xl sm:text-3xl tracking-widest text-white select-all">----</div>
                         </div>
                         <div id="waQrCodeResultBox" class="hidden p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-center space-y-2">
                             <div id="waQrCodeStatus" class="text-xs font-bold text-sky-300">Scannez ce QR Code avec WhatsApp :</div>
@@ -531,19 +521,29 @@
                         </div>
                     </div>
 
+                    <!-- ÉTAPE 2 : CHOISIR LE GROUPE WHATSAPP & LIEN PAYPAL.ME -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Sélectionner ou saisir l'ID du Groupe WhatsApp (@g.us)</label>
-                            <div class="flex gap-2">
-                                <select id="cfgWaGroupSelect" onchange="if(this.value) document.getElementById('cfgWaGroupId').value = this.value;" class="hidden bg-black border border-sky-500/50 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                                    <option value="">Choisir un groupe...</option>
-                                </select>
-                                <input type="text" id="cfgWaGroupId" placeholder="Ex: 12036304928194829@g.us" class="flex-1 bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-400">
+                        <div class="p-3.5 rounded-xl bg-black/70 border border-zinc-800 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-[10px] font-black uppercase text-sky-400">2. Choisir votre Groupe WhatsApp</label>
+                                <button type="button" onclick="fetchWhatsAppGroupsFromGreenApi()" id="btnFetchWaGroups" class="px-2.5 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-black text-[10px] flex items-center gap-1 transition cursor-pointer">
+                                    <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                                    <span>Charger mes Groupes</span>
+                                </button>
                             </div>
+                            <select id="cfgWaGroupSelect" onchange="if(this.value) document.getElementById('cfgWaGroupId').value = this.value;" class="hidden w-full bg-zinc-900 border border-sky-500/50 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                                <option value="">Choisir un groupe...</option>
+                            </select>
+                            <input type="text" id="cfgWaGroupId" placeholder="ID du Groupe (ex: 12036304928194829@g.us)" class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-400">
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Webhook / Passerelle SMS Optionnelle (URL)</label>
-                            <input type="text" id="cfgCustomWebhookUrl" placeholder="Optionnel : URL Webhook Make / Discord / Passerelle SMS" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-mono focus:outline-none focus:border-sky-400">
+
+                        <div class="p-3.5 rounded-xl bg-black/70 border border-zinc-800 space-y-2">
+                            <label class="block text-[10px] font-black uppercase text-amber-400">Option PayPal.Me (Pour pré-remplir le montant automatiquement)</label>
+                            <input type="text" id="cfgPaypalMeSlug" placeholder="Votre pseudo PayPal.Me (ex: paypal.me/VotrePseudo)" class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                            <input type="hidden" id="cfgCustomWebhookUrl" value="">
+                            <p class="text-[10px] text-zinc-400">
+                                💡 Si vous avez un lien <code class="text-white">paypal.me/VotrePseudo</code> sur le compte <code class="text-white">iliesimaj9@gmail.com</code>, indiquez-le ici pour que le montant exact soit pré-rempli automatiquement sur PayPal.
+                            </p>
                         </div>
                     </div>
 
@@ -2940,10 +2940,22 @@
             const tokEl = document.getElementById('cfgGreenApiToken');
             const grpEl = document.getElementById('cfgWaGroupId');
             const webEl = document.getElementById('cfgCustomWebhookUrl');
+            const ppMeEl = document.getElementById('cfgPaypalMeSlug');
             if (instEl && s.greenApiInstanceId) instEl.value = s.greenApiInstanceId;
             if (tokEl && s.greenApiToken) tokEl.value = s.greenApiToken;
             if (grpEl && s.whatsappGroupId) grpEl.value = s.whatsappGroupId;
             if (webEl && (s.customWebhookUrl || s.smsWebhookUrl)) webEl.value = s.customWebhookUrl || s.smsWebhookUrl;
+            if (ppMeEl && s.paypalMeSlug) ppMeEl.value = s.paypalMeSlug;
+        }
+
+        function openWhatsAppSetupDirect() {
+            switchTab('orders');
+            const panel = document.getElementById('waGroupConfigPanel');
+            if (panel) {
+                panel.classList.remove('hidden');
+                setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+            }
+            initIcons();
         }
 
         function toggleWaConfigPanel() {
@@ -3092,7 +3104,8 @@
             const greenApiInstanceId = (document.getElementById('cfgGreenInstanceId').value || '').trim();
             const greenApiToken = (document.getElementById('cfgGreenApiToken').value || '').trim();
             const whatsappGroupId = (document.getElementById('cfgWaGroupId').value || '').trim();
-            const customWebhookUrl = (document.getElementById('cfgCustomWebhookUrl').value || '').trim();
+            const customWebhookUrl = (document.getElementById('cfgCustomWebhookUrl')?.value || '').trim();
+            const paypalMeSlug = (document.getElementById('cfgPaypalMeSlug')?.value || '').trim();
 
             const token = localStorage.getItem('els_admin_jwt');
             const btn = document.getElementById('btnSaveAndTestWa');
@@ -3112,6 +3125,7 @@
                             greenApiInstanceId,
                             greenApiToken,
                             whatsappGroupId,
+                            paypalMeSlug,
                             customWebhookUrl,
                             smsWebhookUrl: customWebhookUrl
                         }
