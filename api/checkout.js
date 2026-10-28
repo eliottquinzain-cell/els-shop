@@ -31,7 +31,8 @@ module.exports = async (req, res) => {
       }
     }
 
-    const { items, customer, promoCode } = body || {};
+    const { items, customer, promoCode, paymentMethod } = body || {};
+    const PAYPAL_EMAIL = 'yasminebendaoui@gmail.com';
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, error: 'Votre panier est vide.' });
@@ -59,11 +60,15 @@ module.exports = async (req, res) => {
       (sanitizeString(customer?.address || 'Remise en main propre (Paris/IDF)', 150)) : 
       (sanitizeString(customer?.address || 'Adresse à confirmer', 150));
 
+    // Calcul précis du sous-total articles (après promo) + frais de livraison (si Colissimo choisi et < 150€)
+    const itemsSubtotal = Math.round(items.reduce((acc, it) => acc + (parseFloat(it.price || 0) * (1 - discountPercent) * (parseInt(it.quantity, 10) || 1)), 0) * 100) / 100;
+    const shippingCost = isMainPropre ? 0 : (itemsSubtotal >= 150 ? 0 : 4.90);
+    const finalTotal = Math.round((itemsSubtotal + shippingCost) * 100) / 100;
+
     // Helper: Enregistrer la commande dans orders.json et déduire le stock
-    const recordOrderAndDeductStock = async (paymentType = 'Stripe (CB)') => {
+    const recordOrderAndDeductStock = async (paymentType = 'PayPal') => {
       try {
         const orders = await getOrders();
-        const totalAmount = items.reduce((acc, it) => acc + (parseFloat(it.price || 0) * (1 - discountPercent) * (parseInt(it.quantity, 10) || 1)), 0);
 
         const newOrder = {
           id: orderNumber,
@@ -82,7 +87,9 @@ module.exports = async (req, res) => {
             costPrice: it.costPrice !== undefined ? Number(it.costPrice) : undefined,
             quantity: parseInt(it.quantity, 10) || 1
           })),
-          total: Math.round(totalAmount * 100) / 100,
+          subtotal: itemsSubtotal,
+          shippingCost: shippingCost,
+          total: finalTotal,
           paymentMethod: paymentType,
           status: 'en_preparation',
           statusLabel: 'En préparation',
@@ -139,6 +146,34 @@ module.exports = async (req, res) => {
       }
     };
 
+    // ==========================================
+    // MODE DE PAIEMENT 1 : PAYPAL AUTOMATIQUE (yasminebendaoui@gmail.com)
+    // ==========================================
+    if (!paymentMethod || paymentMethod === 'paypal') {
+      await recordOrderAndDeductStock(`PayPal (${PAYPAL_EMAIL})`);
+
+      const itemSummary = items.map(it => `${it.quantity || 1}x ${it.brand || 'ELS'} ${it.name} (${it.size || 'Unique'})`).join(', ');
+      const shipLabel = isMainPropre ? 'Main propre (0€)' : (shippingCost > 0 ? `Colissimo (+${shippingCost.toFixed(2)}€)` : 'Colissimo Offert (0€)');
+      const paypalItemName = `Commande ELS.SHOP #${orderNumber} — ${itemSummary} [${shipLabel}]`.slice(0, 125);
+
+      const paypalAutoUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(PAYPAL_EMAIL)}&item_name=${encodeURIComponent(paypalItemName)}&item_number=${encodeURIComponent(orderNumber)}&amount=${finalTotal.toFixed(2)}&currency_code=EUR&no_shipping=1&return=${encodeURIComponent(`${origin}/confirmation.html?order=${orderNumber}&paid=paypal`)}&cancel_return=${encodeURIComponent(`${origin}/confirmation.html?order=${orderNumber}&pay=paypal&total=${finalTotal.toFixed(2)}&ship=${shippingCost.toFixed(2)}`)}`;
+
+      return res.status(200).json({
+        success: true,
+        paymentMethod: 'paypal',
+        orderNumber,
+        subtotal: itemsSubtotal,
+        shippingCost,
+        total: finalTotal,
+        paypalEmail: PAYPAL_EMAIL,
+        paypalAutoUrl,
+        checkoutUrl: `${origin}/confirmation.html?order=${orderNumber}&pay=paypal&total=${finalTotal.toFixed(2)}&ship=${shippingCost.toFixed(2)}`
+      });
+    }
+
+    // ==========================================
+    // MODE DE PAIEMENT 2 : STRIPE CHECKOUT (CB)
+    // ==========================================
     // Prepare line items
     const lineItems = items.map((item) => {
       let unitPrice = parseFloat(item.price || 0);
@@ -158,6 +193,21 @@ module.exports = async (req, res) => {
         quantity: Math.max(1, parseInt(item.quantity || 1, 10))
       };
     });
+
+    if (shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: 'Livraison Colissimo Suivi 24/48h',
+            description: 'Expédition sécurisée avec suivi en direct',
+            images: []
+          },
+          unit_amount: Math.round(shippingCost * 100)
+        },
+        quantity: 1
+      });
+    }
 
     const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 
