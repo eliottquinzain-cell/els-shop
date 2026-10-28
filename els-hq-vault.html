@@ -433,22 +433,103 @@
             <!-- ============================================================== -->
             <!-- TAB 3: COMMANDES (SUIVI, MODIFICATION & VENTES DIRECTES)       -->
             <!-- ============================================================== -->
-            <section id="viewOrders" class="hidden space-y-6">
+            <section id="viewOrders" class="hidden space-y-5">
                 
                 <!-- Orders Header & Action -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-950 p-4 rounded-2xl border border-els-border">
                     <div class="space-y-1">
                         <h2 class="font-display font-bold text-base text-white flex items-center gap-2">
                             <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
-                            <span>Commandes & Ventes Directes</span>
+                            <span>Commandes, Tickets WhatsApp & Envoi de Suivi</span>
                         </h2>
-                        <p class="text-xs text-zinc-400">Modifiez, supprimez, suivez les colis ou enregistrez vos ventes en main propre.</p>
+                        <p class="text-xs text-zinc-400">PayPal : <strong class="text-sky-400 font-mono">iliesimaj9@gmail.com</strong> (Amis & Proches) • Entrez un numéro de suivi pour l'envoyer automatiquement par message au client.</p>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button onclick="toggleWaConfigPanel()" class="px-3.5 py-2.5 rounded-xl bg-sky-500/15 hover:bg-sky-500 hover:text-black border border-sky-500/40 text-sky-300 text-xs font-black flex items-center gap-2 transition cursor-pointer">
+                            <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+                            <span>⚙️ Configurer Groupe WhatsApp Auto</span>
+                        </button>
                         <button onclick="openNewOrderModal()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black flex items-center gap-2 transition active:scale-95 shadow-lg shadow-emerald-500/20">
                             <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                            <span>+ Nouvelle Vente Directe</span>
+                            <span>+ Nouvelle Commande</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panneau de Configuration : Ticket Groupe WhatsApp & Suivi Message Automatique -->
+                <div id="waGroupConfigPanel" class="hidden bg-gradient-to-b from-sky-950/30 to-zinc-950 border-2 border-sky-500/40 rounded-2xl p-4 sm:p-6 space-y-4 shadow-2xl">
+                    <div class="flex items-start justify-between gap-3 pb-3 border-b border-zinc-800">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase">Système 100% Automatique & Gratuit</span>
+                                <h3 class="font-display font-bold text-sm sm:text-base text-white">Connexion Groupe WhatsApp & Envoi Suivi Client (Green-API)</h3>
+                            </div>
+                            <p class="text-xs text-zinc-300 leading-relaxed">
+                                Ce système envoie <strong>automatiquement le Ticket de chaque commande dans votre Groupe WhatsApp</strong> (Nom + Téléphone + Adresse de livraison + Articles) ET envoie <strong>automatiquement le numéro de suivi par message WhatsApp/SMS au numéro du client</strong> dès que vous le saisissez sur une commande !
+                            </p>
+                        </div>
+                        <button type="button" onclick="toggleWaConfigPanel()" class="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Guide rapide en 3 étapes -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                            <div class="font-black text-sky-400">1. Créez un compte gratuit Green-API</div>
+                            <p class="text-[11px] text-zinc-400">Allez sur <a href="https://console.green-api.com" target="_blank" class="text-white underline font-bold">console.green-api.com</a> (Plan Developer 0€/mois), créez une instance et scannez le QR Code avec votre WhatsApp.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                            <div class="font-black text-sky-400">2. Collez idInstance & apiTokenInstance</div>
+                            <p class="text-[11px] text-zinc-400">Copiez votre <code class="text-white">idInstance</code> et votre <code class="text-white">apiTokenInstance</code> ci-dessous puis cliquez sur <strong>« Charger mes Groupes WhatsApp »</strong>.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                            <div class="font-black text-emerald-400">3. Sélectionnez votre Groupe & Testez !</div>
+                            <p class="text-[11px] text-zinc-400">Choisissez votre groupe WhatsApp dans la liste et cliquez sur <strong>« Enregistrer & Tester »</strong> : vous recevrez immédiatement un ticket test dans le groupe.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Green-API : idInstance</label>
+                            <input type="text" id="cfgGreenInstanceId" placeholder="Ex: 7103123456" class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Green-API : apiTokenInstance</label>
+                            <input type="password" id="cfgGreenApiToken" placeholder="Votre token Green-API..." class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" onclick="fetchWhatsAppGroupsFromGreenApi()" id="btnFetchWaGroups" class="w-full py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-black border border-sky-400/50 text-sky-300 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                <span>Charger mes Groupes WhatsApp</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Sélectionner ou saisir l'ID du Groupe WhatsApp (@g.us)</label>
+                            <div class="flex gap-2">
+                                <select id="cfgWaGroupSelect" onchange="if(this.value) document.getElementById('cfgWaGroupId').value = this.value;" class="hidden bg-black border border-sky-500/50 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                                    <option value="">Choisir un groupe...</option>
+                                </select>
+                                <input type="text" id="cfgWaGroupId" placeholder="Ex: 12036304928194829@g.us" class="flex-1 bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-400">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Webhook / Passerelle SMS Optionnelle (URL)</label>
+                            <input type="text" id="cfgCustomWebhookUrl" placeholder="Optionnel : URL Webhook Make / Discord / Passerelle SMS" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-mono focus:outline-none focus:border-sky-400">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-end gap-2.5 pt-2 border-t border-zinc-800">
+                        <button type="button" onclick="saveWhatsAppGroupSettings(false)" class="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs transition cursor-pointer">
+                            Enregistrer la configuration
+                        </button>
+                        <button type="button" onclick="saveWhatsAppGroupSettings(true)" id="btnSaveAndTestWa" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs flex items-center gap-2 transition cursor-pointer shadow-lg shadow-emerald-500/20">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Enregistrer & Envoyer un Ticket Test au Groupe</span>
                         </button>
                     </div>
                 </div>
@@ -1270,25 +1351,23 @@
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Règlement</label>
                     <select id="orderPaymentMethod" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                        <option value="Espèces">Espèces (Direct)</option>
-                        <option value="Lydia / Paylib">Lydia / Paylib</option>
+                        <option value="PayPal Amis & Proches (iliesimaj9@gmail.com)">PayPal Amis & Proches (iliesimaj9@gmail.com)</option>
                         <option value="Virement Instantané">Virement Instantané</option>
-                        <option value="Stripe (CB)">Stripe (CB)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Statut Initial</label>
                     <select id="orderStatus" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                        <option value="livre">Livrée / Remise en main propre</option>
                         <option value="en_preparation">En préparation</option>
                         <option value="expedie">Expédiée (Colissimo)</option>
+                        <option value="livre">Livrée</option>
                     </select>
                 </div>
             </div>
 
             <div>
-                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Notes / Lieu de rendez-vous</label>
-                <input type="text" id="orderNotes" placeholder="Ex: Main propre Châtelet, client Snapchat..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Adresse de livraison complète</label>
+                <input type="text" id="orderNotes" placeholder="Rue, Code Postal, Ville..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
             </div>
 
             <div class="flex items-center gap-2 p-2.5 bg-emerald-950/20 border border-emerald-500/30 rounded-xl">
@@ -1360,10 +1439,8 @@
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Moyen de Règlement</label>
                     <select id="editOrderPayment" class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                        <option value="Espèces (Vente directe)">Espèces (Vente directe)</option>
-                        <option value="Lydia / Paylib">Lydia / Paylib</option>
+                        <option value="PayPal Amis & Proches (iliesimaj9@gmail.com)">PayPal Amis & Proches (iliesimaj9@gmail.com)</option>
                         <option value="Virement Instantané">Virement Instantané</option>
-                        <option value="Stripe (CB)">Stripe (CB)</option>
                     </select>
                 </div>
             </div>
@@ -1381,7 +1458,7 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-400 uppercase mb-1">Transporteur</label>
-                    <input type="text" id="editOrderCarrier" placeholder="Colissimo, Main propre..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    <input type="text" id="editOrderCarrier" placeholder="Colissimo..." class="w-full bg-zinc-950 border border-els-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
                 </div>
             </div>
 
@@ -1476,6 +1553,7 @@
                 Fermer
             </button>
         </div>
+    </div>
 
     <!-- ============================================================== -->
     <!-- 8b. MODAL: NOTIFICATION CLIENT & SUIVI (EMAIL, WHATSAPP, SMS)   -->
@@ -1489,8 +1567,8 @@
                     <i data-lucide="send" class="w-4 h-4"></i>
                 </div>
                 <div>
-                    <h3 class="font-display font-bold text-base text-white">Notifier le Client</h3>
-                    <p class="text-[11px] text-zinc-400">Envoyer confirmation, suivi colis ou récapitulatif</p>
+                    <h3 class="font-display font-bold text-base text-white">Envoyer un message au Client</h3>
+                    <p class="text-[11px] text-zinc-400">Envoyer le numéro de suivi par SMS, WhatsApp ou Email</p>
                 </div>
             </div>
             <button onclick="closeNotifyModal()" class="p-1 rounded text-zinc-400 hover:text-white">
@@ -1510,11 +1588,11 @@
             </div>
             <div class="flex justify-between">
                 <span class="text-zinc-500">Téléphone :</span>
-                <span id="notifCustPhone" class="font-mono text-zinc-300">06...</span>
+                <span id="notifCustPhone" class="font-mono text-emerald-400 font-bold">06...</span>
             </div>
             <div class="flex justify-between">
                 <span class="text-zinc-500">Transporteur :</span>
-                <span id="notifCarrier" class="font-bold text-sky-400">Colissimo 24/48h</span>
+                <span id="notifCarrier" class="font-bold text-sky-400">Colissimo</span>
             </div>
             <div id="notifTrackingRow" class="flex justify-between">
                 <span class="text-zinc-500">N° Suivi :</span>
@@ -1524,15 +1602,51 @@
 
         <!-- Dispatch Channels -->
         <div class="space-y-3">
-            
-            <!-- Channel 1: Email Confirmation / Expédition -->
+            <!-- Channel 1: WhatsApp (1-Clic) -->
+            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-white">
+                        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                        <span>WhatsApp Client (N° de Suivi Pré-rempli)</span>
+                    </div>
+                    <span class="text-[10px] text-emerald-400 font-bold">Direct</span>
+                </div>
+                <a 
+                    id="btnNotifWhatsApp" 
+                    href="#" 
+                    target="_blank" 
+                    class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition active:scale-95"
+                >
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Envoyer le suivi sur WhatsApp au Client</span>
+                </a>
+            </div>
+
+            <!-- Channel 2: SMS (1-Clic) -->
+            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold text-white">
+                        <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
+                        <span>SMS Mobile (au numéro de la commande)</span>
+                    </div>
+                </div>
+                <a 
+                    id="btnNotifSms" 
+                    href="#" 
+                    class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition"
+                >
+                    <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
+                    <span>Envoyer par SMS avec l'iPhone</span>
+                </a>
+            </div>
+
+            <!-- Channel 3: Email Confirmation / Expédition -->
             <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs font-bold text-white">
                         <i data-lucide="mail" class="w-4 h-4 text-sky-400"></i>
                         <span>Email Automatique</span>
                     </div>
-                    <span class="text-[10px] text-zinc-500">Modèle HTML ELS.SHOP</span>
                 </div>
                 <div class="flex gap-2">
                     <input 
@@ -1552,59 +1666,29 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Channel 2: WhatsApp (1-Clic) -->
-            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-bold text-white">
-                        <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
-                        <span>WhatsApp (Message Pré-rempli)</span>
-                    </div>
-                    <span class="text-[10px] text-emerald-400 font-bold">1-Clic</span>
-                </div>
-                <p class="text-[11px] text-zinc-400">Ouvre WhatsApp avec le récapitulatif complet et le lien de suivi direct.</p>
-                <a 
-                    id="btnNotifWhatsApp" 
-                    href="#" 
-                    target="_blank" 
-                    class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition active:scale-95"
-                >
-                    <i data-lucide="message-circle" class="w-4 h-4"></i>
-                    <span>Ouvrir WhatsApp Client</span>
-                </a>
-            </div>
-
-            <!-- Channel 3: SMS (1-Clic) -->
-            <div class="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs font-bold text-white">
-                        <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
-                        <span>SMS Mobile</span>
-                    </div>
-                </div>
-                <a 
-                    id="btnNotifSms" 
-                    href="#" 
-                    class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition"
-                >
-                    <i data-lucide="smartphone" class="w-4 h-4 text-purple-400"></i>
-                    <span>Ouvrir dans l'app Messages (SMS)</span>
-                </a>
-            </div>
-
-            <!-- Channel 4: Copy Direct Tracking Link -->
-            <div class="p-3 bg-black/60 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs">
-                <div>
-                    <span class="text-zinc-500 block text-[10px]">LIEN DE SUIVI PUBLIC :</span>
-                    <span id="notifPublicUrlText" class="font-mono text-zinc-300 text-[11px] truncate max-w-[220px] block">https://els-shop.vercel.app/suivi?order=...</span>
-                </div>
-                <button onclick="copyPublicTrackingUrl()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-bold text-xs border border-zinc-700 transition">
-                    Copier
-                </button>
-            </div>
-
         </div>
 
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 8c. MODAL: VISIONNEUSE PREUVE DE PAIEMENT PAYPAL               -->
+    <!-- ============================================================== -->
+    <div id="proofViewerBackdrop" onclick="closeProofViewer()" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[70] hidden flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="w-full max-w-md bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-3 shadow-2xl">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+                <div>
+                    <span class="text-[10px] font-mono uppercase text-emerald-400 font-bold block">✓ Preuve PayPal Vérifiée</span>
+                    <h4 id="proofViewerTitle" class="font-bold text-sm text-white">Reçu de paiement PayPal</h4>
+                </div>
+                <button type="button" onclick="closeProofViewer()" class="p-1.5 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div id="proofViewerMeta" class="text-[11px] text-zinc-300 bg-zinc-950 p-2.5 rounded-xl border border-zinc-800 font-mono"></div>
+            <div class="bg-black rounded-xl border border-zinc-800 overflow-hidden max-h-[65vh] flex items-center justify-center">
+                <img id="proofViewerImg" src="" alt="Preuve PayPal" class="max-w-full max-h-[65vh] object-contain">
+            </div>
+        </div>
     </div>
 
     <!-- ============================================================== -->
@@ -2796,8 +2880,10 @@
         }
 
         // ==========================================
-        // TAB 3: COMMANDES (LIVRAISON, MODIFICATION, SUPPRESSION)
+        // TAB 3: COMMANDES, SUIVI AUTOMATIQUE & GROUPE WHATSAPP
         // ==========================================
+        let adminSystemSettings = {};
+
         async function loadOrders() {
             const token = localStorage.getItem('els_admin_jwt');
             if (!token) return;
@@ -2810,6 +2896,10 @@
                 if (data.success && Array.isArray(data.orders)) {
                     adminOrders = data.orders;
                 }
+                if (data.settings) {
+                    adminSystemSettings = data.settings;
+                    populateWaConfigInputs(data.settings);
+                }
             } catch (e) {
                 console.warn('Orders fetch error:', e);
             }
@@ -2818,6 +2908,124 @@
             updateOrderBadges();
             if (currentTab === 'stats') {
                 renderStatsTab();
+            }
+        }
+
+        function populateWaConfigInputs(s = {}) {
+            const instEl = document.getElementById('cfgGreenInstanceId');
+            const tokEl = document.getElementById('cfgGreenApiToken');
+            const grpEl = document.getElementById('cfgWaGroupId');
+            const webEl = document.getElementById('cfgCustomWebhookUrl');
+            if (instEl && s.greenApiInstanceId) instEl.value = s.greenApiInstanceId;
+            if (tokEl && s.greenApiToken) tokEl.value = s.greenApiToken;
+            if (grpEl && s.whatsappGroupId) grpEl.value = s.whatsappGroupId;
+            if (webEl && (s.customWebhookUrl || s.smsWebhookUrl)) webEl.value = s.customWebhookUrl || s.smsWebhookUrl;
+        }
+
+        function toggleWaConfigPanel() {
+            const panel = document.getElementById('waGroupConfigPanel');
+            if (!panel) return;
+            panel.classList.toggle('hidden');
+            initIcons();
+        }
+
+        async function fetchWhatsAppGroupsFromGreenApi() {
+            const greenApiInstanceId = (document.getElementById('cfgGreenInstanceId').value || '').trim();
+            const greenApiToken = (document.getElementById('cfgGreenApiToken').value || '').trim();
+            if (!greenApiInstanceId || !greenApiToken) {
+                alert('Veuillez renseigner votre idInstance et votre apiTokenInstance Green-API.');
+                return;
+            }
+            const btn = document.getElementById('btnFetchWaGroups');
+            if (btn) btn.innerText = 'Recherche des groupes...';
+            const token = localStorage.getItem('els_admin_jwt');
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        action: 'fetch_whatsapp_groups',
+                        greenApiInstanceId,
+                        greenApiToken
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    alert(data.error || 'Impossible de charger les groupes WhatsApp.');
+                    return;
+                }
+                const sel = document.getElementById('cfgWaGroupSelect');
+                if (sel && Array.isArray(data.groups) && data.groups.length > 0) {
+                    sel.innerHTML = `<option value="">-- Sélectionner parmi vos ${data.groups.length} groupes WhatsApp --</option>` +
+                        data.groups.map(g => `<option value="${g.id}">${g.name} (${g.id})</option>`).join('');
+                    sel.classList.remove('hidden');
+                    document.getElementById('cfgWaGroupId').value = data.groups[0].id;
+                    showToast(`${data.groups.length} groupe(s) WhatsApp trouvé(s) !`);
+                } else {
+                    alert('Aucun groupe WhatsApp trouvé sur ce compte. Assurez-vous d\'être membre d\'au moins un groupe WhatsApp.');
+                }
+            } catch (e) {
+                alert('Erreur réseau lors de la récupération des groupes.');
+            } finally {
+                if (btn) btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Charger mes Groupes WhatsApp</span>`;
+                initIcons();
+            }
+        }
+
+        async function saveWhatsAppGroupSettings(sendTest = false) {
+            const greenApiInstanceId = (document.getElementById('cfgGreenInstanceId').value || '').trim();
+            const greenApiToken = (document.getElementById('cfgGreenApiToken').value || '').trim();
+            const whatsappGroupId = (document.getElementById('cfgWaGroupId').value || '').trim();
+            const customWebhookUrl = (document.getElementById('cfgCustomWebhookUrl').value || '').trim();
+
+            const token = localStorage.getItem('els_admin_jwt');
+            const btn = document.getElementById('btnSaveAndTestWa');
+            if (btn && sendTest) btn.innerText = 'Envoi du ticket test...';
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        action: 'save_settings',
+                        sendTest,
+                        settings: {
+                            greenApiInstanceId,
+                            greenApiToken,
+                            whatsappGroupId,
+                            customWebhookUrl,
+                            smsWebhookUrl: customWebhookUrl
+                        }
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    adminSystemSettings = data.settings || {};
+                    if (sendTest) {
+                        if (data.testResult && data.testResult.sentAutomatic) {
+                            showToast('✅ Configuration enregistrée & Ticket Test envoyé dans le Groupe WhatsApp !');
+                        } else if (data.testResult && data.testResult.whatsappShareUrl) {
+                            showToast('Configuration enregistrée ! Ouverture de WhatsApp pour le test...');
+                            window.open(data.testResult.whatsappShareUrl, '_blank');
+                        }
+                    } else {
+                        showToast('✅ Configuration Groupe WhatsApp & Suivi enregistrée !');
+                    }
+                } else {
+                    alert(data.error || 'Erreur lors de la sauvegarde.');
+                }
+            } catch (err) {
+                alert('Erreur réseau lors de la sauvegarde.');
+            } finally {
+                if (btn) btn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i><span>Enregistrer & Envoyer un Ticket Test au Groupe</span>`;
+                initIcons();
             }
         }
 
@@ -2917,13 +3125,24 @@
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
                 });
 
+                const hasProof = Boolean(o.paymentProofImage && o.paymentProofImage.startsWith('data:image/'));
+
                 return `
                 <div class="bg-els-card border border-els-border rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-zinc-800">
-                        <div class="flex items-center gap-3">
+                        <div class="flex flex-wrap items-center gap-2">
                             <span class="font-mono font-black text-xs text-white bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">${o.id}</span>
                             <span class="text-xs text-zinc-400 font-medium">${dateStr}</span>
-                            <span class="text-[10px] text-zinc-500">• Vendeur : ${o.createdBy || 'Web'}</span>
+                            ${o.paymentVerified ? `
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/40">
+                                    ✓ PayPal Vérifié
+                                </span>
+                            ` : ''}
+                            ${hasProof ? `
+                                <button type="button" onclick="viewPaymentProof('${o.id}')" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-sky-500/15 hover:bg-sky-500 hover:text-black text-sky-300 border border-sky-500/40 transition cursor-pointer">
+                                    🖼️ Voir Reçu PayPal
+                                </button>
+                            ` : ''}
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -2933,20 +3152,31 @@
                         </div>
                     </div>
 
-                    <!-- Client & Total -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="space-y-1">
-                            <div class="text-xs font-bold text-white flex items-center gap-2">
-                                <i data-lucide="user" class="w-3.5 h-3.5 text-zinc-400"></i>
-                                <span>${o.customerName}</span>
-                                ${o.customerPhone ? `<span class="font-mono text-zinc-400 text-[11px]">(${o.customerPhone})</span>` : ''}
+                    <!-- Client, Phone & Delivery Address (Ticket Info) -->
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 bg-zinc-950/80 p-3 rounded-xl border border-zinc-800/80">
+                        <div class="space-y-1 text-xs">
+                            <div class="font-bold text-white flex flex-wrap items-center gap-2">
+                                <span class="text-emerald-400">👤 Nom :</span>
+                                <span>${o.customerName || 'Client'}</span>
                             </div>
-                            <div class="text-[11px] text-zinc-400">${o.customerAddress || 'Remise directe'}</div>
+                            <div class="font-bold text-white flex flex-wrap items-center gap-2">
+                                <span class="text-sky-400">📞 Téléphone :</span>
+                                <span class="font-mono text-emerald-300 select-all">${o.customerPhone || 'Non renseigné'}</span>
+                            </div>
+                            <div class="text-zinc-200 flex flex-wrap items-start gap-2">
+                                <span class="text-amber-400 font-bold">📍 Adresse de livraison :</span>
+                                <span class="select-all font-medium">${o.customerAddress || 'Non renseignée'}</span>
+                            </div>
+                            ${o.paypalTransactionId || o.paypalSenderEmail ? `
+                                <div class="text-[10px] text-zinc-400 font-mono pt-1">
+                                    💳 PayPal Client : <span class="text-zinc-200">${o.paypalSenderEmail || '-'}</span> ${o.paypalTransactionId ? `• Réf: <span class="text-sky-400">${o.paypalTransactionId}</span>` : ''}
+                                </div>
+                            ` : ''}
                         </div>
 
-                        <div class="text-left sm:text-right">
-                            <div class="font-black text-base text-white">${o.total} €</div>
-                            <div class="text-[10px] text-zinc-500 uppercase font-mono">${o.paymentMethod || 'Espèces'}</div>
+                        <div class="text-left sm:text-right shrink-0">
+                            <div class="font-black text-lg text-emerald-400 font-mono">${parseFloat(o.total || 0).toFixed(2)} €</div>
+                            <div class="text-[10px] text-zinc-400 uppercase font-mono">${o.paymentMethod || 'PayPal Amis & Proches'}</div>
                         </div>
                     </div>
 
@@ -2954,22 +3184,54 @@
                     <div class="p-3 bg-black/60 rounded-xl border border-zinc-800 space-y-2">
                         ${(o.items || []).map(it => `
                             <div class="flex items-center justify-between text-xs">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-black text-white">${it.quantity}x</span>
-                                    <span class="font-bold text-zinc-300">${it.brand} ${it.name}</span>
-                                    <span class="font-mono text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded font-bold">${it.size}</span>
+                                    <span class="font-bold text-zinc-200">${it.brand} ${it.name}</span>
+                                    <span class="font-mono text-[10px] text-white bg-zinc-800 px-1.5 py-0.5 rounded font-bold">Taille ${it.size}</span>
                                     ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
-                                    ${it.option ? `<span class="text-[10px] text-sky-400 font-mono font-bold bg-sky-500/10 border border-sky-500/30 px-1.5 py-0.2 rounded">[${it.option}]</span>` : ''}
+                                    ${it.option ? `<span class="text-[10px] text-sky-400 font-mono font-bold bg-sky-500/10 border border-sky-500/30 px-1.5 py-0.5 rounded">[${it.option}]</span>` : ''}
                                 </div>
-                                <span class="font-mono font-bold text-zinc-300">${it.price * (it.quantity || 1)} €</span>
+                                <span class="font-mono font-bold text-zinc-300">${(it.price * (it.quantity || 1)).toFixed(2)} €</span>
                             </div>
                         `).join('')}
                     </div>
 
-                    <!-- Order Action Bar: Receipt, Edit, Status, Delete -->
+                    <!-- DIRECT TRACKING INPUT BAR -> AUTO SEND TO CUSTOMER PHONE -->
+                    <div class="p-3 rounded-xl bg-sky-950/25 border border-sky-500/40 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="font-black uppercase text-sky-300 flex items-center gap-1.5">
+                                <i data-lucide="truck" class="w-3.5 h-3.5"></i>
+                                <span>Numéro de suivi (Envoi auto par message au ${o.customerPhone || 'client'})</span>
+                            </span>
+                            ${o.trackingSentAt ? `
+                                <span class="text-[10px] font-bold text-emerald-400">✓ Envoyé au client</span>
+                            ` : ''}
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input 
+                                type="text" 
+                                id="trackInput_${o.id}" 
+                                value="${o.trackingNumber || ''}" 
+                                placeholder="Saisir le N° de suivi Colissimo (ex: 6A18492049...)" 
+                                onkeydown="if(event.key==='Enter'){event.preventDefault();saveAndSendTracking('${o.id}');}"
+                                class="flex-1 bg-black border border-zinc-700 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-400"
+                            >
+                            <button 
+                                type="button" 
+                                id="btnTrackSend_${o.id}"
+                                onclick="saveAndSendTracking('${o.id}')" 
+                                class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs flex items-center justify-center gap-1.5 shrink-0 transition active:scale-95 cursor-pointer shadow-md"
+                            >
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Valider & Envoyer le Suivi au Client</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Order Action Bar: Group Ticket, Status, Edit, Delete -->
                     <div class="pt-2 border-t border-zinc-900 flex flex-wrap items-center justify-between gap-2.5">
                         
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <span class="text-[10px] text-zinc-500 font-bold uppercase">Statut :</span>
                             <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-zinc-900 border border-zinc-700 text-white rounded-lg text-xs px-2.5 py-1 focus:outline-none">
                                 <option value="en_preparation" ${o.status === 'en_preparation' ? 'selected' : ''}>En préparation</option>
@@ -2978,14 +3240,19 @@
                                 <option value="annule" ${o.status === 'annule' ? 'selected' : ''}>Annulée</option>
                             </select>
 
-                            <button onclick="openReceiptModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition" title="Générer un ticket client">
-                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                <span>Reçu Client</span>
+                            <button onclick="sendOrderTicketToGroup('${o.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500 hover:text-black text-emerald-400 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer" title="Envoyer le ticket sur le Groupe WhatsApp">
+                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                                <span>🎫 Ticket Groupe WhatsApp</span>
                             </button>
 
-                            <button onclick="openNotifyModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-sky-400 hover:text-sky-300 border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer" title="Notifier le client (Email, WhatsApp, Suivi)">
-                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                                <span>Notifier</span>
+                            <button onclick="openReceiptModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                <span>Reçu</span>
+                            </button>
+
+                            <button onclick="openNotifyModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-sky-400 hover:text-sky-300 border border-zinc-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
+                                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                                <span>SMS / WhatsApp</span>
                             </button>
                         </div>
 
@@ -3006,6 +3273,107 @@
             }).join('');
 
             initIcons();
+        }
+
+        // Enregistre le numéro de suivi et l'envoie automatiquement par message au téléphone de la commande
+        async function saveAndSendTracking(orderId) {
+            const input = document.getElementById(`trackInput_${orderId}`);
+            if (!input) return;
+            const trackingNumber = (input.value || '').trim();
+            if (!trackingNumber) {
+                alert('Veuillez saisir le numéro de suivi avant de valider.');
+                input.focus();
+                return;
+            }
+
+            const btn = document.getElementById(`btnTrackSend_${orderId}`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Envoi au client en cours...';
+            }
+
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        id: orderId,
+                        trackingNumber,
+                        status: 'expedie',
+                        sendTrackingMessage: true
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const dispatch = data.trackingDispatch;
+                    if (dispatch && dispatch.sentAutomatic) {
+                        showToast(`✅ N° de suivi (${trackingNumber}) envoyé automatiquement au ${dispatch.phone} !`);
+                    } else if (dispatch && dispatch.smsDirectUrl) {
+                        showToast(`✅ Suivi enregistré ! Ouverture du message pour ${dispatch.phone || 'le client'}...`);
+                        // Ouvre automatiquement le SMS pré-rempli vers le numéro de téléphone de la commande si l'API n'est pas encore connectée
+                        window.location.href = dispatch.smsDirectUrl;
+                    } else {
+                        showToast(`✅ N° de suivi enregistré pour ${orderId}`);
+                    }
+                    loadOrders();
+                } else {
+                    alert(data.error || 'Erreur lors de l\'enregistrement du suivi.');
+                }
+            } catch (err) {
+                alert('Erreur réseau lors de l\'envoi du suivi.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = 'Valider & Envoyer le Suivi au Client';
+                }
+            }
+        }
+
+        // Envoie / Renvoie le Ticket de la commande sur le Groupe WhatsApp
+        async function sendOrderTicketToGroup(orderId) {
+            const token = localStorage.getItem('els_admin_jwt');
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        action: 'send_group_ticket',
+                        orderId
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (data.sentAutomatic) {
+                        showToast(`🎫 Ticket ${orderId} envoyé automatiquement dans le Groupe WhatsApp !`);
+                    } else if (data.whatsappShareUrl) {
+                        showToast('Ouverture de WhatsApp avec le ticket complet...');
+                        window.open(data.whatsappShareUrl, '_blank');
+                    }
+                }
+            } catch (e) {
+                alert('Erreur lors de l\'envoi du ticket groupe.');
+            }
+        }
+
+        function viewPaymentProof(orderId) {
+            const o = adminOrders.find(it => it.id === orderId);
+            if (!o || !o.paymentProofImage) return;
+            document.getElementById('proofViewerTitle').innerText = `Preuve PayPal — ${o.id} (${o.customerName})`;
+            document.getElementById('proofViewerMeta').innerText = `Montant : ${o.total} € • Compte PayPal : ${o.paypalSenderEmail || '-'} • Réf : ${o.paypalTransactionId || 'Auto'}`;
+            document.getElementById('proofViewerImg').src = o.paymentProofImage;
+            document.getElementById('proofViewerBackdrop').classList.remove('hidden');
+            initIcons();
+        }
+
+        function closeProofViewer() {
+            document.getElementById('proofViewerBackdrop').classList.add('hidden');
         }
 
         async function updateOrderStatus(orderId, newStatus) {
@@ -3040,9 +3408,9 @@
             document.getElementById('editOrderCustPhone').value = o.customerPhone || '';
             document.getElementById('editOrderCustAddress').value = o.customerAddress || '';
             document.getElementById('editOrderTotal').value = o.total || 0;
-            document.getElementById('editOrderPayment').value = o.paymentMethod || 'Espèces (Vente directe)';
+            document.getElementById('editOrderPayment').value = o.paymentMethod || 'PayPal Amis & Proches (iliesimaj9@gmail.com)';
             document.getElementById('editOrderStatusVal').value = o.status || 'en_preparation';
-            document.getElementById('editOrderCarrier').value = o.carrier || 'Colissimo 24/48h';
+            document.getElementById('editOrderCarrier').value = o.carrier || 'Colissimo';
             document.getElementById('editOrderTracking').value = o.trackingNumber || '';
             document.getElementById('editOrderNotes').value = o.notes || '';
 
@@ -3096,7 +3464,11 @@
                 const data = await res.json();
                 if (data.success) {
                     closeEditOrderModal();
-                    showToast(`Commande ${id} modifiée avec succès`);
+                    if (data.trackingDispatch && data.trackingDispatch.sentAutomatic) {
+                        showToast(`✅ Commande modifiée & N° de suivi envoyé au ${data.trackingDispatch.phone} !`);
+                    } else {
+                        showToast(`Commande ${id} modifiée avec succès`);
+                    }
                     loadOrders();
                 } else {
                     alert(data.error || 'Erreur lors de la modification');
@@ -3112,7 +3484,6 @@
         async function deleteOrder(orderId) {
             if (!confirm(`Supprimer définitivement la commande ${orderId} ? Cette action est irréversible.`)) return;
 
-            // Instant optimistic update on UI
             adminOrders = adminOrders.filter(o => o.id !== orderId);
             renderOrdersCards();
             updateOrderBadges();
@@ -3152,7 +3523,7 @@
             });
             document.getElementById('recOrderCustomer').innerText = o.customerName || 'Client';
             document.getElementById('recOrderStatus').innerText = o.statusLabel || o.status;
-            document.getElementById('recPaymentMethod').innerText = o.paymentMethod || 'Espèces';
+            document.getElementById('recPaymentMethod').innerText = o.paymentMethod || 'PayPal Amis & Proches';
             document.getElementById('recTotalAmount').innerText = `${o.total} €`;
 
             const container = document.getElementById('recItemsList');
@@ -3186,12 +3557,13 @@
                          `━━━━━━━━━━━━━━━━━━━━\n` +
                          `N° Commande : ${o.id}\n` +
                          `Date : ${dateStr}\n` +
-                         `Client : ${o.customerName}\n\n` +
+                         `Client : ${o.customerName}\n` +
+                         `Téléphone : ${o.customerPhone || '-'}\n` +
+                         `Adresse : ${o.customerAddress || '-'}\n\n` +
                          `ARTICLES :\n${itemsStr}\n\n` +
                          `TOTAL RÉGLÉ : ${o.total} €\n` +
-                         `RÈGLEMENT : ${o.paymentMethod || 'Espèces'}\n` +
+                         `RÈGLEMENT : ${o.paymentMethod || 'PayPal'}\n` +
                          `STATUT : ${o.statusLabel || o.status}\n` +
-                         `QUALITÉ : 1:1 Miroir Certifiée\n` +
                          `━━━━━━━━━━━━━━━━━━━━\n` +
                          `Merci pour votre confiance sur ELS.SHOP !`;
 
@@ -3203,7 +3575,7 @@
         }
 
         // ==========================================
-        // NOTIFICATIONS CLIENTS & SUIVI (EMAIL, WHATSAPP, SMS)
+        // NOTIFICATIONS CLIENTS & SUIVI (SMS, WHATSAPP, EMAIL)
         // ==========================================
         let currentNotifyOrder = null;
 
@@ -3215,7 +3587,7 @@
             document.getElementById('notifOrderId').innerText = o.id;
             document.getElementById('notifCustName').innerText = o.customerName || 'Client';
             document.getElementById('notifCustPhone').innerText = o.customerPhone || 'Non renseigné';
-            document.getElementById('notifCarrier').innerText = o.carrier || 'Colissimo 24/48h';
+            document.getElementById('notifCarrier').innerText = o.carrier || 'Colissimo';
             
             const trackingNumElem = document.getElementById('notifTrackingNum');
             if (o.trackingNumber) {
@@ -3226,31 +3598,34 @@
                 trackingNumElem.className = 'font-mono font-bold text-zinc-500';
             }
 
-            // Pré-remplissage email client
             const emailInput = document.getElementById('notifTargetEmail');
             emailInput.value = o.customerEmail || (o.customerName && o.customerName.includes('@') ? o.customerName : '');
 
-            // Formuler message WhatsApp & URL de suivi
-            const host = window.location.origin;
-            const trackingUrl = `${host}/suivi?order=${encodeURIComponent(o.id)}`;
-            document.getElementById('notifPublicUrlText').innerText = trackingUrl;
-
+            const carrierUrl = o.trackingNumber ? `https://www.laposte.fr/outils/suivre-vos-envois?code=${encodeURIComponent(o.trackingNumber)}` : '';
             const itemsStr = (o.items || []).map(it => `• ${it.brand} ${it.name} (${it.size}${it.color ? ' - ' + it.color : ''}) x${it.quantity}`).join('\n');
-            let waMsg = `Bonjour ${o.customerName} !\n\n` +
-                        `Votre commande *${o.id}* chez ELS.SHOP (${o.total}€) est bien enregistrée.\n\n` +
-                        `🛒 *Vos articles :*\n${itemsStr}\n\n`;
-
+            let waMsg = `Bonjour ${o.customerName} ! 📦\n\n`;
             if (o.trackingNumber) {
-                waMsg += `🚚 *Numéro de Suivi Colissimo :* ${o.trackingNumber}\n`;
+                waMsg += `Votre commande *${o.id}* chez ELS.SHOP a été expédiée !\n\n` +
+                         `🚚 *Votre numéro de suivi :* ${o.trackingNumber}\n` +
+                         `🔗 *Suivre votre colis :* ${carrierUrl}\n\n` +
+                         `📍 *Adresse :* ${o.customerAddress || ''}\n\n` +
+                         `Merci pour votre confiance sur ELS.SHOP !`;
+            } else {
+                waMsg += `Votre commande *${o.id}* chez ELS.SHOP (${o.total}€) est bien confirmée.\n\n` +
+                         `🛒 *Vos articles :*\n${itemsStr}\n\n` +
+                         `Votre numéro de suivi vous sera envoyé par message dès l'expédition !`;
             }
-            waMsg += `🔗 *Suivre votre livraison en direct :*\n${trackingUrl}\n\n` +
-                     `Merci pour votre confiance sur ELS.SHOP !`;
 
-            let cleanPhone = (o.customerPhone || '').replace(/[\s.-]/g, '');
-            if (cleanPhone.startsWith('0')) cleanPhone = '33' + cleanPhone.substring(1);
+            let cleanPhone = (o.customerPhone || '').replace(/[\s.\-()]/g, '');
+            if (cleanPhone.startsWith('+')) cleanPhone = cleanPhone.substring(1);
+            if (cleanPhone.startsWith('0') && cleanPhone.length === 10) cleanPhone = '33' + cleanPhone.substring(1);
+
+            const smsText = o.trackingNumber
+                ? `ELS.SHOP : Bonjour ${o.customerName}, votre commande ${o.id} a été expédiée ! Votre numéro de suivi est : ${o.trackingNumber} (${carrierUrl})`
+                : `ELS.SHOP : Bonjour ${o.customerName}, votre commande ${o.id} est bien confirmée. Votre numéro de suivi vous sera envoyé par message dans les jours à venir.`;
 
             document.getElementById('btnNotifWhatsApp').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
-            document.getElementById('btnNotifSms').href = `sms:${cleanPhone}?body=${encodeURIComponent(`ELS.SHOP : Commande ${o.id} confirmée. Suivez votre colis ici : ${trackingUrl}`)}`;
+            document.getElementById('btnNotifSms').href = `sms:+${cleanPhone}?body=${encodeURIComponent(smsText)}`;
 
             document.getElementById('notifyModalBackdrop').classList.remove('hidden');
             document.getElementById('notifyModal').classList.remove('hidden');
@@ -3376,7 +3751,7 @@
                     body: JSON.stringify({
                         customerName,
                         customerPhone,
-                        customerAddress: 'Vente directe IRL',
+                        customerAddress: notes || 'Adresse non renseignée',
                         items: [{
                             id: p.id,
                             name: p.name,
