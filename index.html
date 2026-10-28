@@ -567,6 +567,37 @@
                         >
                     </div>
                 </div>
+
+                <!-- Payment Method Choice (PayPal Default or Stripe CB) -->
+                <div class="pt-2 space-y-2">
+                    <div class="flex items-center justify-between text-[11px] font-bold uppercase text-zinc-400">
+                        <span>Moyen de Paiement</span>
+                        <span class="text-[9px] text-sky-400 font-mono">Montant auto-calculé</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button 
+                            type="button" 
+                            onclick="setPaymentMethod('paypal')" 
+                            id="btnPayPaypal"
+                            class="p-2.5 border border-sky-400 bg-sky-500/15 text-white font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                            <span>💳</span>
+                            <span>PayPal</span>
+                        </button>
+                        <button 
+                            type="button" 
+                            onclick="setPaymentMethod('stripe')" 
+                            id="btnPayStripe"
+                            class="p-2.5 border border-zinc-800 bg-zinc-950 text-zinc-400 font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                            <span>🔒</span>
+                            <span>Carte Bancaire</span>
+                        </button>
+                    </div>
+                    <div id="paypalInfoNotice" class="p-2 bg-sky-950/30 border border-sky-500/30 text-[10px] text-sky-200 leading-relaxed">
+                        Page automatique <strong>PayPal</strong> (<span class="font-mono text-white">yasminebendaoui@gmail.com</span>) pré-remplie avec le montant total exact (articles + livraison si choisie).
+                    </div>
+                </div>
             </div>
 
             <!-- Checkout Button (Stark SSENSE Black/White) -->
@@ -576,7 +607,7 @@
                 class="w-full bg-white hover:bg-zinc-200 text-black py-3.5 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer"
             >
                 <i data-lucide="lock" class="w-4 h-4"></i>
-                <span>Valider ma Commande & Suivi</span>
+                <span id="checkoutBtnText">Payer avec PayPal & Valider</span>
             </button>
 
         </div>
@@ -867,6 +898,8 @@
             noProducts.classList.add('hidden');
             grid.innerHTML = filtered.map(p => {
                 const pColors = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : (p.color ? [p.color] : []);
+                const pImages = Array.isArray(p.images) && p.images.filter(Boolean).length > 0 ? p.images.filter(Boolean) : [p.image];
+                const mainImg = pImages[0] || p.image;
 
                 return `
                 <div class="group flex flex-col justify-between cursor-pointer" onclick="openQuickView('${p.id}')">
@@ -874,7 +907,7 @@
                     <!-- Product Studio Image -->
                     <div class="relative bg-ssense-card aspect-[3/4] overflow-hidden mb-3 border border-ssense-border group-hover:border-zinc-500 transition duration-300">
                         <img 
-                            src="${p.image}" 
+                            src="${mainImg}" 
                             alt="${p.name}" 
                             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -887,6 +920,15 @@
                                 ${p.conditionGrade || '1:1 MIROIR'}
                             </span>
                         </div>
+
+                        ${pImages.length > 1 ? `
+                            <div class="absolute top-2.5 right-2.5">
+                                <span class="bg-black/80 backdrop-blur-sm border border-zinc-700/80 px-1.5 py-0.5 text-[9px] font-mono text-white flex items-center gap-1">
+                                    <span>📸</span>
+                                    <span>${pImages.length}</span>
+                                </span>
+                            </div>
+                        ` : ''}
 
                         ${p.badge ? `
                             <div class="absolute bottom-2.5 left-2.5">
@@ -941,8 +983,48 @@
         }
 
         // ==============================================================
-        // SSENSE QUICK VIEW & PRODUCT DETAILS MODAL
+        // SSENSE QUICK VIEW & PRODUCT DETAILS MODAL (MULTI-PHOTO GALLERY)
         // ==============================================================
+        let currentModalGallery = [];
+        let currentModalPhotoIdx = 0;
+        let modalTouchStartX = 0;
+
+        function selectModalPhoto(idx) {
+            if (!currentModalGallery || currentModalGallery.length === 0) return;
+            currentModalPhotoIdx = (idx + currentModalGallery.length) % currentModalGallery.length;
+            const mainImg = document.getElementById('modalMainImg');
+            if (mainImg) mainImg.src = currentModalGallery[currentModalPhotoIdx];
+            const counter = document.getElementById('modalPhotoCounter');
+            if (counter) counter.innerText = `${currentModalPhotoIdx + 1} / ${currentModalGallery.length}`;
+            document.querySelectorAll('.modal-thumb-btn').forEach((btn, i) => {
+                if (i === currentModalPhotoIdx) {
+                    btn.className = 'modal-thumb-btn w-14 h-14 sm:w-16 sm:h-16 border-2 border-white overflow-hidden bg-zinc-950 shrink-0 transition cursor-pointer';
+                } else {
+                    btn.className = 'modal-thumb-btn w-14 h-14 sm:w-16 sm:h-16 border border-zinc-800 opacity-60 hover:opacity-100 overflow-hidden bg-zinc-950 shrink-0 transition cursor-pointer';
+                }
+            });
+        }
+
+        function stepModalPhoto(delta) {
+            selectModalPhoto(currentModalPhotoIdx + delta);
+        }
+
+        function handleModalTouchStart(e) {
+            if (e.touches && e.touches.length > 0) {
+                modalTouchStartX = e.touches[0].clientX;
+            }
+        }
+
+        function handleModalTouchEnd(e) {
+            if (!currentModalGallery || currentModalGallery.length <= 1) return;
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                const diffX = e.changedTouches[0].clientX - modalTouchStartX;
+                if (Math.abs(diffX) > 40) {
+                    stepModalPhoto(diffX < 0 ? 1 : -1);
+                }
+            }
+        }
+
         function openQuickView(id) {
             const p = PRODUCTS.find(it => it.id === id);
             if (!p) return;
@@ -952,17 +1034,51 @@
             selectedColorModal = colors[0];
             selectedSizeModal = p.sizes[0] || 'Unique';
 
+            currentModalGallery = Array.isArray(p.images) && p.images.filter(Boolean).length > 0 ? p.images.filter(Boolean) : [p.image];
+            currentModalPhotoIdx = 0;
+
             const hasOptions = Array.isArray(p.options) && p.options.length > 0;
             selectedOptionModal = hasOptions ? p.options[0] : null;
             const currentPrice = selectedOptionModal ? selectedOptionModal.price : p.price;
 
             const content = document.getElementById('quickViewContent');
             content.innerHTML = `
-                <div class="grid md:grid-cols-2 gap-8 md:gap-12">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-12">
                     
-                    <!-- Left: Studio Image (SSENSE Lookbook) -->
-                    <div class="bg-ssense-card border border-ssense-border aspect-square sm:aspect-[3/4] overflow-hidden max-h-72 sm:max-h-none">
-                        <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover">
+                    <!-- Left: Multi-Photo Studio Gallery (SSENSE Lookbook) -->
+                    <div class="space-y-2.5">
+                        <div 
+                            class="relative bg-ssense-card border border-ssense-border aspect-square sm:aspect-[3/4] overflow-hidden max-h-80 sm:max-h-none select-none"
+                            ontouchstart="handleModalTouchStart(event)"
+                            ontouchend="handleModalTouchEnd(event)"
+                        >
+                            <img id="modalMainImg" src="${currentModalGallery[0]}" alt="${p.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover transition-all duration-200">
+                            ${currentModalGallery.length > 1 ? `
+                                <button type="button" onclick="stepModalPhoto(-1)" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 hover:bg-white text-white hover:text-black border border-zinc-700 flex items-center justify-center transition cursor-pointer shadow-lg">
+                                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                                </button>
+                                <button type="button" onclick="stepModalPhoto(1)" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 hover:bg-white text-white hover:text-black border border-zinc-700 flex items-center justify-center transition cursor-pointer shadow-lg">
+                                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                                </button>
+                                <span id="modalPhotoCounter" class="absolute bottom-2.5 right-2.5 bg-black/85 border border-zinc-700 px-2 py-0.5 text-[10px] font-mono text-white">
+                                    1 / ${currentModalGallery.length}
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        ${currentModalGallery.length > 1 ? `
+                            <div id="modalThumbsContainer" class="flex items-center gap-2 overflow-x-auto pb-1">
+                                ${currentModalGallery.map((imgUrl, idx) => `
+                                    <button 
+                                        type="button" 
+                                        onclick="selectModalPhoto(${idx})" 
+                                        class="modal-thumb-btn w-14 h-14 sm:w-16 sm:h-16 ${idx === 0 ? 'border-2 border-white' : 'border border-zinc-800 opacity-60 hover:opacity-100'} overflow-hidden bg-zinc-950 shrink-0 transition cursor-pointer"
+                                    >
+                                        <img src="${imgUrl}" alt="Miniature ${idx + 1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover">
+                                    </button>
+                                `).join('')}
+                            </div>
+                        ` : ''}
                     </div>
 
                     <!-- Right: Designer & Technical Details -->
@@ -1302,18 +1418,31 @@
                 document.getElementById('cartDiscountRow').classList.add('hidden');
             }
 
-            const shipping = (subtotal - discount) >= 150 ? 0 : 4.90;
-            document.getElementById('cartSubtotal').innerText = `${subtotal.toFixed(2)} €`;
-            document.getElementById('cartShippingCost').innerText = shipping === 0 ? 'OFFERTE' : `${shipping.toFixed(2)} €`;
-            document.getElementById('cartTotal').innerText = `${(subtotal - discount + shipping).toFixed(2)} €`;
+            const discountedSubtotal = subtotal - discount;
+            const shipping = deliveryMode === 'main_propre' ? 0 : (discountedSubtotal >= 150 ? 0 : 4.90);
+            const totalWithShipping = discountedSubtotal + shipping;
 
-            if (shipping === 0) {
+            document.getElementById('cartSubtotal').innerText = `${subtotal.toFixed(2)} €`;
+            document.getElementById('cartShippingCost').innerText = deliveryMode === 'main_propre' ? 'Gratuit (Main propre)' : (shipping === 0 ? 'OFFERTE (Colissimo)' : `${shipping.toFixed(2)} € (Colissimo)`);
+            document.getElementById('cartTotal').innerText = `${totalWithShipping.toFixed(2)} €`;
+
+            if (deliveryMode === 'main_propre') {
+                document.getElementById('shippingNoticeText').innerText = '🤝 Remise en main propre : aucun frais de port';
+                document.getElementById('shippingBadge').innerText = '0,00 €';
+            } else if (shipping === 0) {
                 document.getElementById('shippingNoticeText').innerText = '🎉 Livraison Colissimo offerte débloquée !';
                 document.getElementById('shippingBadge').innerText = '0,00 €';
             } else {
-                const rest = (150 - (subtotal - discount)).toFixed(2);
+                const rest = (150 - discountedSubtotal).toFixed(2);
                 document.getElementById('shippingNoticeText').innerText = `Plus que ${rest} € pour la livraison offerte`;
                 document.getElementById('shippingBadge').innerText = '4,90 €';
+            }
+
+            const btnText = document.getElementById('checkoutBtnText');
+            if (btnText) {
+                btnText.innerText = selectedPaymentMethod === 'paypal'
+                    ? `Payer ${totalWithShipping.toFixed(2)} € avec PayPal`
+                    : `Payer ${totalWithShipping.toFixed(2)} € par Carte`;
             }
 
             initIcons();
@@ -1354,25 +1483,42 @@
         }
 
         let deliveryMode = 'colissimo';
+        let selectedPaymentMethod = 'paypal';
 
         function setDeliveryMode(mode) {
             deliveryMode = mode;
             const btnCol = document.getElementById('btnModeColissimo');
             const btnIrl = document.getElementById('btnModeMainPropre');
             const addrContainer = document.getElementById('cartAddressContainer');
-            const shipCost = document.getElementById('cartShippingCost');
 
             if (mode === 'colissimo') {
                 btnCol.className = 'p-2 border border-white bg-white/10 text-white font-bold text-center transition cursor-pointer';
                 btnIrl.className = 'p-2 border border-zinc-800 bg-zinc-950 text-zinc-400 font-bold text-center transition cursor-pointer';
                 if (addrContainer) addrContainer.classList.remove('hidden');
-                if (shipCost) shipCost.innerText = 'Offerte (24/48h)';
             } else {
                 btnIrl.className = 'p-2 border border-white bg-white/10 text-white font-bold text-center transition cursor-pointer';
                 btnCol.className = 'p-2 border border-zinc-800 bg-zinc-950 text-zinc-400 font-bold text-center transition cursor-pointer';
                 if (addrContainer) addrContainer.classList.add('hidden');
-                if (shipCost) shipCost.innerText = 'Gratuit (IRL)';
             }
+            updateCartUI();
+        }
+
+        function setPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            const btnPaypal = document.getElementById('btnPayPaypal');
+            const btnStripe = document.getElementById('btnPayStripe');
+            const notice = document.getElementById('paypalInfoNotice');
+
+            if (method === 'paypal') {
+                if (btnPaypal) btnPaypal.className = 'p-2.5 border border-sky-400 bg-sky-500/15 text-white font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5';
+                if (btnStripe) btnStripe.className = 'p-2.5 border border-zinc-800 bg-zinc-950 text-zinc-400 font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5';
+                if (notice) notice.classList.remove('hidden');
+            } else {
+                if (btnStripe) btnStripe.className = 'p-2.5 border border-white bg-white/10 text-white font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5';
+                if (btnPaypal) btnPaypal.className = 'p-2.5 border border-zinc-800 bg-zinc-950 text-zinc-400 font-bold text-center transition cursor-pointer flex items-center justify-center gap-1.5';
+                if (notice) notice.classList.add('hidden');
+            }
+            updateCartUI();
         }
 
         async function proceedToStripeCheckout() {
@@ -1412,7 +1558,7 @@
 
             const btn = document.getElementById('checkoutBtn');
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Traitement sécurisé...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Préparation du paiement...`;
             initIcons();
 
             try {
@@ -1422,19 +1568,20 @@
                     body: JSON.stringify({ 
                         items: cart, 
                         customer: customerData,
-                        promoCode: appliedPromo 
+                        promoCode: appliedPromo,
+                        paymentMethod: selectedPaymentMethod
                     })
                 });
                 const data = await res.json();
                 if (data.success && data.checkoutUrl) {
                     window.location.href = data.checkoutUrl;
                 } else if (data.orderNumber) {
-                    window.location.href = `/confirmation.html?order=${encodeURIComponent(data.orderNumber)}`;
+                    window.location.href = `/confirmation.html?order=${encodeURIComponent(data.orderNumber)}&pay=${selectedPaymentMethod}`;
                 } else {
-                    window.location.href = `/confirmation.html?order=ELS-CMD-${Math.floor(1000 + Math.random() * 9000)}`;
+                    window.location.href = `/confirmation.html?order=ELS-CMD-${Math.floor(1000 + Math.random() * 9000)}&pay=${selectedPaymentMethod}`;
                 }
             } catch (e) {
-                window.location.href = `/confirmation.html?order=ELS-CMD-${Math.floor(1000 + Math.random() * 9000)}`;
+                window.location.href = `/confirmation.html?order=ELS-CMD-${Math.floor(1000 + Math.random() * 9000)}&pay=${selectedPaymentMethod}`;
             }
         }
 
