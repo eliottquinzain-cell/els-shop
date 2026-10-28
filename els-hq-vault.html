@@ -3180,20 +3180,27 @@
                         </div>
                     </div>
 
-                    <!-- Items list -->
-                    <div class="p-3 bg-black/60 rounded-xl border border-zinc-800 space-y-2">
-                        ${(o.items || []).map(it => `
-                            <div class="flex items-center justify-between text-xs">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="font-black text-white">${it.quantity}x</span>
-                                    <span class="font-bold text-zinc-200">${it.brand} ${it.name}</span>
-                                    <span class="font-mono text-[10px] text-white bg-zinc-800 px-1.5 py-0.5 rounded font-bold">Taille ${it.size}</span>
-                                    ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
-                                    ${it.option ? `<span class="text-[10px] text-sky-400 font-mono font-bold bg-sky-500/10 border border-sky-500/30 px-1.5 py-0.5 rounded">[${it.option}]</span>` : ''}
+                    <!-- Items list with Product Photo -->
+                    <div class="p-3 bg-black/60 rounded-xl border border-zinc-800 space-y-2.5">
+                        ${(o.items || []).map(it => {
+                            const prodMatch = adminProducts.find(p => p.id === it.id);
+                            const imgSrc = it.image || (prodMatch && prodMatch.image) || (it.id ? `/api/products?productImg=${encodeURIComponent(it.id)}` : '');
+                            return `
+                            <div class="flex items-center justify-between gap-3 text-xs">
+                                <div class="flex items-center gap-2.5 flex-wrap">
+                                    ${imgSrc ? `<img src="${imgSrc}" alt="${it.name}" onerror="this.style.display='none'" class="w-11 h-11 rounded-lg object-cover border border-zinc-700 shrink-0 bg-zinc-900">` : ''}
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="font-black text-white">${it.quantity}x</span>
+                                        <span class="font-bold text-zinc-200">${it.brand} ${it.name}</span>
+                                        <span class="font-mono text-[10px] text-white bg-zinc-800 px-1.5 py-0.5 rounded font-bold">Taille ${it.size}</span>
+                                        ${it.color ? `<span class="text-[10px] text-zinc-400 font-mono">(${it.color})</span>` : ''}
+                                        ${it.option ? `<span class="text-[10px] text-sky-400 font-mono font-bold bg-sky-500/10 border border-sky-500/30 px-1.5 py-0.5 rounded">[${it.option}]</span>` : ''}
+                                    </div>
                                 </div>
-                                <span class="font-mono font-bold text-zinc-300">${(it.price * (it.quantity || 1)).toFixed(2)} €</span>
+                                <span class="font-mono font-bold text-zinc-300 shrink-0">${(it.price * (it.quantity || 1)).toFixed(2)} €</span>
                             </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
 
                     <!-- DIRECT TRACKING INPUT BAR -> AUTO SEND TO CUSTOMER PHONE -->
