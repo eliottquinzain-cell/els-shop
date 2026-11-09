@@ -773,10 +773,11 @@
             brands.forEach(b => {
                 const count = PRODUCTS.filter(p => (p.brand || '').toLowerCase() === b.toLowerCase()).length;
                 const isActive = activeBrand.toLowerCase() === b.toLowerCase();
-                const safeBrand = b.replace(/'/g, "\\'");
+                const safeAttr = b.replace(/"/g, '&quot;');
                 html += `
                     <button 
-                        onclick="setBrand('${safeBrand}')" 
+                        data-brand="${safeAttr}"
+                        onclick="setBrand(this.getAttribute('data-brand'))" 
                         class="sidebar-brand-btn flex items-center justify-between w-full text-left py-1 text-xs transition ${isActive ? 'text-white font-black' : 'text-zinc-400 hover:text-white'}"
                     >
                         <span class="truncate">${b}</span>
