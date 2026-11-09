@@ -4748,7 +4748,11 @@
                 alert('Lien d\'image invalide. Le lien doit commencer par https:// ou http://');
                 return;
             }
-            productImages.push({ url: trimmed, origUrl: trimmed });
+            let finalUrl = trimmed;
+            if (finalUrl.includes('photo.yupoo.com') && !finalUrl.includes('yupooImg=')) {
+                finalUrl = '/api/products?yupooImg=' + encodeURIComponent(finalUrl);
+            }
+            productImages.push({ url: finalUrl, origUrl: finalUrl });
             urlInp.value = '';
             renderProductPhotosGallery();
             showToast('📸 Photo ajoutée à la galerie !');
@@ -4945,8 +4949,11 @@
             const description = document.getElementById('newProdDescription').value;
 
             // Si un lien a été collé dans le champ URL sans cliquer sur "+ Ajouter", on l'inclut automatiquement
-            const urlFieldVal = (document.getElementById('newProdImageUrl').value || '').trim();
+            let urlFieldVal = (document.getElementById('newProdImageUrl').value || '').trim();
             if (urlFieldVal && (urlFieldVal.startsWith('http://') || urlFieldVal.startsWith('https://') || urlFieldVal.startsWith('data:image/') || urlFieldVal.startsWith('/'))) {
+                if (urlFieldVal.includes('photo.yupoo.com') && !urlFieldVal.includes('yupooImg=')) {
+                    urlFieldVal = '/api/products?yupooImg=' + encodeURIComponent(urlFieldVal);
+                }
                 if (!productImages.some(it => it.url === urlFieldVal)) {
                     productImages.push({ url: urlFieldVal, origUrl: urlFieldVal });
                 }
