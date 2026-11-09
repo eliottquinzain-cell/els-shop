@@ -121,6 +121,34 @@ module.exports = async (req, res) => {
   const action = searchParams.get('action');
   const proxyImg = searchParams.get('proxyImg');
   const productImg = searchParams.get('productImg');
+  const yupooImg = searchParams.get('yupooImg');
+
+  // ==========================================
+  // GET: Proxy direct d'image Yupoo (Anti-Hotlink bypass Referer)
+  // ==========================================
+  if (req.method === 'GET' && yupooImg) {
+    try {
+      if (!/^https?:\/\/[a-z0-9.-]*yupoo\.com\//i.test(yupooImg)) {
+        return res.status(400).send('URL non autorisée');
+      }
+      const imgRes = await fetch(yupooImg, {
+        headers: {
+          'Referer': 'https://guoxiaofeng123.x.yupoo.com/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+      });
+      if (!imgRes.ok) {
+        return res.status(imgRes.status).send('Erreur Yupoo');
+      }
+      const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+      const arrayBuf = await imgRes.arrayBuffer();
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=2592000, s-maxage=2592000, immutable');
+      return res.status(200).send(Buffer.from(arrayBuf));
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+  }
 
   // ==========================================
   // GET: Image directe d'un article (URL publique pour Ticket Groupe WhatsApp)
@@ -138,6 +166,31 @@ module.exports = async (req, res) => {
           res.setHeader('Content-Type', mimeType);
           res.setHeader('Cache-Control', 'public, max-age=86400');
           return res.status(200).send(imgBuffer);
+        }
+      }
+      // Détection des images Yupoo pour streamer le buffer avec le header Referer
+      let directYupoo = null;
+      if (rawImg) {
+        if (rawImg.includes('yupooImg=')) {
+          const m = rawImg.match(/yupooImg=([^&]+)/);
+          if (m) directYupoo = decodeURIComponent(m[1]);
+        } else if (rawImg.includes('photo.yupoo.com')) {
+          directYupoo = rawImg;
+        }
+      }
+      if (directYupoo) {
+        const yupooRes = await fetch(directYupoo, {
+          headers: {
+            'Referer': 'https://guoxiaofeng123.x.yupoo.com/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
+        });
+        if (yupooRes.ok) {
+          const contentType = yupooRes.headers.get('content-type') || 'image/jpeg';
+          const buf = Buffer.from(await yupooRes.arrayBuffer());
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Cache-Control', 'public, max-age=2592000, s-maxage=2592000, immutable');
+          return res.status(200).send(buf);
         }
       }
       if (rawImg && /^https?:\/\//i.test(rawImg)) {
@@ -159,8 +212,12 @@ module.exports = async (req, res) => {
       if (!/^https?:\/\//i.test(proxyImg)) {
         return res.status(400).json({ success: false, error: 'URL invalide' });
       }
+      const fetchHeaders = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' };
+      if (proxyImg.includes('yupoo.com')) {
+        fetchHeaders['Referer'] = 'https://guoxiaofeng123.x.yupoo.com/';
+      }
       const imgRes = await fetch(proxyImg, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+        headers: fetchHeaders
       });
       if (!imgRes.ok) {
         return res.status(400).json({ success: false, error: 'Impossible de récupérer l\'image' });
